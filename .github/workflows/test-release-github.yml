@@ -699,3 +699,112 @@ jobs:
           else
             echo "[WARNING] Git configuration may differ"
           fi
+
+  # ============================================================================
+  # Test config-file input (monorepo per-package commitizen config)
+  # ============================================================================
+
+  test-release-with-config:
+    name: Test release - config-file (monorepo)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Copy test fixture
+        run: |
+          cp tests/data/release-github/test-with-config/pyproject.toml .
+          cp tests/data/release-github/test-with-config/uv.lock .
+          mkdir -p libs/pkg/docs docs
+          cp tests/data/release-github/test-with-config/libs/pkg/pyproject.toml libs/pkg/pyproject.toml
+          cp tests/data/release-github/test-with-config/libs/pkg/docs/change-log.md libs/pkg/docs/change-log.md
+          cp tests/data/release-github/test-with-config/docs/change-log.md docs/change-log.md
+
+      - name: Clean up repository tags
+        run: git tag -l | xargs -r git tag -d
+
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
+
+      - name: Create test commits
+        run: |
+          git config user.name "Test Bot"
+          git config user.email "test@example.com"
+
+          git add pyproject.toml uv.lock libs/pkg/pyproject.toml docs/change-log.md libs/pkg/docs/change-log.md
+          git commit -m "chore: initial commit"
+
+          # Tag using the sub-package format so commitizen finds a prior tag
+          git tag test-pkg-0.1.0
+          git push origin main
+          git push origin test-pkg-0.1.0
+
+          echo "# Feature" > README.md
+          git add README.md
+          git commit -m "feat: add feature to sub-package"
+          git push origin main
+
+      - name: Test release action with config-file
+        uses: ./actions/release/github
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          release-branch: 'main'
+          increment: 'minor'
+          draft: 'true'
+          package-manager: 'uv'
+          python-version: '3.12'
+          install-groups: 'groups: dev docs'
+          config-file: 'libs/pkg/pyproject.toml'
+          skip-checkout: 'true'
+
+      - name: Verify sub-package tag was created
+        run: |
+          LATEST_TAG=$(git describe --tags --abbrev=0)
+          echo "Latest tag: $LATEST_TAG"
+
+          if [[ "$LATEST_TAG" == test-pkg-* ]]; then
+            echo "[OK] Tag correctly prefixed: $LATEST_TAG"
+          else
+            echo "[ERROR] Expected tag prefixed with 'test-pkg-', got: $LATEST_TAG"
+            exit 1
+          fi
+
+      - name: Verify root pyproject.toml version was NOT changed
+        run: |
+          ROOT_VERSION=$(grep '^version' pyproject.toml | head -1 | sed 's/version = "//;s/"//')
+          echo "Root version: $ROOT_VERSION"
+          if [ "$ROOT_VERSION" = "0.1.0" ]; then
+            echo "[OK] Root version unchanged"
+          else
+            echo "[ERROR] Root version should still be 0.1.0, got: $ROOT_VERSION"
+            exit 1
+          fi
+
+      - name: Verify sub-package version was bumped
+        run: |
+          PKG_VERSION=$(grep '^version' libs/pkg/pyproject.toml | head -1 | sed 's/version = "//;s/"//')
+          echo "Sub-package version: $PKG_VERSION"
+          if [ "$PKG_VERSION" = "0.2.0" ]; then
+            echo "[OK] Sub-package version bumped to 0.2.0"
+          else
+            echo "[ERROR] Expected 0.2.0, got: $PKG_VERSION"
+            exit 1
+          fi
+
+      - name: Verify sub-package changelog was updated, root was not
+        run: |
+          if grep -q "0.2.0" libs/pkg/docs/change-log.md; then
+            echo "[OK] Sub-package changelog updated"
+          else
+            echo "[ERROR] Sub-package changelog missing 0.2.0 entry"
+            exit 1
+          fi
+
+          if grep -q "0.2.0" docs/change-log.md; then
+            echo "[ERROR] Root changelog should NOT have been modified"
+            exit 1
+          else
+            echo "[OK] Root changelog untouched"
+          fi
