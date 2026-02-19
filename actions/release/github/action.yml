@@ -105,6 +105,16 @@ inputs:
     required: false
     default: 'false'
 
+  config-file:
+    description: |
+      Path to a commitizen configuration file (pyproject.toml).
+      Useful in monorepos where each package has its own commitizen config.
+      When set, commitizen is invoked as: cz --config {config-file}
+      Example: 'libs/providers/ollama/pyproject.toml'
+      Leave empty (default) to use the root pyproject.toml.
+    required: false
+    default: ''
+
 runs:
   using: 'composite'
   steps:
@@ -223,6 +233,12 @@ runs:
 
         # Get changelog file path from commitizen config
         echo "Retrieving changelog file path from commitizen configuration..."
+
+        # Append --config flag when a specific config file is requested
+        if [ -n "${{ inputs.config-file }}" ]; then
+          CZ_CMD="$CZ_CMD --config ${{ inputs.config-file }}"
+        fi
+
         CHANGELOG_FILE=$($CZ_CMD changelog --dry-run 2>&1 | grep -oP "(?<=file: ).*" | head -1 || echo "CHANGELOG.md")
 
         # If grep didn't find it, try to parse from config directly
@@ -281,6 +297,12 @@ runs:
           echo "✓ Commitizen command: ${{ inputs.package-manager }} run cz"
         fi
         echo "::endgroup::"
+
+
+        # Append --config flag when a specific config file is requested
+        if [ -n "${{ inputs.config-file }}" ]; then
+          CZ_CMD="$CZ_CMD --config ${{ inputs.config-file }}"
+        fi
 
         echo "::group::Getting current version"
         CURRENT_VERSION=$($CZ_CMD version --project)
