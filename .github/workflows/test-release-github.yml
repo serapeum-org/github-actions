@@ -716,7 +716,7 @@ jobs:
       - name: Copy test fixture
         run: |
           mkdir -p libs/pkg/docs docs
-          cp tests/data/release-github/test-with-config/. .
+          cp -r tests/data/release-github/test-with-config/. .
 
       - name: Clean up repository tags
         run: git tag -l | xargs -r git tag -d
