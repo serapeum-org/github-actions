@@ -715,13 +715,8 @@ jobs:
 
       - name: Copy test fixture
         run: |
-#           cp tests/data/release-github/test-with-config/pyproject.toml .
-#           cp tests/data/release-github/test-with-config/uv.lock .
           mkdir -p libs/pkg/docs docs
           cp tests/data/release-github/test-with-config/. .
-#           cp tests/data/release-github/test-with-config/libs/pkg/pyproject.toml libs/pkg/pyproject.toml
-#           cp tests/data/release-github/test-with-config/libs/pkg/docs/change-log.md libs/pkg/docs/change-log.md
-#           cp tests/data/release-github/test-with-config/docs/change-log.md docs/change-log.md
 
       - name: Clean up repository tags
         run: git tag -l | xargs -r git tag -d
