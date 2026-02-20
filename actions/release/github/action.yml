@@ -360,16 +360,16 @@ runs:
         echo "::endgroup::"
 
         echo "::group::Verifying version bump"
-        NEW_VERSION=$($CZ_CMD version --project)
+        # NEXT_VERSION comes from the dry-run and already contains the full tag
+        # as produced by tag_format (e.g. "serapeum-ollama-0.2.0" or "0.2.0").
+        # Using it here ensures the release step references the tag commitizen created.
+        NEW_VERSION=$NEXT_VERSION
         echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
 
-        if [ "$NEW_VERSION" = "$NEXT_VERSION" ]; then
-          echo "✓ Version bump verified successfully"
-          echo "  Final version: $NEW_VERSION"
+        if git rev-parse "$NEW_VERSION" >/dev/null 2>&1; then
+          echo "✓ Tag verified in git: $NEW_VERSION"
         else
-          echo "::warning::Version mismatch detected!"
-          echo "  Expected: $NEXT_VERSION"
-          echo "  Actual: $NEW_VERSION"
+          echo "::warning::Tag not found in git: $NEW_VERSION"
         fi
 
         echo ""
