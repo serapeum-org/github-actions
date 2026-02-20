@@ -115,6 +115,19 @@ inputs:
     required: false
     default: ''
 
+  skip-github-release:
+    description: |
+      Skip creating the GitHub release via API. FOR TESTING ONLY.
+      When 'true', the action bumps the version and pushes tags but does NOT
+      call the GitHub Releases API. This prevents test runs from creating real
+      releases in the repository. Unlike the fake git remote (which intercepts
+      git push), the GitHub Releases API is called directly with GITHUB_TOKEN
+      and cannot be redirected.
+      - 'false': Create GitHub release (default, use this in production)
+      - 'true': Skip GitHub release creation (testing only)
+    required: false
+    default: 'false'
+
 runs:
   using: 'composite'
   steps:
@@ -436,6 +449,7 @@ runs:
         echo "::endgroup::"
 
     - name: Publish GitHub Release
+      if: ${{ inputs.skip-github-release != 'true' }}
       uses: softprops/action-gh-release@v2
       with:
         token: ${{ inputs.github-token }}

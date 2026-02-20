@@ -84,18 +84,18 @@ jobs:
           # Push to fake remote
           git push origin main
 
-      - name: Test release action (will create release in test repo)
+      - name: Test release action
         uses: ./actions/release/github
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           release-branch: 'main'
           increment: ${{ matrix.increment }}
           prerelease-type: 'none'
-          draft: 'true'  # Create as draft to avoid polluting releases
           package-manager: ${{ matrix.package-manager }}
           python-version: '3.12'
           install-groups: 'groups: dev docs'
           skip-checkout: 'true'
+          skip-github-release: 'true'
 
       - name: Verify release was processed
         run: |
@@ -162,11 +162,11 @@ jobs:
           release-branch: 'main'
           increment: 'patch'
           prerelease-type: 'none'
-          draft: 'true'
           package-manager: 'pixi'
           python-version: '3.12'
           install-groups: 'default'
           skip-checkout: 'true'
+          skip-github-release: 'true'
 
       - name: Verify release was processed
         run: |
@@ -235,10 +235,10 @@ jobs:
           release-branch: 'main'
           increment: 'patch'
           prerelease-type: ${{ matrix.prerelease-type }}
-          draft: 'true'
           package-manager: 'uv'
           python-version: '3.12'
           skip-checkout: 'true'
+          skip-github-release: 'true'
 
       - name: Verify prerelease was created
         run: |
@@ -342,11 +342,11 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           release-branch: 'main'
           increment: 'patch'
-          draft: 'true'
           package-manager: 'uv'
           python-version: '3.12'
           install-groups: ${{ matrix.install-groups }}
           skip-checkout: 'true'
+          skip-github-release: 'true'
 
       - name: Verify dependencies installed correctly
         run: |
@@ -414,10 +414,10 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           release-branch: 'main'
           increment: 'patch'
-          draft: 'true'
           package-manager: 'uv'
           python-version: ${{ matrix.python-version }}
           skip-checkout: 'true'
+          skip-github-release: 'true'
 
       - name: Verify Python version
         run: |
@@ -483,10 +483,10 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           release-branch: 'release/v2.0'
           increment: 'patch'
-          draft: 'true'
           package-manager: 'uv'
           python-version: '3.12'
           skip-checkout: 'true'
+          skip-github-release: 'true'
 
       - name: Verify release on custom branch
         run: |
@@ -556,10 +556,10 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           release-branch: 'main'
           increment: 'patch'
-          draft: 'true'
           package-manager: 'uv'
           python-version: '3.12'
           skip-checkout: 'true'
+          skip-github-release: 'true'
 
       - name: Verify release on ${{ matrix.os }}
         shell: bash
@@ -621,11 +621,11 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           release-branch: 'main'
           increment: 'patch'
-          draft: 'true'
           package-manager: 'uv'
           python-version: '3.12'
           install-groups: ''
           skip-checkout: 'true'
+          skip-github-release: 'true'
 
       - name: Verify release succeeded
         run: |
@@ -680,10 +680,10 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           release-branch: 'main'
           increment: 'patch'
-          draft: 'true'
           package-manager: 'uv'
           python-version: '3.12'
           skip-checkout: 'true'
+          skip-github-release: 'true'
 
       - name: Verify git was configured by action
         run: |
@@ -748,12 +748,12 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           release-branch: 'main'
           increment: 'minor'
-          draft: 'true'
           package-manager: 'uv'
           python-version: '3.12'
           install-groups: 'groups: dev docs'
           config-file: 'libs/pkg/pyproject.toml'
           skip-checkout: 'true'
+          skip-github-release: 'true'
 
       - name: Verify sub-package tag was created
         run: |
