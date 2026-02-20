@@ -114,6 +114,16 @@ inputs:
       Leave empty (default) to use the root pyproject.toml.
     required: false
     default: ''
+  tag-prefix:
+    description: |
+      Optional prefix prepended to the version to form the release tag.
+      Use this in monorepos to namespace tags per package.
+      - Empty (default): tag equals the bare version, e.g. '0.2.0'
+      - 'serapeum-ollama': tag becomes 'serapeum-ollama-0.2.0'
+      Note: when config-file is set and its tag_format already includes a
+      prefix, leave this empty to avoid double-prefixing.
+    required: false
+    default: ''
 
 runs:
   using: 'composite'
@@ -181,6 +191,11 @@ runs:
           echo "✓ Install groups: ${{ inputs.install-groups }}"
         else
           echo "✗ Install groups: none (core dependencies only)"
+        fi
+        if [ -n "${{ inputs.tag-prefix }}" ]; then
+          echo "✓ Tag prefix: ${{ inputs.tag-prefix }} (tags will be ${{ inputs.tag-prefix }}-<version>)"
+        else
+          echo "✗ Tag prefix: none (tags will be bare version)"
         fi
         echo "========================================"
         echo "::endgroup::"
@@ -360,22 +375,28 @@ runs:
         echo "::endgroup::"
 
         echo "::group::Verifying version bump"
-        NEW_VERSION=$($CZ_CMD version --project)
+        BARE_VERSION=$($CZ_CMD version --project)
+
+        # Build the full release tag:
+        #   - tag-prefix set → "{prefix}-{bare_version}"
+        #   - tag-prefix empty → use NEXT_VERSION (respects tag_format from commitizen config)
+        if [ -n "${{ inputs.tag-prefix }}" ]; then
+          NEW_VERSION="${{ inputs.tag-prefix }}-$BARE_VERSION"
+        else
+          NEW_VERSION=$NEXT_VERSION
+        fi
         echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
 
-        if [ "$NEW_VERSION" = "$NEXT_VERSION" ]; then
-          echo "✓ Version bump verified successfully"
-          echo "  Final version: $NEW_VERSION"
+        if git rev-parse "$NEW_VERSION" >/dev/null 2>&1; then
+          echo "✓ Tag verified in git: $NEW_VERSION"
         else
-          echo "::warning::Version mismatch detected!"
-          echo "  Expected: $NEXT_VERSION"
-          echo "  Actual: $NEW_VERSION"
+          echo "::warning::Tag not found in git: $NEW_VERSION"
         fi
 
         echo ""
         echo "=== Version Bump Summary ==="
         echo "Previous version: $CURRENT_VERSION"
-        echo "New version: $NEW_VERSION"
+        echo "New version (tag): $NEW_VERSION"
         echo "Increment type: ${{ inputs.increment }}"
         if [ "${{ inputs.prerelease-type }}" != "none" ]; then
           echo "Prerelease: ${{ inputs.prerelease-type }}"
