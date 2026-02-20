@@ -442,7 +442,7 @@ runs:
         name: ${{ steps.bump_version.outputs.NEW_VERSION }}
         tag_name: ${{ steps.bump_version.outputs.NEW_VERSION }}
         draft: ${{ inputs.draft == 'true' }}
-        prerelease: ${{ contains(steps.bump_version.outputs.NEW_VERSION, '-') || contains(steps.bump_version.outputs.NEW_VERSION, 'alpha') || contains(steps.bump_version.outputs.NEW_VERSION, 'beta') || contains(steps.bump_version.outputs.NEW_VERSION, 'rc') }}
+        prerelease: ${{ contains(steps.bump_version.outputs.NEW_VERSION, 'alpha') || contains(steps.bump_version.outputs.NEW_VERSION, 'beta') || contains(steps.bump_version.outputs.NEW_VERSION, 'rc') }}
         generate_release_notes: true
 
     - name: Release summary
