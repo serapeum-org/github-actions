@@ -314,11 +314,11 @@ runs:
         if [ "${{ inputs.prerelease-type }}" != "none" ]; then
           echo "Prerelease type: ${{ inputs.prerelease-type }}"
           echo "Running dry-run to calculate version..."
-          NEXT_VERSION=$($CZ_CMD bump --dry-run --increment ${{ inputs.increment }} --prerelease ${{ inputs.prerelease-type }} | grep "tag to create" | awk '{print $NF}')
+          NEXT_VERSION=$($CZ_CMD bump --dry-run --yes --increment ${{ inputs.increment }} --prerelease ${{ inputs.prerelease-type }} | grep "tag to create" | awk '{print $NF}')
         else
           echo "Prerelease type: none (standard release)"
           echo "Running dry-run to calculate version..."
-          NEXT_VERSION=$($CZ_CMD bump --dry-run --increment ${{ inputs.increment }} | grep "tag to create" | awk '{print $NF}')
+          NEXT_VERSION=$($CZ_CMD bump --dry-run --yes --increment ${{ inputs.increment }} | grep "tag to create" | awk '{print $NF}')
         fi
         echo "✓ Next version will be: $NEXT_VERSION"
         echo "  Version change: $CURRENT_VERSION → $NEXT_VERSION"
