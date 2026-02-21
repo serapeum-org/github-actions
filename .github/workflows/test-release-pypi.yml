@@ -10,9 +10,16 @@ permissions:
 
 # ============================================================================
 # SECRETS REQUIRED for publish jobs:
-#   TEST_PYPI_TOKEN - API token from https://test.pypi.org with upload access
-#                     to the 'serapeum-actions-pypi-test' project.
+#   TEST_PYPI_TOKEN - API token from https://test.pypi.org
 #                     Set as a repository secret named TEST_PYPI_TOKEN.
+#
+#   IMPORTANT - token scope:
+#     - First-ever upload: use scope "All projects" — TestPyPI will not allow
+#       a project-scoped token to create a package that does not exist yet.
+#     - Subsequent uploads: a token scoped to 'serapeum-actions-pypi-test'
+#       is sufficient.
+#
+#   Create / manage tokens at: https://test.pypi.org/manage/account/token/
 # ============================================================================
 
 jobs:
@@ -318,11 +325,7 @@ jobs:
   # Publishes a real package to https://test.pypi.org to exercise the complete
   # build → publish pipeline.
   #
-  # Requires repository secret: TEST_PYPI_TOKEN
-  #   - Create an API token on https://test.pypi.org with upload access to the
-  #     'serapeum-actions-pypi-test' project (or allow all projects for the
-  #     first upload which auto-registers the package).
-  #   - Add it as a GitHub Actions secret named TEST_PYPI_TOKEN.
+  # Requires repository secret: TEST_PYPI_TOKEN (see top of file for scope notes).
   #
   # Version uniqueness: each run publishes 0.0.dev<run-number> so uploads
   # never conflict with a previously uploaded version.
@@ -337,7 +340,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package-manager: [pip, uv]
+        include:
+          # Each package manager gets a distinct version suffix so concurrent
+          # matrix jobs never try to upload the same filename to TestPyPI.
+          - package-manager: uv
+            version-suffix: ""
+          - package-manager: pip
+            version-suffix: "post0"
 
     steps:
       - name: Checkout repository
@@ -347,10 +356,10 @@ jobs:
         run: cp -r tests/data/release-pypi/test-testpypi/. .
 
       # Stamp a unique version so each CI run uploads a distinct artifact.
-      # Format: 0.0.dev<run_number>  (PEP 440 compliant dev release)
+      # Format: 0.0.dev<run_number>[post0]  (PEP 440 compliant)
       - name: Set unique version for this run
         run: |
-          UNIQUE_VERSION="0.0.dev${{ github.run_number }}"
+          UNIQUE_VERSION="0.0.dev${{ github.run_number }}${{ matrix.version-suffix }}"
           echo "Publishing version: $UNIQUE_VERSION (${{ matrix.package-manager }})"
           sed -i "s/version = \"0.1.0\"/version = \"$UNIQUE_VERSION\"/" pyproject.toml
           grep "^version" pyproject.toml
@@ -380,7 +389,7 @@ jobs:
 
       - name: Verify published version is available on TestPyPI
         run: |
-          UNIQUE_VERSION="0.0.dev${{ github.run_number }}"
+          UNIQUE_VERSION="0.0.dev${{ github.run_number }}${{ matrix.version-suffix }}"
           PACKAGE_NAME="serapeum-actions-pypi-test"
 
           echo "Waiting for TestPyPI to index the package..."
