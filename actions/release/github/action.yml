@@ -209,19 +209,22 @@ runs:
           CZ_CMD="${{ inputs.package-manager }} run cz"
         fi
 
+        # Determine and enter working directory
+        if [ -n "${{ inputs.config-file }}" ]; then
+          WORK_DIR=$(dirname "${{ inputs.config-file }}")
+        else
+          WORK_DIR="."
+        fi
+        echo "Working directory: $WORK_DIR"
+        cd "$WORK_DIR"
+
         # Get changelog file path from commitizen config
         echo "Retrieving changelog file path from commitizen configuration..."
-
-        # Append --config flag when a specific config file is requested
-        if [ -n "${{ inputs.config-file }}" ]; then
-          CZ_CMD="$CZ_CMD --config ${{ inputs.config-file }}"
-        fi
 
         CHANGELOG_FILE=$($CZ_CMD changelog --dry-run 2>&1 | grep -oP "(?<=file: ).*" | head -1 || echo "CHANGELOG.md")
 
         # If grep didn't find it, try to parse from config directly
         if [ -z "$CHANGELOG_FILE" ] || [ "$CHANGELOG_FILE" = "CHANGELOG.md" ]; then
-          # Try to get from pyproject.toml
           if [ -f "pyproject.toml" ]; then
             CHANGELOG_FILE=$(grep -A 10 "\[tool.commitizen\]" pyproject.toml | grep "changelog_file" | sed 's/.*=\s*"\(.*\)"/\1/' || echo "CHANGELOG.md")
           fi
@@ -238,8 +241,7 @@ runs:
         if [ ! -f "$CHANGELOG_FILE" ]; then
           echo "::error::Changelog file not found: $CHANGELOG_FILE"
           echo "::error::A changelog file is required for release generation"
-          echo "::error::Please create $CHANGELOG_FILE in the repository root"
-          echo "::error::You can create an empty file or run 'cz changelog' to generate one"
+          echo "::error::Please create $CHANGELOG_FILE or run 'cz changelog' from $WORK_DIR"
           echo ""
           echo "To create the file:"
           echo "  cat > $CHANGELOG_FILE << 'EOF'"
@@ -276,11 +278,14 @@ runs:
         fi
         echo "::endgroup::"
 
-
-        # Append --config flag when a specific config file is requested
+        # Determine and enter working directory
         if [ -n "${{ inputs.config-file }}" ]; then
-          CZ_CMD="$CZ_CMD --config ${{ inputs.config-file }}"
+          WORK_DIR=$(dirname "${{ inputs.config-file }}")
+        else
+          WORK_DIR="."
         fi
+        echo "Working directory: $WORK_DIR"
+        cd "$WORK_DIR"
 
         echo "::group::Getting current version"
         CURRENT_VERSION=$($CZ_CMD version --project)
