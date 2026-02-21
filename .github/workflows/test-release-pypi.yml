@@ -374,9 +374,8 @@ jobs:
           pypi-password: ${{ secrets.TEST_PYPI_TOKEN }}
           package-manager: ${{ matrix.package-manager }}
           python-version: '3.12'
-          pypi-repository-url: 'https://test.pypi.org/legacy/'
+          pypi-repository-url: 'https://test.pypi.org/'
           verify-lock: 'false'
-
           skip-publish: 'false'
 
       - name: Verify published version is available on TestPyPI
