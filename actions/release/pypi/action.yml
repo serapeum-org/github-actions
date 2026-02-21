@@ -58,6 +58,14 @@ inputs:
       - 'false': Skip lock file check (useful in testing when lock is generated on-the-fly)
     required: false
     default: 'true'
+  package:
+    description: |
+      Workspace package name to build (uv workspaces only).
+      When set, runs `uv build --package {package}` instead of `uv build`.
+      Leave empty for single-package repositories.
+      Example: 'serapeum-ollama', 'serapeum-core'
+    required: false
+    default: ''
   skip-publish:
     description: |
       Skip the publish step. FOR TESTING ONLY - validates build without uploading.
@@ -129,7 +137,11 @@ runs:
         if [ "${{ inputs.package-manager }}" = "pip" ]; then
           python -m build
         elif [ "${{ inputs.package-manager }}" = "uv" ]; then
-          uv build
+          if [ -n "${{ inputs.package }}" ]; then
+            uv build --package "${{ inputs.package }}"
+          else
+            uv build
+          fi
         else
           PIXI_ENV="${{ inputs.install-groups }}"
           PIXI_ENV="${PIXI_ENV:-default}"
