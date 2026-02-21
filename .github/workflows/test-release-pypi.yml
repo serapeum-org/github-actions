@@ -10,8 +10,8 @@ permissions:
 
 # ============================================================================
 # SECRETS REQUIRED for publish jobs:
-#   TEST_PYPI_TOKEN - API token from https://test.pypi.org
-#                     Set as a repository secret named TEST_PYPI_TOKEN.
+#   PYPI_TEST_PUBLISH - API token from https://test.pypi.org
+#                     Set as a repository secret named PYPI_TEST_PUBLISH.
 #
 #   IMPORTANT - token scope:
 #     - First-ever upload: use scope "All projects" — TestPyPI will not allow
@@ -325,7 +325,7 @@ jobs:
   # Publishes a real package to https://test.pypi.org to exercise the complete
   # build → publish pipeline.
   #
-  # Requires repository secret: TEST_PYPI_TOKEN (see top of file for scope notes).
+  # Requires repository secret: PYPI_TEST_PUBLISH (see top of file for scope notes).
   #
   # Version uniqueness: each run publishes 0.0.dev<run-number> so uploads
   # never conflict with a previously uploaded version.
@@ -381,7 +381,7 @@ jobs:
         uses: ./actions/release/pypi
         with:
           pypi-username: __token__
-          pypi-password: ${{ secrets.TEST_PYPI_TOKEN }}
+          pypi-password: ${{ secrets.PYPI_TEST_PUBLISH }}
           package-manager: ${{ matrix.package-manager }}
           python-version: '3.12'
           pypi-repository-url: 'https://test.pypi.org/legacy/'
@@ -446,7 +446,7 @@ jobs:
         uses: ./actions/release/pypi
         with:
           pypi-username: __token__
-          pypi-password: ${{ secrets.TEST_PYPI_TOKEN }}
+          pypi-password: ${{ secrets.PYPI_TEST_PUBLISH }}
           package-manager: pixi
           python-version: '3.12'
           pypi-repository-url: 'https://test.pypi.org/legacy/'
