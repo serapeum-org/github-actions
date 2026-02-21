@@ -13,3 +13,13 @@ dependencies = []
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/serapeum_actions_pypi_test"]
+
+[tool.hatch.build.targets.sdist]
+# Explicitly restrict sdist to project files only.
+# Without this, hatchling includes everything in the working directory,
+# which in CI is the entire repository checkout (~800 kB of unrelated files).
+include = [
+    "src/",
+    "README.md",
+    "pyproject.toml",
+]
