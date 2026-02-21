@@ -7,12 +7,6 @@ inputs:
       GitHub token for creating releases. Typically use the built-in GITHUB_TOKEN or a personal access token.
       Example: secrets.GITHUB_TOKEN
     required: true
-  release-branch:
-    description: |
-      Branch to create release from. The branch that contains the code to be released.
-      Examples: 'main', 'develop', 'release/v2.0', 'production'
-    required: false
-    default: 'main'
   increment:
     description: |
       Version increment type used by commitizen for semantic versioning.
@@ -89,22 +83,6 @@ inputs:
       environments and activate-environment parameters.
     required: false
     default: 'groups: docs dev'
-  skip-checkout:
-    description: |
-      Skip the checkout step. FOR TESTING ONLY - do not use in production!
-
-      In production, the checkout step is essential because it:
-      - Ensures you're on the correct release-branch
-      - Fetches full git history needed by commitizen
-      - Guarantees a clean state before version bumping
-
-      Only set to 'true' when testing the action with pre-staged fixtures.
-
-      - 'false': Checkout repository (default, use this in production)
-      - 'true': Skip checkout (testing only)
-    required: false
-    default: 'false'
-
   config-file:
     description: |
       Path to a commitizen configuration file (pyproject.toml).
@@ -131,13 +109,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Checkout repository
-      if: ${{ inputs.skip-checkout != 'true' }}
-      uses: actions/checkout@v5
-      with:
-        fetch-depth: 0
-        ref: ${{ inputs.release-branch }}
-
     - name: Check prerequisites for release
       shell: bash
       run: |
@@ -171,12 +142,6 @@ runs:
       run: |
         echo "::group::Release Configuration"
         echo "=== GitHub Release Action Configuration ==="
-        if [ "${{ inputs.skip-checkout }}" = "true" ]; then
-          echo "✗ Repository checkout: Skipped (skip-checkout=true)"
-        else
-          echo "✓ Repository checkout: Enabled"
-          echo "  Branch: ${{ inputs.release-branch }}"
-        fi
         echo "✓ Package manager: ${{ inputs.package-manager }}"
         echo "✓ Python version: ${{ inputs.python-version }}"
         echo "✓ Version increment: ${{ inputs.increment }}"
@@ -401,10 +366,9 @@ runs:
       run: |
         echo "::group::Pushing changes and tags to repository"
 
-        echo "Pushing version bump commit to ${{ inputs.release-branch }}..."
+        echo "Pushing version bump commit..."
         if ! git push; then
           echo "::error::Failed to push changes to repository"
-          echo "::error::Branch: ${{ inputs.release-branch }}"
           exit 1
         fi
         echo "✓ Changes pushed successfully"
@@ -422,7 +386,6 @@ runs:
         echo "✓ Version bump committed and pushed"
         echo "✓ Git tag created and pushed"
         echo "  Tag: ${{ steps.bump_version.outputs.NEW_VERSION }}"
-        echo "  Branch: ${{ inputs.release-branch }}"
         echo "======================="
         echo "::endgroup::"
 
@@ -469,7 +432,6 @@ runs:
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         echo ""
         echo "✓ Version: ${{ steps.bump_version.outputs.NEW_VERSION }}"
-        echo "✓ Branch: ${{ inputs.release-branch }}"
         echo "✓ Increment: ${{ inputs.increment }}"
         if [ "${{ inputs.prerelease-type }}" != "none" ]; then
           echo "✓ Prerelease: ${{ inputs.prerelease-type }}"
