@@ -345,7 +345,28 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
-      - name: Copy workspace test fixture
+      # uv: copy the full virtual workspace — uv understands [tool.uv.workspace] roots.
+      - name: Copy workspace fixture (uv)
+        if: matrix.package-manager == 'uv'
+        run: cp -r tests/data/release-pypi/test-workspace/. .
+
+      # pip: the python-setup/pip action runs 'pip install .' on whichever pyproject.toml
+      # it finds at the repo root. The virtual workspace root has no [build-system], so
+      # setuptools is used as the fallback build backend and it chokes on the multiple
+      # top-level directories (actions/, packages/).
+      # Fix: use a proper pip-installable pyproject.toml at root, then add packages/ from
+      # the workspace fixture so find_pkg_dir can still locate the target sub-package.
+      - name: Copy workspace fixture (pip)
+        if: matrix.package-manager == 'pip'
+        run: |
+          cp tests/data/release-pypi/test-basic-pip/pyproject.toml .
+          cp -r tests/data/release-pypi/test-basic-pip/src .
+          cp -r tests/data/release-pypi/test-workspace/packages .
+
+      # pixi: python-setup/pixi only reads pixi.toml / pixi.lock — the workspace root
+      # pyproject.toml is irrelevant. The full fixture copy is fine.
+      - name: Copy workspace fixture (pixi)
+        if: matrix.package-manager == 'pixi'
         run: cp -r tests/data/release-pypi/test-workspace/. .
 
       - name: Test build of workspace member 'serapeum-pypi-test-pkg-alpha'
