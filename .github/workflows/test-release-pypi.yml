@@ -56,7 +56,7 @@ jobs:
           package-manager: ${{ matrix.package-manager }}
           python-version: '3.12'
           verify-lock: 'false'
-          skip-checkout: 'true'
+
           skip-publish: 'true'
 
       - name: Verify dist artifacts were created
@@ -110,7 +110,7 @@ jobs:
           package-manager: uv
           python-version: ${{ matrix.python-version }}
           verify-lock: 'false'
-          skip-checkout: 'true'
+
           skip-publish: 'true'
 
       - name: Verify correct Python version was used
@@ -156,7 +156,7 @@ jobs:
           package-manager: uv
           python-version: '3.12'
           verify-lock: 'false'
-          skip-checkout: 'true'
+
           skip-publish: 'true'
 
       - name: Verify dist artifacts were created
@@ -210,7 +210,7 @@ jobs:
           python-version: '3.12'
           install-groups: ${{ matrix.install-groups }}
           verify-lock: 'false'
-          skip-checkout: 'true'
+
           skip-publish: 'true'
 
       - name: Verify dependencies and build artifacts
@@ -270,7 +270,7 @@ jobs:
           package-manager: uv
           python-version: '3.12'
           verify-lock: ${{ matrix.verify-lock }}
-          skip-checkout: 'true'
+
           skip-publish: 'true'
 
       - name: Verify dist artifacts were created
@@ -304,7 +304,7 @@ jobs:
           python-version: '3.12'
           pypi-repository-url: 'https://test.pypi.org/legacy/'
           verify-lock: 'false'
-          skip-checkout: 'true'
+
           skip-publish: 'true'
 
       - name: Verify build artifacts exist
@@ -376,7 +376,7 @@ jobs:
           python-version: '3.12'
           pypi-repository-url: 'https://test.pypi.org/legacy/'
           verify-lock: 'false'
-          skip-checkout: 'true'
+
           skip-publish: 'false'
 
       - name: Verify published version is available on TestPyPI
@@ -442,7 +442,7 @@ jobs:
           python-version: '3.12'
           pypi-repository-url: 'https://test.pypi.org/legacy/'
           verify-lock: 'false'
-          skip-checkout: 'true'
+
           skip-publish: 'false'
 
       - name: Verify published version is available on TestPyPI

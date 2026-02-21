@@ -58,13 +58,6 @@ inputs:
       - 'false': Skip lock file check (useful in testing when lock is generated on-the-fly)
     required: false
     default: 'true'
-  skip-checkout:
-    description: |
-      Skip the checkout step. FOR TESTING ONLY - do not use in production!
-      - 'false': Checkout repository (default, use this in production)
-      - 'true': Skip checkout (testing only)
-    required: false
-    default: 'false'
   skip-publish:
     description: |
       Skip the publish step. FOR TESTING ONLY - validates build without uploading.
@@ -76,22 +69,11 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Checkout repository
-      if: ${{ inputs.skip-checkout != 'true' }}
-      uses: actions/checkout@v5
-
     - name: Display release configuration
       shell: bash
       run: |
         echo "::group::PyPI Release Configuration"
         echo "=== PyPI Release Action Configuration ==="
-        if [ "${{ inputs.skip-checkout }}" = "true" ]; then
-          echo "✗ Repository checkout: Skipped (skip-checkout=true)"
-        else
-          echo "✓ Repository checkout: Enabled"
-        fi
-
-        # python configs
         echo "✓ Package manager: ${{ inputs.package-manager }}"
         echo "✓ Python version: ${{ inputs.python-version }}"
         if [ -n "${{ inputs.install-groups }}" ]; then
