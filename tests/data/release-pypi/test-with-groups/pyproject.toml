@@ -1,0 +1,22 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "serapeum-pypi-test-groups"
+version = "0.1.0"
+description = "Test package with dependency groups for PyPI release action"
+requires-python = ">=3.10"
+dependencies = []
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/serapeum_pypi_test_groups"]
+
+[project.optional-dependencies]
+# Used to test 'extras:' install-groups syntax
+viz = ["packaging>=23.0"]
+
+[dependency-groups]
+# Used to test 'groups:' install-groups syntax
+dev = ["pytest>=7.0.0"]
+lint = ["black>=23.0.0"]

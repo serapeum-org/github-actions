@@ -1,0 +1,18 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "serapeum-pypi-test-uv"
+version = "0.1.0"
+description = "Test package for PyPI release action (uv package manager)"
+requires-python = ">=3.10"
+dependencies = []
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/serapeum_pypi_test_uv"]
+
+[dependency-groups]
+dev = [
+    "pytest>=7.0.0",
+]

@@ -1,0 +1,212 @@
+name: 'PyPI Release'
+description: 'Build and publish a Python package to PyPI using twine'
+
+inputs:
+  pypi-username:
+    description: |
+      PyPI username. Use '__token__' when authenticating with an API token.
+      Example: '__token__'
+    required: true
+  pypi-password:
+    description: |
+      PyPI password or API token. When using token auth, this is the token value
+      (e.g., secrets.PYPI_API_TOKEN or secrets.PYPI_PASSWORD).
+    required: true
+  python-version:
+    description: |
+      Python version to use for building and publishing.
+      Examples: '3.12', '3.11', '3.x'
+    required: false
+    default: '3.12'
+  package-manager:
+    description: |
+      Package manager to use for setting up the Python environment.
+      - pip: Standard pip with pyproject.toml
+      - uv: UV package manager (faster, modern)
+      - pixi: Pixi package manager (conda-based, requires 'build' and 'twine' in environment)
+    required: false
+    default: 'uv'
+  install-groups:
+    description: |
+      Dependency groups or environments to install.
+      Format varies by package-manager:
+
+      For pip/uv (passed to install-groups):
+        - "groups: dev test" - Install dependency groups (PEP 735)
+        - "extras: aws viz" - Install optional dependencies
+        - "" - Install only core dependencies
+
+      For pixi (used as environment name for environments and activate-environment):
+        - "default" - Use default environment
+        - "py312" - Named environment
+
+      Note: When using pixi, this value is used as both 'environments' and
+      'activate-environment'. The pixi environment must include 'build' and 'twine'.
+    required: false
+    default: ''
+  pypi-repository-url:
+    description: |
+      PyPI repository URL. Leave empty to publish to the official PyPI.
+      - Official PyPI: (leave empty)
+      - TestPyPI: https://test.pypi.org/legacy/
+    required: false
+    default: ''
+  verify-lock:
+    description: |
+      Whether to verify the lock file is up to date before installing (uv and pixi only).
+      - 'true': Run lock file freshness check (default, recommended for production)
+      - 'false': Skip lock file check (useful in testing when lock is generated on-the-fly)
+    required: false
+    default: 'true'
+  skip-checkout:
+    description: |
+      Skip the checkout step. FOR TESTING ONLY - do not use in production!
+      - 'false': Checkout repository (default, use this in production)
+      - 'true': Skip checkout (testing only)
+    required: false
+    default: 'false'
+  skip-publish:
+    description: |
+      Skip the publish step. FOR TESTING ONLY - validates build without uploading.
+      - 'false': Build and publish to PyPI (default, use this in production)
+      - 'true': Build only, skip publish (testing only)
+    required: false
+    default: 'false'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout repository
+      if: ${{ inputs.skip-checkout != 'true' }}
+      uses: actions/checkout@v5
+
+    - name: Display release configuration
+      shell: bash
+      run: |
+        echo "::group::PyPI Release Configuration"
+        echo "=== PyPI Release Action Configuration ==="
+        if [ "${{ inputs.skip-checkout }}" = "true" ]; then
+          echo "✗ Repository checkout: Skipped (skip-checkout=true)"
+        else
+          echo "✓ Repository checkout: Enabled"
+        fi
+
+        # python configs
+        echo "✓ Package manager: ${{ inputs.package-manager }}"
+        echo "✓ Python version: ${{ inputs.python-version }}"
+        if [ -n "${{ inputs.install-groups }}" ]; then
+          echo "✓ Install groups: ${{ inputs.install-groups }}"
+        else
+          echo "✗ Install groups: none (core dependencies only)"
+        fi
+
+        # pypi configs
+        if [ -n "${{ inputs.pypi-repository-url }}" ]; then
+          echo "✓ PyPI repository: ${{ inputs.pypi-repository-url }}"
+        else
+          echo "✓ PyPI repository: Official PyPI (https://pypi.org)"
+        fi
+        echo "========================================"
+        echo "::endgroup::"
+
+    - name: Set up Python environment (pip)
+      if: ${{ inputs.package-manager == 'pip' }}
+      uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@pip/v1
+      with:
+        python-version: ${{ inputs.python-version }}
+        install-groups: ${{ inputs.install-groups }}
+
+    - name: Set up Python environment (uv)
+      if: ${{ inputs.package-manager == 'uv' }}
+      uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@uv/v1
+      with:
+        python-version: ${{ inputs.python-version }}
+        install-groups: ${{ inputs.install-groups }}
+        verify-lock: ${{ inputs.verify-lock }}
+
+    - name: Set up Python environment (pixi)
+      if: ${{ inputs.package-manager == 'pixi' }}
+      uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@pixi/v1
+      with:
+        environments: ${{ inputs.install-groups != '' && inputs.install-groups || 'default' }}
+        activate-environment: ${{ inputs.install-groups != '' && inputs.install-groups || 'default' }}
+        verify-lock: ${{ inputs.verify-lock }}
+
+    - name: Install build tools (pip)
+      if: ${{ inputs.package-manager == 'pip' }}
+      shell: bash
+      run: |
+        echo "::group::Installing build and publish tools"
+        pip install build twine
+        echo "::endgroup::"
+
+    - name: Build package
+      shell: bash
+      run: |
+        echo "::group::Building package"
+        if [ "${{ inputs.package-manager }}" = "pip" ]; then
+          python -m build
+        elif [ "${{ inputs.package-manager }}" = "uv" ]; then
+          uv build
+        else
+          PIXI_ENV="${{ inputs.install-groups }}"
+          PIXI_ENV="${PIXI_ENV:-default}"
+          pixi run -e "$PIXI_ENV" python -m build
+        fi
+        echo "::endgroup::"
+
+        echo "::group::Build artifacts"
+        ls -la dist/
+        echo "::endgroup::"
+
+    - name: Publish to PyPI
+      if: ${{ inputs.skip-publish != 'true' }}
+      shell: bash
+      env:
+        TWINE_USERNAME: ${{ inputs.pypi-username }}
+        TWINE_PASSWORD: ${{ inputs.pypi-password }}
+      run: |
+        echo "::group::Publishing package to PyPI"
+
+        # Build optional repository URL argument
+        REPO_ARGS=""
+        if [ -n "${{ inputs.pypi-repository-url }}" ]; then
+          REPO_ARGS="--repository-url ${{ inputs.pypi-repository-url }}"
+        fi
+
+        if [ "${{ inputs.package-manager }}" = "pip" ]; then
+          twine upload $REPO_ARGS dist/*
+        elif [ "${{ inputs.package-manager }}" = "uv" ]; then
+          uvx twine upload $REPO_ARGS dist/*
+        else
+          PIXI_ENV="${{ inputs.install-groups }}"
+          PIXI_ENV="${PIXI_ENV:-default}"
+          pixi run -e "$PIXI_ENV" twine upload $REPO_ARGS dist/*
+        fi
+
+        echo "✓ Package published successfully"
+        echo "::endgroup::"
+
+    - name: Release summary
+      shell: bash
+      run: |
+        echo "::group::PyPI Release Summary"
+        echo ""
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "        PyPI Release Completed"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo ""
+        echo "✓ Package built successfully"
+        if [ "${{ inputs.skip-publish }}" = "true" ]; then
+          echo "✗ Publish: Skipped (skip-publish=true)"
+        else
+          echo "✓ Package published to PyPI"
+          if [ -n "${{ inputs.pypi-repository-url }}" ]; then
+            echo "✓ Repository: ${{ inputs.pypi-repository-url }}"
+          else
+            echo "✓ Repository: Official PyPI (https://pypi.org)"
+          fi
+        fi
+        echo ""
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "::endgroup::"
