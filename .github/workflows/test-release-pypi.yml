@@ -341,12 +341,13 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # Each package manager gets a distinct version suffix so concurrent
+          # Each package manager gets a distinct version base so concurrent
           # matrix jobs never try to upload the same filename to TestPyPI.
+          # Format: <base>.dev<run_number>  — both are valid PEP 440 dev releases.
           - package-manager: uv
-            version-suffix: ""
+            version-base: "0.0"
           - package-manager: pip
-            version-suffix: "post0"
+            version-base: "0.1"
 
     steps:
       - name: Checkout repository
@@ -356,10 +357,10 @@ jobs:
         run: cp -r tests/data/release-pypi/test-testpypi/. .
 
       # Stamp a unique version so each CI run uploads a distinct artifact.
-      # Format: 0.0.dev<run_number>[post0]  (PEP 440 compliant)
+      # Format: <base>.dev<run_number>  (PEP 440 compliant dev release)
       - name: Set unique version for this run
         run: |
-          UNIQUE_VERSION="0.0.dev${{ github.run_number }}${{ matrix.version-suffix }}"
+          UNIQUE_VERSION="${{ matrix.version-base }}.dev${{ github.run_number }}"
           echo "Publishing version: $UNIQUE_VERSION (${{ matrix.package-manager }})"
           sed -i "s/version = \"0.1.0\"/version = \"$UNIQUE_VERSION\"/" pyproject.toml
           grep "^version" pyproject.toml
@@ -389,7 +390,7 @@ jobs:
 
       - name: Verify published version is available on TestPyPI
         run: |
-          UNIQUE_VERSION="0.0.dev${{ github.run_number }}${{ matrix.version-suffix }}"
+          UNIQUE_VERSION="${{ matrix.version-base }}.dev${{ github.run_number }}"
           PACKAGE_NAME="serapeum-actions-pypi-test"
 
           echo "Waiting for TestPyPI to index the package..."
@@ -436,7 +437,7 @@ jobs:
       # pip/uv job that runs in parallel for the same run_number.
       - name: Set unique version for this run
         run: |
-          PIXI_VERSION="0.0.dev${{ github.run_number }}post1"
+          PIXI_VERSION="0.2.dev${{ github.run_number }}"
           echo "Publishing version: $PIXI_VERSION (pixi)"
           sed -i "s/version = \"0.1.0\"/version = \"$PIXI_VERSION\"/" pyproject.toml
           grep "^version" pyproject.toml
@@ -455,7 +456,7 @@ jobs:
 
       - name: Verify published version is available on TestPyPI
         run: |
-          PIXI_VERSION="0.0.dev${{ github.run_number }}post1"
+          PIXI_VERSION="0.2.dev${{ github.run_number }}"
           PACKAGE_NAME="serapeum-actions-pypi-test"
 
           echo "Waiting for TestPyPI to index the package..."
