@@ -820,6 +820,107 @@ jobs:
 
 ---
 
+## Workspace / Monorepo Examples
+
+### Build a specific workspace member (uv)
+
+For a uv workspace where multiple packages live under `packages/`:
+
+```yaml
+- uses: actions/checkout@v5
+
+- uses: Serapieum-of-alex/github-actions/actions/release/pypi@release-pypi/v1
+  with:
+    pypi-username: __token__
+    pypi-password: ${{ secrets.PYPI_API_TOKEN }}
+    package-manager: 'uv'
+    package: 'serapeum-ollama'
+```
+
+Uses `uv build --package serapeum-ollama` — uv resolves the workspace member by name natively.
+
+**Workspace `pyproject.toml`:**
+
+```toml
+[tool.uv.workspace]
+members = ["packages/*"]
+```
+
+---
+
+### Build a specific workspace member (pip)
+
+```yaml
+- uses: actions/checkout@v5
+
+- uses: Serapieum-of-alex/github-actions/actions/release/pypi@release-pypi/v1
+  with:
+    pypi-username: __token__
+    pypi-password: ${{ secrets.PYPI_API_TOKEN }}
+    package-manager: 'pip'
+    package: 'serapeum-core'
+```
+
+The action locates `packages/serapeum-core/pyproject.toml` (by matching `name = "serapeum-core"`)
+and runs `python -m build packages/serapeum-core/ --outdir dist/`.
+
+---
+
+### Build a specific workspace member (pixi)
+
+```yaml
+- uses: actions/checkout@v5
+
+- uses: Serapieum-of-alex/github-actions/actions/release/pypi@release-pypi/v1
+  with:
+    pypi-username: __token__
+    pypi-password: ${{ secrets.PYPI_API_TOKEN }}
+    package-manager: 'pixi'
+    package: 'serapeum-core'
+```
+
+Same directory-discovery as pip, but the build runs inside the pixi environment:
+`pixi run -e default python -m build packages/serapeum-core/ --outdir dist/`.
+
+---
+
+### Publish all workspace members in a matrix
+
+```yaml
+name: Publish workspace packages
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    strategy:
+      matrix:
+        package:
+          - serapeum-core
+          - serapeum-ollama
+          - serapeum-openai
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: Serapieum-of-alex/github-actions/actions/release/pypi@release-pypi/v1
+        with:
+          pypi-username: __token__
+          pypi-password: ${{ secrets.PYPI_API_TOKEN }}
+          package-manager: 'uv'
+          package: ${{ matrix.package }}
+```
+
+Each job builds and publishes exactly one package from the workspace. Because each matrix job
+operates independently, packages are published in parallel.
+
+---
+
 ## Edge Cases and Special Scenarios
 
 ### First-ever publish of a new package

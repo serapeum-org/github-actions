@@ -68,6 +68,7 @@ jobs:
 | `install-groups` | Dependency groups or environments to install (see below) | No | `''` |
 | `pypi-repository-url` | Custom index URL. Leave empty for official PyPI | No | `''` |
 | `verify-lock` | Verify lock file is up to date before installing (uv/pixi only) | No | `'true'` |
+| `package` | Workspace member name to build. Leave empty for single-package repos | No | `''` |
 | `skip-publish` | Skip the publish step — build only. **Testing only.** | No | `'false'` |
 
 ### Install Groups Format
@@ -84,6 +85,34 @@ The `install-groups` input format varies by package manager:
 - `"default"` — Use default pixi environment
 - `"py312"` — Named environment
 - The named environment must include `build` and `twine`
+
+### `package` — Workspace Member Builds
+
+Set `package` to the package **name** (the `[project] name` value in `pyproject.toml`) to build
+only that member of a multi-package workspace:
+
+```yaml
+- uses: Serapieum-of-alex/github-actions/actions/release/pypi@release-pypi/v1
+  with:
+    pypi-username: __token__
+    pypi-password: ${{ secrets.PYPI_API_TOKEN }}
+    package: 'serapeum-ollama'
+```
+
+Leave `package` empty (the default) for single-package repositories.
+
+**How the package directory is resolved (pip and pixi):**
+
+The action runs:
+```bash
+find . -not -path './.git/*' -name "pyproject.toml" \
+  | xargs grep -l 'name = "serapeum-ollama"' | head -1 | xargs dirname
+```
+It then passes that directory to `python -m build <dir> --outdir dist/`, so artifacts always
+land in the workspace-level `dist/` directory.
+
+**uv** resolves the package natively via `uv build --package <name>` — no directory search
+needed.
 
 ### `pypi-repository-url`
 
@@ -182,11 +211,17 @@ include = [
 
 ### Build Commands by Package Manager
 
-| Package Manager | Build Command |
-|-----------------|---------------|
-| `pip` | `python -m build` |
-| `uv` | `uv build` |
-| `pixi` | `pixi run -e <env> python -m build` |
+| Package Manager | Single-package repo | Workspace (with `package` input) |
+|-----------------|---------------------|----------------------------------|
+| `pip` | `python -m build` | `python -m build <pkg_dir> --outdir dist/` |
+| `uv` | `uv build` | `uv build --package <name>` |
+| `pixi` | `pixi run -e <env> python -m build` | `pixi run -e <env> python -m build <pkg_dir> --outdir dist/` |
+
+For pip and pixi, the package directory is discovered automatically by searching all
+`pyproject.toml` files in the workspace for `name = "<package>"`.
+
+> **Note:** `--outdir dist/` ensures workspace-member builds place artifacts in the root-level
+> `dist/` directory regardless of where the sub-package lives in the tree.
 
 ### Publish Commands by Package Manager
 
@@ -296,6 +331,22 @@ include = [
     "pyproject.toml",
 ]
 ```
+
+### Package Not Found in Workspace
+
+**Error:** `Package 'my-pkg' not found in workspace (no pyproject.toml with name = "my-pkg")`
+
+**Cause:** The `package` input was set but no `pyproject.toml` in the workspace contains
+`name = "my-pkg"` (applies to pip and pixi only).
+
+**Solution:** Verify the package name matches the `[project] name` exactly:
+
+```bash
+grep -r 'name = ' packages/*/pyproject.toml
+```
+
+Then use that exact string as the `package` input. Names are case-sensitive and must include
+hyphens/underscores exactly as declared.
 
 ### Lock File Verification Failure
 

@@ -320,6 +320,83 @@ jobs:
           echo "[OK] Build artifacts present; pypi-repository-url accepted by action"
 
   # ============================================================================
+  # Build-only — 'package' input (workspace member selection)
+  #
+  # Uses a two-member virtual workspace (pkg-alpha, pkg-beta).
+  # Verifies that the action builds ONLY the named package:
+  #   - dist/ must contain the alpha wheel
+  #   - dist/ must NOT contain the beta wheel
+  #
+  # Covers all three package managers:
+  #   uv   → `uv build --package <name>`           (native workspace support)
+  #   pip  → locate pyproject.toml by name, then `python -m build <dir> --outdir dist/`
+  #   pixi → same directory discovery as pip, run inside pixi environment
+  # ============================================================================
+
+  test-build-package:
+    name: Test build - package input (${{ matrix.package-manager }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package-manager: [uv, pip, pixi]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Copy workspace test fixture
+        run: cp -r tests/data/release-pypi/test-workspace/. .
+
+      - name: Test build of workspace member 'serapeum-pypi-test-pkg-alpha'
+        uses: ./actions/release/pypi
+        with:
+          pypi-username: __token__
+          pypi-password: unused-in-build-only-test
+          package-manager: ${{ matrix.package-manager }}
+          python-version: '3.12'
+          package: 'serapeum-pypi-test-pkg-alpha'
+          verify-lock: 'false'
+          skip-publish: 'true'
+
+      - name: Verify only the target package was built
+        run: |
+          echo "::group::Verifying build artifacts"
+
+          if [ ! -d dist ]; then
+            echo "::error::dist/ directory does not exist"
+            exit 1
+          fi
+
+          # The alpha wheel must be present
+          ALPHA_WHL=$(ls dist/serapeum_pypi_test_pkg_alpha*.whl 2>/dev/null | head -1)
+          if [ -z "$ALPHA_WHL" ]; then
+            echo "::error::Expected wheel for 'serapeum-pypi-test-pkg-alpha' not found in dist/"
+            ls dist/ || true
+            exit 1
+          fi
+          echo "✓ Alpha wheel present:  $ALPHA_WHL"
+
+          # The alpha sdist must be present
+          ALPHA_TAR=$(ls dist/serapeum_pypi_test_pkg_alpha*.tar.gz 2>/dev/null | head -1)
+          if [ -z "$ALPHA_TAR" ]; then
+            echo "::error::Expected sdist for 'serapeum-pypi-test-pkg-alpha' not found in dist/"
+            ls dist/ || true
+            exit 1
+          fi
+          echo "✓ Alpha sdist present:  $ALPHA_TAR"
+
+          # The beta wheel must NOT be present — we only asked to build alpha
+          BETA_WHL=$(ls dist/serapeum_pypi_test_pkg_beta*.whl 2>/dev/null | head -1)
+          if [ -n "$BETA_WHL" ]; then
+            echo "::error::Beta wheel was built but should not have been: $BETA_WHL"
+            exit 1
+          fi
+          echo "✓ Beta wheel absent (correct — only alpha was requested)"
+
+          echo "::endgroup::"
+
+  # ============================================================================
   # Full publish to TestPyPI — pip and uv
   #
   # Publishes a real package to https://test.pypi.org to exercise the complete

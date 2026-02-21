@@ -60,8 +60,12 @@ inputs:
     default: 'true'
   package:
     description: |
-      Workspace package name to build (uv workspaces only).
-      When set, runs `uv build --package {package}` instead of `uv build`.
+      Workspace package name to build.
+      When set, builds only the named package from the workspace instead of the root package.
+      - uv:   runs `uv build --package {package}`
+      - pip:  locates the package's pyproject.toml by name and runs
+              `python -m build <dir> --outdir dist/`
+      - pixi: same as pip, but runs inside the pixi environment
       Leave empty for single-package repositories.
       Example: 'serapeum-ollama', 'serapeum-core'
     required: false
@@ -88,6 +92,12 @@ runs:
           echo "✓ Install groups: ${{ inputs.install-groups }}"
         else
           echo "✗ Install groups: none (core dependencies only)"
+        fi
+
+        if [ -n "${{ inputs.package }}" ]; then
+          echo "✓ Target package: ${{ inputs.package }}"
+        else
+          echo "✗ Target package: not set (whole workspace / single-package repo)"
         fi
 
         # pypi configs
@@ -134,8 +144,29 @@ runs:
       shell: bash
       run: |
         echo "::group::Building package"
+
+        # Helper: locate a workspace member's directory by matching 'name = "<pkg>"'
+        # in any pyproject.toml (excluding .git). Prints the directory path.
+        find_pkg_dir() {
+          local pkg="$1"
+          find . -not -path './.git/*' -name "pyproject.toml" \
+            | xargs grep -l "name = \"${pkg}\"" 2>/dev/null \
+            | head -1 \
+            | xargs dirname
+        }
+
         if [ "${{ inputs.package-manager }}" = "pip" ]; then
-          python -m build
+          if [ -n "${{ inputs.package }}" ]; then
+            PKG_DIR=$(find_pkg_dir "${{ inputs.package }}")
+            if [ -z "$PKG_DIR" ]; then
+              echo "::error::Package '${{ inputs.package }}' not found in workspace (no pyproject.toml with name = \"${{ inputs.package }}\")"
+              exit 1
+            fi
+            echo "Building workspace package '${{ inputs.package }}' from: $PKG_DIR"
+            python -m build "$PKG_DIR" --outdir dist/
+          else
+            python -m build
+          fi
         elif [ "${{ inputs.package-manager }}" = "uv" ]; then
           if [ -n "${{ inputs.package }}" ]; then
             uv build --package "${{ inputs.package }}"
@@ -145,7 +176,17 @@ runs:
         else
           PIXI_ENV="${{ inputs.install-groups }}"
           PIXI_ENV="${PIXI_ENV:-default}"
-          pixi run -e "$PIXI_ENV" python -m build
+          if [ -n "${{ inputs.package }}" ]; then
+            PKG_DIR=$(find_pkg_dir "${{ inputs.package }}")
+            if [ -z "$PKG_DIR" ]; then
+              echo "::error::Package '${{ inputs.package }}' not found in workspace (no pyproject.toml with name = \"${{ inputs.package }}\")"
+              exit 1
+            fi
+            echo "Building workspace package '${{ inputs.package }}' from: $PKG_DIR"
+            pixi run -e "$PIXI_ENV" python -m build "$PKG_DIR" --outdir dist/
+          else
+            pixi run -e "$PIXI_ENV" python -m build
+          fi
         fi
         echo "::endgroup::"
 
