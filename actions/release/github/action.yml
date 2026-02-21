@@ -218,19 +218,15 @@ runs:
         echo "Working directory: $WORK_DIR"
         cd "$WORK_DIR"
 
-        # Get changelog file path from commitizen config
+        # Read changelog_file directly from commitizen config in pyproject.toml
         echo "Retrieving changelog file path from commitizen configuration..."
 
-        CHANGELOG_FILE=$($CZ_CMD changelog --dry-run 2>&1 | grep -oP "(?<=file: ).*" | head -1 || echo "CHANGELOG.md")
-
-        # If grep didn't find it, try to parse from config directly
-        if [ -z "$CHANGELOG_FILE" ] || [ "$CHANGELOG_FILE" = "CHANGELOG.md" ]; then
-          if [ -f "pyproject.toml" ]; then
-            CHANGELOG_FILE=$(grep -A 10 "\[tool.commitizen\]" pyproject.toml | grep "changelog_file" | sed 's/.*=\s*"\(.*\)"/\1/' || echo "CHANGELOG.md")
-          fi
+        CHANGELOG_FILE=""
+        if [ -f "pyproject.toml" ]; then
+          CHANGELOG_FILE=$(grep -A 20 "^\[tool\.commitizen\]" pyproject.toml | grep "^changelog_file" | head -1 | sed 's/.*=\s*"\(.*\)"/\1/')
         fi
 
-        # Default to CHANGELOG.md if still not found
+        # Default to CHANGELOG.md if not found
         if [ -z "$CHANGELOG_FILE" ]; then
           CHANGELOG_FILE="CHANGELOG.md"
         fi
