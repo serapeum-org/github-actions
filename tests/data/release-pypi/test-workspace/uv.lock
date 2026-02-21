@@ -1,0 +1,19 @@
+version = 1
+revision = 2
+requires-python = ">=3.10"
+
+[manifest]
+members = [
+    "serapeum-pypi-test-pkg-alpha",
+    "serapeum-pypi-test-pkg-beta",
+]
+
+[[package]]
+name = "serapeum-pypi-test-pkg-alpha"
+version = "0.1.0"
+source = { editable = "packages/serapeum-pypi-test-pkg-alpha" }
+
+[[package]]
+name = "serapeum-pypi-test-pkg-beta"
+version = "0.1.0"
+source = { editable = "packages/serapeum-pypi-test-pkg-beta" }

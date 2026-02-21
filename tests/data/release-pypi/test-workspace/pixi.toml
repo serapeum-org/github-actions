@@ -1,0 +1,16 @@
+[workspace]
+name = "serapeum-pypi-test-workspace"
+channels = ["conda-forge"]
+platforms = ["linux-64", "win-64", "osx-64", "osx-arm64"]
+
+[dependencies]
+python = ">=3.10"
+
+[feature.dev.dependencies]
+# python-build provides `python -m build` (required by the pypi release action)
+python-build = "*"
+# twine is required by the pypi release action for publishing
+twine = "*"
+
+[environments]
+default = ["dev"]

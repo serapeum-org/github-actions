@@ -1,0 +1,16 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "serapeum-pypi-test-pkg-alpha"
+version = "0.1.0"
+description = "Alpha sub-package for PyPI release action workspace tests"
+requires-python = ">=3.10"
+dependencies = []
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/serapeum_pypi_test_pkg_alpha"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/", "pyproject.toml"]

@@ -1,0 +1,4 @@
+# Virtual workspace root — does not define a Python package itself.
+# Members are built individually via the 'package' input of the pypi release action.
+[tool.uv.workspace]
+members = ["packages/*"]
