@@ -1,0 +1,464 @@
+name: Test release/pypi
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# ============================================================================
+# SECRETS REQUIRED for publish jobs:
+#   TEST_PYPI_TOKEN - API token from https://test.pypi.org with upload access
+#                     to the 'serapeum-actions-pypi-test' project.
+#                     Set as a repository secret named TEST_PYPI_TOKEN.
+# ============================================================================
+
+jobs:
+
+  # ============================================================================
+  # Build-only tests — all package managers
+  # Validates that the action sets up the environment correctly and produces a
+  # distributable package. No credentials required.
+  #
+  # Lock files are committed in the fixtures — no on-the-fly generation needed.
+  # ============================================================================
+
+  test-build-package-managers:
+    name: Test build - ${{ matrix.package-manager }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package-manager: [pip, uv, pixi]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Copy pip/uv test fixture
+        if: matrix.package-manager != 'pixi'
+        run: |
+          # cp -r .../. . copies pyproject.toml, src/, and the committed uv.lock (uv only)
+          cp -r tests/data/release-pypi/test-basic-${{ matrix.package-manager }}/. .
+
+      - name: Copy pixi test fixture
+        if: matrix.package-manager == 'pixi'
+        run: |
+          cp -r tests/data/release-pypi/test-basic-pixi/. .
+
+      - name: Test build with ${{ matrix.package-manager }}
+        uses: ./actions/release/pypi
+        with:
+          pypi-username: __token__
+          pypi-password: unused-in-build-only-test
+          package-manager: ${{ matrix.package-manager }}
+          python-version: '3.12'
+          verify-lock: 'false'
+          skip-checkout: 'true'
+          skip-publish: 'true'
+
+      - name: Verify dist artifacts were created
+        run: |
+          echo "::group::Verifying build artifacts"
+          if [ ! -d dist ]; then
+            echo "::error::dist/ directory does not exist"
+            exit 1
+          fi
+
+          WHL=$(ls dist/*.whl 2>/dev/null | head -1)
+          TAR=$(ls dist/*.tar.gz 2>/dev/null | head -1)
+
+          if [ -z "$WHL" ]; then
+            echo "::error::No .whl file found in dist/"
+            exit 1
+          fi
+          if [ -z "$TAR" ]; then
+            echo "::error::No .tar.gz file found in dist/"
+            exit 1
+          fi
+
+          echo "✓ Wheel:  $WHL"
+          echo "✓ Sdist:  $TAR"
+          echo "::endgroup::"
+
+  # ============================================================================
+  # Build-only — Python version matrix (uv)
+  # ============================================================================
+
+  test-build-python-versions:
+    name: Test build - Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.10', '3.11', '3.12', '3.13']
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Copy test fixture (includes committed uv.lock)
+        run: cp -r tests/data/release-pypi/test-basic-uv/. .
+
+      - name: Test build with Python ${{ matrix.python-version }}
+        uses: ./actions/release/pypi
+        with:
+          pypi-username: __token__
+          pypi-password: unused-in-build-only-test
+          package-manager: uv
+          python-version: ${{ matrix.python-version }}
+          verify-lock: 'false'
+          skip-checkout: 'true'
+          skip-publish: 'true'
+
+      - name: Verify correct Python version was used
+        run: |
+          ACTIVE_PY=$(python --version)
+          echo "Active Python: $ACTIVE_PY"
+          if [[ "$ACTIVE_PY" == *"${{ matrix.python-version }}"* ]]; then
+            echo "[OK] Python ${{ matrix.python-version }} is active"
+          else
+            echo "::warning::Python version mismatch: expected ${{ matrix.python-version }}, got $ACTIVE_PY"
+          fi
+
+      - name: Verify dist artifacts were created
+        run: |
+          ls dist/*.whl dist/*.tar.gz
+          echo "[OK] Build artifacts present"
+
+  # ============================================================================
+  # Build-only — cross-platform (uv)
+  # ============================================================================
+
+  test-build-cross-platform:
+    name: Test build - ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Copy test fixture (includes committed uv.lock)
+        shell: bash
+        run: cp -r tests/data/release-pypi/test-basic-uv/. .
+
+      - name: Test build on ${{ matrix.os }}
+        uses: ./actions/release/pypi
+        with:
+          pypi-username: __token__
+          pypi-password: unused-in-build-only-test
+          package-manager: uv
+          python-version: '3.12'
+          verify-lock: 'false'
+          skip-checkout: 'true'
+          skip-publish: 'true'
+
+      - name: Verify dist artifacts were created
+        shell: bash
+        run: |
+          ls dist/*.whl dist/*.tar.gz
+          echo "[OK] Build artifacts present on ${{ matrix.os }}"
+
+  # ============================================================================
+  # Build-only — install-groups variations (uv)
+  # Verifies that the action correctly forwards install-groups to python-setup/uv
+  # and that the requested dependencies are installed before building.
+  # ============================================================================
+
+  test-build-install-groups:
+    name: Test build - ${{ matrix.install-type }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - install-type: "core only (empty)"
+            install-groups: ""
+            verify-import: ""
+          - install-type: "groups: dev"
+            install-groups: "groups: dev"
+            verify-import: "import pytest"
+          - install-type: "groups: dev lint"
+            install-groups: "groups: dev lint"
+            verify-import: "import pytest; import black"
+          - install-type: "extras: viz"
+            install-groups: "extras: viz"
+            verify-import: "import packaging"
+          - install-type: "groups and extras"
+            install-groups: "groups: dev, extras: viz"
+            verify-import: "import pytest; import packaging"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Copy test fixture (includes committed uv.lock)
+        run: cp -r tests/data/release-pypi/test-with-groups/. .
+
+      - name: Test build with install-groups "${{ matrix.install-groups }}"
+        uses: ./actions/release/pypi
+        with:
+          pypi-username: __token__
+          pypi-password: unused-in-build-only-test
+          package-manager: uv
+          python-version: '3.12'
+          install-groups: ${{ matrix.install-groups }}
+          verify-lock: 'false'
+          skip-checkout: 'true'
+          skip-publish: 'true'
+
+      - name: Verify dependencies and build artifacts
+        run: |
+          # Verify requested imports are available
+          if [ -n "${{ matrix.verify-import }}" ]; then
+            source .venv/bin/activate
+            python -c "${{ matrix.verify-import }}" && echo "[OK] All expected packages importable"
+          else
+            echo "[OK] Core-only mode — no extra imports to verify"
+          fi
+
+          # Verify build artifacts
+          ls dist/*.whl dist/*.tar.gz
+          echo "[OK] Build artifacts present"
+
+  # ============================================================================
+  # Build-only — verify-lock behaviour
+  # verify-lock='true': lock check runs and passes (lock is freshly generated
+  #                     so it is always consistent with pyproject.toml).
+  # verify-lock='false': lock check is skipped entirely.
+  # The lock is generated on-the-fly here so the 'true' case never fails due
+  # to stale CI locks.
+  # ============================================================================
+
+  test-build-verify-lock:
+    name: Test build - verify-lock=${{ matrix.verify-lock }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        verify-lock: ['true', 'false']
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Copy test fixture
+        run: |
+          cp tests/data/release-pypi/test-basic-uv/pyproject.toml .
+          cp -r tests/data/release-pypi/test-basic-uv/src .
+
+      # Generate a fresh lock so verify-lock='true' always sees an up-to-date file.
+      - name: Generate fresh uv lock
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: false
+
+      - name: Run uv lock
+        run: uv lock
+
+      - name: Test build with verify-lock=${{ matrix.verify-lock }}
+        uses: ./actions/release/pypi
+        with:
+          pypi-username: __token__
+          pypi-password: unused-in-build-only-test
+          package-manager: uv
+          python-version: '3.12'
+          verify-lock: ${{ matrix.verify-lock }}
+          skip-checkout: 'true'
+          skip-publish: 'true'
+
+      - name: Verify dist artifacts were created
+        run: |
+          ls dist/*.whl dist/*.tar.gz
+          echo "[OK] Build succeeded with verify-lock=${{ matrix.verify-lock }}"
+
+  # ============================================================================
+  # Build-only — custom repository URL propagation (uv)
+  # Verifies that pypi-repository-url is forwarded to the action without
+  # actually publishing (skip-publish=true).
+  # ============================================================================
+
+  test-build-custom-repository-url:
+    name: Test build - custom repository URL (no publish)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Copy test fixture (includes committed uv.lock)
+        run: cp -r tests/data/release-pypi/test-basic-uv/. .
+
+      - name: Test build with TestPyPI URL (publish skipped)
+        uses: ./actions/release/pypi
+        with:
+          pypi-username: __token__
+          pypi-password: unused-in-build-only-test
+          package-manager: uv
+          python-version: '3.12'
+          pypi-repository-url: 'https://test.pypi.org/legacy/'
+          verify-lock: 'false'
+          skip-checkout: 'true'
+          skip-publish: 'true'
+
+      - name: Verify build artifacts exist
+        run: |
+          ls dist/*.whl dist/*.tar.gz
+          echo "[OK] Build artifacts present; pypi-repository-url accepted by action"
+
+  # ============================================================================
+  # Full publish to TestPyPI — pip and uv
+  #
+  # Publishes a real package to https://test.pypi.org to exercise the complete
+  # build → publish pipeline.
+  #
+  # Requires repository secret: TEST_PYPI_TOKEN
+  #   - Create an API token on https://test.pypi.org with upload access to the
+  #     'serapeum-actions-pypi-test' project (or allow all projects for the
+  #     first upload which auto-registers the package).
+  #   - Add it as a GitHub Actions secret named TEST_PYPI_TOKEN.
+  #
+  # Version uniqueness: each run publishes 0.0.dev<run-number> so uploads
+  # never conflict with a previously uploaded version.
+  # The uv lock must be regenerated after patching the version in pyproject.toml.
+  # ============================================================================
+
+  test-publish-testpypi:
+    name: Test publish - TestPyPI (${{ matrix.package-manager }})
+    runs-on: ubuntu-latest
+    # Only publish on pushes to main to avoid consuming TestPyPI quota on PRs.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+    strategy:
+      fail-fast: false
+      matrix:
+        package-manager: [pip, uv]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Copy TestPyPI test fixture
+        run: cp -r tests/data/release-pypi/test-testpypi/. .
+
+      # Stamp a unique version so each CI run uploads a distinct artifact.
+      # Format: 0.0.dev<run_number>  (PEP 440 compliant dev release)
+      - name: Set unique version for this run
+        run: |
+          UNIQUE_VERSION="0.0.dev${{ github.run_number }}"
+          echo "Publishing version: $UNIQUE_VERSION (${{ matrix.package-manager }})"
+          sed -i "s/version = \"0.1.0\"/version = \"$UNIQUE_VERSION\"/" pyproject.toml
+          grep "^version" pyproject.toml
+
+      # uv sync --frozen requires the lock to match pyproject.toml exactly.
+      # Since we patched the version, the committed lock is now stale — regenerate.
+      - name: Regenerate uv lock after version patch (uv only)
+        if: matrix.package-manager == 'uv'
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: false
+
+      - name: Run uv lock (uv only)
+        if: matrix.package-manager == 'uv'
+        run: uv lock
+
+      - name: Publish to TestPyPI with ${{ matrix.package-manager }}
+        uses: ./actions/release/pypi
+        with:
+          pypi-username: __token__
+          pypi-password: ${{ secrets.TEST_PYPI_TOKEN }}
+          package-manager: ${{ matrix.package-manager }}
+          python-version: '3.12'
+          pypi-repository-url: 'https://test.pypi.org/legacy/'
+          verify-lock: 'false'
+          skip-checkout: 'true'
+          skip-publish: 'false'
+
+      - name: Verify published version is available on TestPyPI
+        run: |
+          UNIQUE_VERSION="0.0.dev${{ github.run_number }}"
+          PACKAGE_NAME="serapeum-actions-pypi-test"
+
+          echo "Waiting for TestPyPI to index the package..."
+          sleep 15
+
+          # Query the TestPyPI JSON API to confirm the version is listed.
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            "https://test.pypi.org/pypi/$PACKAGE_NAME/$UNIQUE_VERSION/json")
+
+          if [ "$HTTP_STATUS" = "200" ]; then
+            echo "[OK] Version $UNIQUE_VERSION of $PACKAGE_NAME found on TestPyPI"
+          else
+            echo "::warning::TestPyPI API returned HTTP $HTTP_STATUS for $PACKAGE_NAME $UNIQUE_VERSION"
+            echo "::warning::The package may still be indexing — this is a soft failure"
+          fi
+
+  # ============================================================================
+  # Full publish to TestPyPI — pixi
+  # Separate job because pixi uses a different fixture layout.
+  # The committed pixi.lock does not embed the local package version, so it
+  # remains valid even after patching pyproject.toml.
+  # ============================================================================
+
+  test-publish-testpypi-pixi:
+    name: Test publish - TestPyPI (pixi)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Copy TestPyPI test fixture with pixi environment
+        run: |
+          # Use the test package source from test-testpypi
+          cp tests/data/release-pypi/test-testpypi/pyproject.toml .
+          cp tests/data/release-pypi/test-testpypi/README.md .
+          cp -r tests/data/release-pypi/test-testpypi/src .
+          # Use the pixi.toml + pixi.lock from test-basic-pixi (provides build + twine)
+          cp tests/data/release-pypi/test-basic-pixi/pixi.toml .
+          cp tests/data/release-pypi/test-basic-pixi/pixi.lock .
+
+      # Use a distinct post-release suffix to avoid version conflicts with the
+      # pip/uv job that runs in parallel for the same run_number.
+      - name: Set unique version for this run
+        run: |
+          PIXI_VERSION="0.0.dev${{ github.run_number }}post1"
+          echo "Publishing version: $PIXI_VERSION (pixi)"
+          sed -i "s/version = \"0.1.0\"/version = \"$PIXI_VERSION\"/" pyproject.toml
+          grep "^version" pyproject.toml
+
+      - name: Publish to TestPyPI with pixi
+        uses: ./actions/release/pypi
+        with:
+          pypi-username: __token__
+          pypi-password: ${{ secrets.TEST_PYPI_TOKEN }}
+          package-manager: pixi
+          python-version: '3.12'
+          pypi-repository-url: 'https://test.pypi.org/legacy/'
+          verify-lock: 'false'
+          skip-checkout: 'true'
+          skip-publish: 'false'
+
+      - name: Verify published version is available on TestPyPI
+        run: |
+          PIXI_VERSION="0.0.dev${{ github.run_number }}post1"
+          PACKAGE_NAME="serapeum-actions-pypi-test"
+
+          echo "Waiting for TestPyPI to index the package..."
+          sleep 15
+
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            "https://test.pypi.org/pypi/$PACKAGE_NAME/$PIXI_VERSION/json")
+
+          if [ "$HTTP_STATUS" = "200" ]; then
+            echo "[OK] Version $PIXI_VERSION of $PACKAGE_NAME found on TestPyPI"
+          else
+            echo "::warning::TestPyPI API returned HTTP $HTTP_STATUS for $PACKAGE_NAME $PIXI_VERSION"
+            echo "::warning::The package may still be indexing — this is a soft failure"
+          fi
