@@ -15,7 +15,7 @@ packages = ["src/test_pkg"]
 [tool.commitizen]
 name = "cz_conventional_commits"
 version = "0.1.0"
-version_files = ["libs/pkg/pyproject.toml:version"]
+version_files = ["pyproject.toml:version"]
 tag_format = "test-pkg-$version"
 update_changelog_on_bump = true
 changelog_file = "docs/change-log.md"
