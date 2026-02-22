@@ -223,7 +223,7 @@ runs:
 
         CHANGELOG_FILE=""
         if [ -f "pyproject.toml" ]; then
-          CHANGELOG_FILE=$(grep -A 20 "^\[tool\.commitizen\]" pyproject.toml | grep "^changelog_file" | head -1 | sed 's/.*=\s*"\(.*\)"/\1/')
+          CHANGELOG_FILE=$(grep -A 20 "^\[tool\.commitizen\]" pyproject.toml | grep "^changelog_file" | head -1 | sed 's/.*=\s*"\(.*\)"/\1/' || true)
         fi
 
         # Default to CHANGELOG.md if not found
