@@ -88,13 +88,11 @@ jobs:
         uses: ./actions/release/github
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          release-branch: 'main'
           increment: ${{ matrix.increment }}
           prerelease-type: 'none'
           package-manager: ${{ matrix.package-manager }}
           python-version: '3.12'
           install-groups: 'groups: dev docs'
-          skip-checkout: 'true'
           skip-github-release: 'true'
 
       - name: Verify release was processed
@@ -159,13 +157,11 @@ jobs:
         uses: ./actions/release/github
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          release-branch: 'main'
           increment: 'patch'
           prerelease-type: 'none'
           package-manager: 'pixi'
           python-version: '3.12'
           install-groups: 'default'
-          skip-checkout: 'true'
           skip-github-release: 'true'
 
       - name: Verify release was processed
@@ -232,12 +228,10 @@ jobs:
         uses: ./actions/release/github
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          release-branch: 'main'
           increment: 'patch'
           prerelease-type: ${{ matrix.prerelease-type }}
           package-manager: 'uv'
           python-version: '3.12'
-          skip-checkout: 'true'
           skip-github-release: 'true'
 
       - name: Verify prerelease was created
@@ -340,12 +334,10 @@ jobs:
         uses: ./actions/release/github
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          release-branch: 'main'
           increment: 'patch'
           package-manager: 'uv'
           python-version: '3.12'
           install-groups: ${{ matrix.install-groups }}
-          skip-checkout: 'true'
           skip-github-release: 'true'
 
       - name: Verify dependencies installed correctly
@@ -412,11 +404,9 @@ jobs:
         uses: ./actions/release/github
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          release-branch: 'main'
           increment: 'patch'
           package-manager: 'uv'
           python-version: ${{ matrix.python-version }}
-          skip-checkout: 'true'
           skip-github-release: 'true'
 
       - name: Verify Python version
@@ -481,11 +471,9 @@ jobs:
         uses: ./actions/release/github
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          release-branch: 'release/v2.0'
           increment: 'patch'
           package-manager: 'uv'
           python-version: '3.12'
-          skip-checkout: 'true'
           skip-github-release: 'true'
 
       - name: Verify release on custom branch
@@ -554,11 +542,9 @@ jobs:
         uses: ./actions/release/github
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          release-branch: 'main'
           increment: 'patch'
           package-manager: 'uv'
           python-version: '3.12'
-          skip-checkout: 'true'
           skip-github-release: 'true'
 
       - name: Verify release on ${{ matrix.os }}
@@ -619,12 +605,10 @@ jobs:
         uses: ./actions/release/github
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          release-branch: 'main'
           increment: 'patch'
           package-manager: 'uv'
           python-version: '3.12'
           install-groups: ''
-          skip-checkout: 'true'
           skip-github-release: 'true'
 
       - name: Verify release succeeded
@@ -678,11 +662,9 @@ jobs:
         uses: ./actions/release/github
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          release-branch: 'main'
           increment: 'patch'
           package-manager: 'uv'
           python-version: '3.12'
-          skip-checkout: 'true'
           skip-github-release: 'true'
 
       - name: Verify git was configured by action
@@ -746,13 +728,11 @@ jobs:
         uses: ./actions/release/github
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          release-branch: 'main'
           increment: 'minor'
           package-manager: 'uv'
           python-version: '3.12'
           install-groups: 'groups: dev docs'
           config-file: 'libs/pkg/pyproject.toml'
-          skip-checkout: 'true'
           skip-github-release: 'true'
 
       - name: Verify sub-package tag was created
