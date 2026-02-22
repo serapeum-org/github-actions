@@ -74,7 +74,8 @@ jobs:
 | `package-manager` | Package manager: `pip`, `uv`, `pixi` | No | `uv` |
 | `python-version` | Python version to install | No | `3.12` |
 | `install-groups` | Dependency groups to install (see below) | No | `groups: docs dev` |
-| `skip-checkout` | Skip checkout step (testing only!) | No | `false` |
+| `config-file` | Path to a per-package `pyproject.toml` (monorepo use) | No | `''` (root) |
+| `skip-github-release` | Skip GitHub Releases API call (testing only) | No | `false` |
 
 ### Install Groups Format
 
@@ -90,6 +91,38 @@ The `install-groups` input format varies by package manager:
 - `"default"` - Use default environment
 - `"py312"` - Single named environment
 - `"py312 py313"` - Multiple environments
+
+## Monorepo Support
+
+Use the `config-file` input to release a sub-package in a monorepo that has its own Commitizen configuration.
+
+```yaml
+- name: Release sub-package
+  uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+  with:
+    github-token: ${{ secrets.GITHUB_TOKEN }}
+    increment: 'minor'
+    config-file: 'libs/my-package/pyproject.toml'
+```
+
+### How it works
+
+When `config-file` is provided, the action determines the working directory as `dirname(config-file)` (e.g. `libs/my-package/`) and runs all Commitizen commands from there. The Python environment is still installed from the repository root before changing directory.
+
+**Important:** All paths inside the sub-package's `pyproject.toml` Commitizen config must be relative to that sub-package directory, **not** the repository root:
+
+```toml
+# libs/my-package/pyproject.toml
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "0.1.0"
+version_files = ["pyproject.toml:version"]   # relative to libs/my-package/
+tag_format = "my-package-$version"
+update_changelog_on_bump = true
+changelog_file = "docs/change-log.md"        # relative to libs/my-package/
+```
+
+The root `pyproject.toml` and its changelog are left untouched.
 
 ## Prerequisites
 
@@ -248,7 +281,7 @@ This allows the action to:
 
 ### Error: "CHANGELOG.md file not found"
 
-**Solution:** Create a CHANGELOG.md file in your repository root:
+**Solution:** Create a CHANGELOG.md file at the expected location:
 
 ```bash
 cat > CHANGELOG.md << 'EOF'
@@ -259,6 +292,8 @@ EOF
 git add CHANGELOG.md
 git commit -m "docs: add changelog"
 ```
+
+If using `config-file` for a monorepo sub-package, the changelog path is resolved **relative to the sub-package directory** (i.e. `dirname(config-file)`). Ensure the file configured under `changelog_file` exists inside that directory, not the repository root.
 
 ### Error: "No commits found"
 

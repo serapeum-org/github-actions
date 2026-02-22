@@ -12,6 +12,7 @@ This document provides comprehensive examples for all use cases and scenarios of
 - [Dependency Group Examples](#dependency-group-examples)
 - [Draft Release Examples](#draft-release-examples)
 - [Complete Workflow Examples](#complete-workflow-examples)
+- [Monorepo Examples](#monorepo-examples)
 - [Edge Cases and Special Scenarios](#edge-cases-and-special-scenarios)
 
 ---
@@ -749,6 +750,83 @@ jobs:
           increment: ${{ steps.type.outputs.increment }}
           prerelease-type: ${{ steps.type.outputs.prerelease }}
           draft: ${{ steps.type.outputs.draft }}
+```
+
+---
+
+## Monorepo Examples
+
+### Release a Sub-Package with Its Own Config
+
+For monorepos where each package manages its own version and changelog:
+
+```yaml
+- name: Release sub-package
+  uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+  with:
+    github-token: ${{ secrets.GITHUB_TOKEN }}
+    increment: 'minor'
+    package-manager: 'uv'
+    install-groups: 'groups: dev'
+    config-file: 'libs/my-package/pyproject.toml'
+```
+
+**Sub-package commitizen config (`libs/my-package/pyproject.toml`):**
+
+```toml
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "0.1.0"
+# All paths are relative to libs/my-package/, not the repo root
+version_files = ["pyproject.toml:version"]
+tag_format = "my-package-$version"
+update_changelog_on_bump = true
+changelog_file = "docs/CHANGELOG.md"
+```
+
+**Important:** Because the action changes into `libs/my-package/` before running Commitizen, every path in that section must be relative to `libs/my-package/`. Using the full repo-relative path (e.g. `libs/my-package/pyproject.toml:version`) would fail.
+
+### Multi-Package Monorepo Release Workflow
+
+Release multiple independent packages in one workflow:
+
+```yaml
+name: Monorepo Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: 'Package to release'
+        required: true
+        type: choice
+        options:
+          - libs/pkg-a
+          - libs/pkg-b
+          - libs/pkg-c
+      increment:
+        description: 'Version increment'
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+        default: 'patch'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Release
+        uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          increment: ${{ inputs.increment }}
+          config-file: '${{ inputs.package }}/pyproject.toml'
 ```
 
 ---
