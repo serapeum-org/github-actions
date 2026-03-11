@@ -15,7 +15,7 @@ jobs:
       matrix:
         package-manager: [pip, uv, pixi]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -69,7 +69,7 @@ jobs:
     name: Test Main Branch Trigger
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -106,7 +106,7 @@ jobs:
             release-tag: "v3.0.0"
             mike-alias: "current"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -177,7 +177,7 @@ jobs:
             install-groups: "extras: docs"
             package-manager: "pip"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -204,7 +204,7 @@ jobs:
     name: Test Error Scenarios
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -262,7 +262,7 @@ jobs:
     name: Test Git Configuration
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -296,7 +296,7 @@ jobs:
     name: Test Package Manager Command Execution
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -344,7 +344,7 @@ jobs:
     name: Test Release Tag Resolution
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -382,7 +382,7 @@ jobs:
       matrix:
         package-manager: [pip, uv, pixi]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -436,7 +436,7 @@ jobs:
         install-groups:
           - "docs"       # Direct environment name
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -472,7 +472,7 @@ jobs:
         python-version: [ "3.11", "3.12", "3.13"]
         package-manager: [pip, uv]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -521,7 +521,7 @@ jobs:
           - install-groups: "groups: docs, extras: aws"
             package-manager: "uv"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 

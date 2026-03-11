@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Test pip action with defaults (cache='')
         uses: ./actions/python-setup/pip
@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Copy test fixture files
         run: cp tests/data/pip/test-pip-with-groups/pyproject.toml .
@@ -55,7 +55,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Copy test fixture files
         shell: bash
@@ -83,7 +83,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Copy test fixture files
         run: cp tests/data/pip/test-pip-cache/pyproject.toml .
@@ -107,7 +107,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Copy test fixture files
         shell: bash
@@ -128,7 +128,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Test pip action with cache but no dependency file (should fail)
         id: test-cache-error
@@ -151,7 +151,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Copy test fixture files
         run: cp tests/data/pip/test-pip-cache-with-requirements/requirements.txt .
@@ -173,7 +173,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Test pip action without pyproject.toml or requirements.txt
         uses: ./actions/python-setup/pip
@@ -191,7 +191,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Copy test fixture files
         run: cp tests/data/pip/test-pip-empty-sections/pyproject.toml .
@@ -213,7 +213,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Copy test fixture files
         run: cp tests/data/pip/test-pip-invalid-format/pyproject.toml .
@@ -234,7 +234,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Copy test fixture files
         run: cp tests/data/pip/test-pip-optional-dependencies/pyproject.toml .
@@ -265,7 +265,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Copy test fixture files
         run: cp tests/data/pip/test-pip-mixed-groups-and-extras/pyproject.toml .
@@ -295,7 +295,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Copy test fixture files
         run: cp tests/data/pip/test-pip-dependency-groups-only/pyproject.toml .
@@ -324,7 +324,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Copy test fixture files
         run: cp tests/data/pip/test-pip-groups-only-docs/pyproject.toml .
@@ -352,7 +352,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Copy test fixture files
         run: cp tests/data/pip/test-pip-all-combinations/pyproject.toml .
@@ -384,7 +384,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Copy test fixture files
         run: cp tests/data/pip/test-pip-single-extra/pyproject.toml .
@@ -406,7 +406,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Copy test fixture files
         run: cp tests/data/pip/test-pip-single-group/pyproject.toml .
@@ -432,7 +432,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Copy test fixture files
         run: cp tests/data/pip/test-pip-only-dependencies/pyproject.toml .
@@ -452,7 +452,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Copy test fixture files
         run: cp tests/data/pip/test-pip-whitespace-handling/pyproject.toml .
@@ -480,7 +480,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Copy test fixture files
         run: cp tests/data/pip/test-pip-empty-groups-only/pyproject.toml .
@@ -502,7 +502,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Copy test fixture files
         run: cp tests/data/pip/test-pip-empty-extras-only/pyproject.toml .
@@ -527,7 +527,7 @@ jobs:
         python-version: ['3.11', '3.12', '3.13']
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Copy test fixture files
         run: cp tests/data/pip/test-pip-multiple-python-versions/pyproject.toml .
@@ -551,7 +551,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Copy test fixture files
         run: cp tests/data/pip/test-pip-all-combinations/pyproject.toml .
@@ -579,7 +579,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Copy test fixture files
         run: cp tests/data/pip/test-pip-all-combinations/pyproject.toml .
