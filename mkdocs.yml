@@ -1,0 +1,82 @@
+site_name: Serapieum GitHub Actions
+site_description: Reusable GitHub Actions for Python CI/CD workflows
+site_url: https://serapieum-of-alex.github.io/github-actions
+repo_url: https://github.com/Serapieum-of-alex/github-actions
+repo_name: Serapieum-of-alex/github-actions
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.tabs.link
+  icon:
+    repo: fontawesome/brands/github
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - tables
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Actions:
+    - Python Setup:
+      - Overview: python-setup/index.md
+      - pip: python-setup/pip.md
+      - uv: python-setup/uv.md
+      - pixi: python-setup/pixi.md
+    - MkDocs Deploy: mkdocs-deploy.md
+    - Release:
+      - GitHub Release: release/github/README.md
+      - GitHub Examples: release/github/EXAMPLES.md
+      - PyPI Release: release/pypi/README.md
+      - PyPI Examples: release/pypi/EXAMPLES.md
+  - Reference:
+    - reference/index.md
+    - python-setup/pip: reference/python-setup-pip.md
+    - python-setup/uv: reference/python-setup-uv.md
+    - python-setup/pixi: reference/python-setup-pixi.md
+    - mkdocs-deploy: reference/mkdocs-deploy.md
+    - release/github: reference/release-github.md
+    - release/pypi: reference/release-pypi.md
+  - Versioning: VERSIONING.md
