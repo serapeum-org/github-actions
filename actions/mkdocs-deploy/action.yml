@@ -3,29 +3,60 @@ description: 'Deploy MkDocs documentation to GitHub Pages with versioning suppor
 
 inputs:
   trigger:
-    description: 'Deployment trigger type (pull_request, main, release)'
+    description: >
+      Deployment trigger type that determines which mike version to deploy.
+      - "pull_request": Deploys to "develop" version (for PR previews).
+      - "main": Deploys to "main" version and sets it as the default.
+      - "release": Deploys to the tagged version with an alias (e.g., "latest").
+      Examples: "pull_request", "main", "release".
     required: true
   package-manager:
-    description: 'Package manager to use (pip, uv, pixi)'
+    description: >
+      Package manager to use for setting up the Python environment.
+      Determines which python-setup action is used and how mike commands are run.
+      For pip, mike runs directly; for uv/pixi, commands are prefixed with "run".
+      Examples: "pip", "uv", "pixi".
+      Default is "uv".
     required: false
     default: 'uv'
   python-version:
-    description: 'Python version to install'
+    description: >
+      Python version to install (passed to the selected python-setup action).
+      Examples: "3.12", "3.11", "3.10", "3.x".
+      Default is "3.12".
     required: false
     default: '3.12'
   install-groups:
-    description: 'Dependency groups to install. For pip/uv: use "groups: docs" or "extras: docs". For pixi: pass environment name directly like "docs"'
+    description: >
+      Dependency groups or environment to install.
+      Format varies by package-manager:
+        For pip/uv: use "groups:" and/or "extras:" prefixed format.
+        For pixi: pass a single environment name directly.
+      Examples: "groups: docs", "extras: docs", "groups: docs dev",
+      "docs" (for pixi).
+      Default is "groups: docs".
     required: false
     default: 'groups: docs'
   deploy-token:
-    description: 'GitHub token for deployment'
+    description: >
+      GitHub token for deployment to GitHub Pages.
+      Typically use a personal access token or GITHUB_TOKEN with pages permissions.
+      Example: secrets.ACTIONS_DEPLOY_TOKEN.
     required: true
   release-tag:
-    description: 'Release tag version (for release trigger)'
+    description: >
+      Release tag version (used only with trigger "release"). When empty,
+      falls back to github.event.release.tag_name.
+      Examples: "v1.0.0", "v2.1.0", "1.0.0".
+      Default is "" (uses the release event tag).
     required: false
     default: ''
   mike-alias:
-    description: 'Mike alias for releases (e.g., latest)'
+    description: >
+      Mike alias to assign to release versions. Used only with trigger "release"
+      to create a friendly alias alongside the version number.
+      Examples: "latest", "stable", "current".
+      Default is "latest".
     required: false
     default: 'latest'
 

@@ -3,19 +3,38 @@ description: 'Setup Python environment with uv package manager and install depen
 
 inputs:
   python-version:
-    description: 'Python version to install, default is 3.12'
+    description: >
+      Python version to install. Supports semantic versioning and version ranges.
+      Examples: "3.12", "3.11", "3.10", "3.9", "3.12.0", "3.x".
+      Default is "3.12".
     required: false
     default: '3.12'
   cache:
-    description: 'Enable caching of uv dependencies. Set to "false" to disable caching. default is "true"'
+    description: >
+      Whether to enable caching of uv dependencies (cache key is based on uv.lock).
+      Set to "false" to disable caching.
+      Examples: "true", "false".
+      Default is "true".
     required: false
     default: 'true'
   install-groups:
-    description: 'examples: "groups: dev test, extras: aws viz" or "groups: dev" or "extras: aws viz". Leave empty to install only core dependencies. default is empty'
+    description: >
+      Dependency groups (PEP 735) and/or optional dependencies (extras) to install.
+      Uses a prefixed format with "groups:" and/or "extras:" sections.
+      Space or comma-separated values within each section.
+      Leave empty to install only core dependencies.
+      Examples: "groups: dev test", "extras: aws viz",
+      "groups: dev docs, extras: aws", "extras: test,lint".
+      Default is "" (core dependencies only).
     required: false
     default: ''
   verify-lock:
-    description: 'Whether to verify the lock file is up to date'
+    description: >
+      Whether to verify the lock file is up to date by running "uv lock --check".
+      When "true", fails if uv.lock is out of sync with pyproject.toml.
+      When "false", skips the verification step.
+      Examples: "true", "false".
+      Default is "true".
     required: false
     default: 'true'
 
