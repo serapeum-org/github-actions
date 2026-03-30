@@ -1,8 +1,8 @@
 # Serapieum GitHub Actions
 
-[![Test pip](https://github.com/Serapieum-of-alex/github-actions/actions/workflows/test-python-setup-pip.yml/badge.svg)](https://github.com/Serapieum-of-alex/github-actions/actions/workflows/test-python-setup-pip.yml)
-[![Test uv](https://github.com/Serapieum-of-alex/github-actions/actions/workflows/test-python-setup-uv.yml/badge.svg)](https://github.com/Serapieum-of-alex/github-actions/actions/workflows/test-python-setup-uv.yml)
-[![Test pixi](https://github.com/Serapieum-of-alex/github-actions/actions/workflows/test-python-setup-pixi.yml/badge.svg)](https://github.com/Serapieum-of-alex/github-actions/actions/workflows/test-python-setup-pixi.yml)
+[![Test pip](https://github.com/serapeum-org/github-actions/actions/workflows/test-python-setup-pip.yml/badge.svg)](https://github.com/serapeum-org/github-actions/actions/workflows/test-python-setup-pip.yml)
+[![Test uv](https://github.com/serapeum-org/github-actions/actions/workflows/test-python-setup-uv.yml/badge.svg)](https://github.com/serapeum-org/github-actions/actions/workflows/test-python-setup-uv.yml)
+[![Test pixi](https://github.com/serapeum-org/github-actions/actions/workflows/test-python-setup-pixi.yml/badge.svg)](https://github.com/serapeum-org/github-actions/actions/workflows/test-python-setup-pixi.yml)
 
 Reusable composite GitHub Actions for Python CI/CD workflows. Cross-platform (Windows, macOS, Linux), supporting pip, uv, and pixi package managers.
 
@@ -14,22 +14,22 @@ Set up Python with your preferred package manager, install dependencies, and con
 
 | Action | Usage |
 |--------|-------|
-| **[pip](docs/python-setup/pip.md)** | `Serapieum-of-alex/github-actions/actions/python-setup/pip@pip/v1` |
-| **[uv](docs/python-setup/uv.md)** | `Serapieum-of-alex/github-actions/actions/python-setup/uv@uv/v1` |
-| **[pixi](docs/python-setup/pixi.md)** | `Serapieum-of-alex/github-actions/actions/python-setup/pixi@pixi/v1` |
+| **[pip](docs/python-setup/pip.md)** | `serapeum-org/github-actions/actions/python-setup/pip@pip/v1` |
+| **[uv](docs/python-setup/uv.md)** | `serapeum-org/github-actions/actions/python-setup/uv@uv/v1` |
+| **[pixi](docs/python-setup/pixi.md)** | `serapeum-org/github-actions/actions/python-setup/pixi@pixi/v1` |
 
 ### Documentation
 
 | Action | Usage |
 |--------|-------|
-| **[mkdocs-deploy](docs/mkdocs-deploy.md)** | `Serapieum-of-alex/github-actions/actions/mkdocs-deploy@mkdocs-deploy/v1` |
+| **[mkdocs-deploy](docs/mkdocs-deploy.md)** | `serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs-deploy/v1` |
 
 ### Release
 
 | Action | Usage |
 |--------|-------|
-| **[GitHub Release](docs/release/github/README.md)** | `Serapieum-of-alex/github-actions/actions/release/github@release-github/v1` |
-| **[PyPI Release](docs/release/pypi/README.md)** | `Serapieum-of-alex/github-actions/actions/release/pypi@release-pypi/v1` |
+| **[GitHub Release](docs/release/github/README.md)** | `serapeum-org/github-actions/actions/release/github@release-github/v1` |
+| **[PyPI Release](docs/release/pypi/README.md)** | `serapeum-org/github-actions/actions/release/pypi@release-pypi/v1` |
 
 ## Quick Start
 
@@ -44,7 +44,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@uv/v1
+      - uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1
         with:
           python-version: '3.12'
           install-groups: 'groups: dev test'
@@ -86,14 +86,14 @@ pixi/v1.0.0    pixi/v1      # Python setup with pixi
 Pin to a major version tag for automatic patch/minor updates:
 
 ```yaml
-uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@uv/v1
+uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1
 ```
 
 See the [Versioning Guide](docs/VERSIONING.md) for details.
 
 ## Documentation
 
-Full documentation is available at the [docs site](https://serapieum-of-alex.github.io/github-actions/) or browse the `docs/` directory.
+Full documentation is available at the [docs site](https://serapeum-org.github.io/github-actions/) or browse the `docs/` directory.
 
 ## Contributing
 

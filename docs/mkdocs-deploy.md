@@ -15,7 +15,7 @@ This action deploys MkDocs documentation with automatic version management based
 ## Usage
 
 ```yaml
-- uses: Serapieum-of-alex/github-actions/actions/mkdocs-deploy@mkdocs-deploy/v1
+- uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs-deploy/v1
   with:
     trigger: ${{ github.event_name }}
     deploy-token: ${{ secrets.GITHUB_TOKEN }}
@@ -55,7 +55,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: Serapieum-of-alex/github-actions/actions/mkdocs-deploy@mkdocs-deploy/v1
+      - uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs-deploy/v1
         with:
           trigger: 'pull_request'
           deploy-token: ${{ secrets.GITHUB_TOKEN }}
@@ -85,7 +85,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: Serapieum-of-alex/github-actions/actions/mkdocs-deploy@mkdocs-deploy/v1
+      - uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs-deploy/v1
         with:
           trigger: ${{ github.event_name == 'release' && 'release' || 'main' }}
           deploy-token: ${{ secrets.GITHUB_TOKEN }}
@@ -95,7 +95,7 @@ jobs:
 ### With pixi
 
 ```yaml
-- uses: Serapieum-of-alex/github-actions/actions/mkdocs-deploy@mkdocs-deploy/v1
+- uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs-deploy/v1
   with:
     trigger: 'main'
     deploy-token: ${{ secrets.GITHUB_TOKEN }}

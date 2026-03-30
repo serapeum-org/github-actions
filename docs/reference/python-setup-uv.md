@@ -5,7 +5,7 @@
 ## Usage
 
 ```yaml
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@uv/v1
+- uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1
   with:
     python-version: '3.12'
     cache: 'true'

@@ -5,7 +5,7 @@
 ## Usage
 
 ```yaml
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@pixi/v1
+- uses: serapeum-org/github-actions/actions/python-setup/pixi@pixi/v1
   with:
     environments: 'default'
     activate-environment: 'default'

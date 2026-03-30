@@ -37,7 +37,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Publish to PyPI
-        uses: Serapieum-of-alex/github-actions/actions/release/pypi@release-pypi/v1
+        uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
         with:
           pypi-username: __token__
           pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -47,7 +47,7 @@ jobs:
 
 ```yaml
 - name: Publish to PyPI
-  uses: Serapieum-of-alex/github-actions/actions/release/pypi@release-pypi/v1
+  uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
   with:
     pypi-username: __token__
     pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -92,7 +92,7 @@ Set `package` to the package **name** (the `[project] name` value in `pyproject.
 only that member of a multi-package workspace:
 
 ```yaml
-- uses: Serapieum-of-alex/github-actions/actions/release/pypi@release-pypi/v1
+- uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
   with:
     pypi-username: __token__
     pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -260,7 +260,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: Serapieum-of-alex/github-actions/actions/release/pypi@release-pypi/v1
+      - uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
         with:
           pypi-username: __token__
           pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -286,7 +286,7 @@ jobs:
   github-release:
     runs-on: ubuntu-latest
     steps:
-      - uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+      - uses: serapeum-org/github-actions/actions/release/github@release-github/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           increment: ${{ inputs.increment }}
@@ -297,7 +297,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: Serapieum-of-alex/github-actions/actions/release/pypi@release-pypi/v1
+      - uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
         with:
           pypi-username: __token__
           pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -405,4 +405,4 @@ See [EXAMPLES.md](./EXAMPLES.md) for comprehensive examples covering:
 
 ## Support
 
-For issues and feature requests, please use the [GitHub Issues](https://github.com/Serapieum-of-alex/github-actions/issues).
+For issues and feature requests, please use the [GitHub Issues](https://github.com/serapeum-org/github-actions/issues).

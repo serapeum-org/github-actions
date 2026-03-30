@@ -93,8 +93,8 @@ In this strategy, **all actions in the repository share the same version tags**.
 
 **Usage example:**
 ```yaml
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
-- uses: Serapieum-of-alex/github-actions/actions/mkdocs-deploy@v1
+- uses: serapeum-org/github-actions/actions/python-setup/pip@v1
+- uses: serapeum-org/github-actions/actions/mkdocs-deploy@v1
 ```
 
 ### Namespaced Versioning Strategy
@@ -117,8 +117,8 @@ In this strategy, **each action has its own independent version tags**. You can 
 
 **Usage example:**
 ```yaml
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@python-setup/pip/v1
-- uses: Serapieum-of-alex/github-actions/actions/mkdocs-deploy@mkdocs-deploy/v1.0.0
+- uses: serapeum-org/github-actions/actions/python-setup/pip@python-setup/pip/v1
+- uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs-deploy/v1.0.0
 ```
 
 **Benefits:**
@@ -147,10 +147,10 @@ We maintain two types of Git tags:
 **Examples:**
 ```yaml
 # Global versioning - Pin to exact version
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1.0.0
+- uses: serapeum-org/github-actions/actions/python-setup/pixi@v1.0.0
 
 # Namespaced versioning - Pin to exact version
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@python-setup/pip/v1.0.1
+- uses: serapeum-org/github-actions/actions/python-setup/pip@python-setup/pip/v1.0.1
 ```
 
 #### 2. Major Version Tags (Moving)
@@ -167,10 +167,10 @@ We maintain two types of Git tags:
 **Examples:**
 ```yaml
 # Global versioning - Use major version for updates
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+- uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
 
 # Namespaced versioning - Use major version for updates
-- uses: Serapieum-of-alex/github-actions/actions/mkdocs-deploy@mkdocs-deploy/v1
+- uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs-deploy/v1
 ```
 
 ### Visual Representation
@@ -332,7 +332,7 @@ This is a backward-compatible release for \`python-setup/pip\` action only.
 
 Update your workflow:
 \`\`\`yaml
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@python-setup/pip/v1.0.1
+- uses: serapeum-org/github-actions/actions/python-setup/pip@python-setup/pip/v1.0.1
   # or use @python-setup/pip/v1 for automatic updates
 \`\`\`"
 ```
@@ -558,7 +558,7 @@ Users can reference your actions in three ways:
 #### Option 1: Specific Version (Recommended for Production)
 
 ```yaml
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1.0.0
+- uses: serapeum-org/github-actions/actions/python-setup/pixi@v1.0.0
 ```
 
 **Pros:**
@@ -575,7 +575,7 @@ Users can reference your actions in three ways:
 #### Option 2: Major Version (Recommended for Most Users)
 
 ```yaml
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+- uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
 ```
 
 **Pros:**
@@ -592,7 +592,7 @@ Users can reference your actions in three ways:
 #### Option 3: Branch (Not Recommended)
 
 ```yaml
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@main
+- uses: serapeum-org/github-actions/actions/python-setup/pixi@main
 ```
 
 **Pros:**
@@ -688,7 +688,7 @@ The `cache-key` input has been removed. Caching now uses an automatic key based 
 **Migration:**
 
 ```diff
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+- uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
   with:
 -   cache-key: custom-key
     cache: 'true'
@@ -705,7 +705,7 @@ The default for `verify-lock` changed from `'false'` to `'true'`.
 If you want the old behavior:
 
 ```yaml
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v2
+- uses: serapeum-org/github-actions/actions/python-setup/pixi@v2
   with:
     verify-lock: 'false'  # Explicit old behavior
 ```
@@ -926,5 +926,5 @@ git push origin mkdocs-deploy/v1 --force
 
 **Version**: 1.0  
 **Last Updated**: January 2026  
-**Maintained by**: Serapieum-of-alex
+**Maintained by**: serapeum-org
 

@@ -1,8 +1,8 @@
 site_name: Serapieum GitHub Actions
 site_description: Reusable GitHub Actions for Python CI/CD workflows
-site_url: https://serapieum-of-alex.github.io/github-actions
-repo_url: https://github.com/Serapieum-of-alex/github-actions
-repo_name: Serapieum-of-alex/github-actions
+site_url: https://serapeum-org.github.io/github-actions
+repo_url: https://github.com/serapeum-org/github-actions
+repo_name: serapeum-org/github-actions
 
 theme:
   name: material

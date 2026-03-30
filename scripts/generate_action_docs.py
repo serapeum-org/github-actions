@@ -166,7 +166,7 @@ def generate_reference_md(action: dict, action_dir: str) -> str:
         "## Usage",
         "",
         "```yaml",
-        f"- uses: Serapieum-of-alex/github-actions/actions/{ref}@{tag}",
+        f"- uses: serapeum-org/github-actions/actions/{ref}@{tag}",
     ]
 
     # Add a `with:` block showing only required inputs and those with defaults

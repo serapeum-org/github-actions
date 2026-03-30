@@ -5,7 +5,7 @@
 ## Usage
 
 ```yaml
-- uses: Serapieum-of-alex/github-actions/actions/release/pypi@release-pypi/v1
+- uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
   with:
     pypi-username: # required
     pypi-password: # required

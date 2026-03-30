@@ -35,7 +35,7 @@ Add a workflow file at `.github/workflows/ci.yml`:
         steps:
           - uses: actions/checkout@v5
 
-          - uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@uv/v1
+          - uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1
             with:
               python-version: '3.12'
               install-groups: 'groups: dev test'
@@ -56,7 +56,7 @@ Add a workflow file at `.github/workflows/ci.yml`:
         steps:
           - uses: actions/checkout@v5
 
-          - uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@pip/v1
+          - uses: serapeum-org/github-actions/actions/python-setup/pip@pip/v1
             with:
               python-version: '3.12'
               cache: 'pip'
@@ -78,7 +78,7 @@ Add a workflow file at `.github/workflows/ci.yml`:
         steps:
           - uses: actions/checkout@v5
 
-          - uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@pixi/v1
+          - uses: serapeum-org/github-actions/actions/python-setup/pixi@pixi/v1
             with:
               environments: 'default'
 
@@ -109,7 +109,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: Serapieum-of-alex/github-actions/actions/mkdocs-deploy@mkdocs-deploy/v1
+      - uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs-deploy/v1
         with:
           trigger: ${{ github.event_name }}
           deploy-token: ${{ secrets.GITHUB_TOKEN }}
@@ -143,7 +143,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+      - uses: serapeum-org/github-actions/actions/release/github@release-github/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           increment: ${{ inputs.increment }}
@@ -167,7 +167,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: Serapieum-of-alex/github-actions/actions/release/pypi@release-pypi/v1
+      - uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
         with:
           pypi-username: '__token__'
           pypi-password: ${{ secrets.PYPI_TOKEN }}
@@ -188,7 +188,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@uv/v1
+      - uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1
         with:
           python-version: ${{ matrix.python-version }}
           install-groups: 'groups: test'

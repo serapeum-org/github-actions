@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create Release
-        uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+        uses: serapeum-org/github-actions/actions/release/github@release-github/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -87,7 +87,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create Release
-        uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+        uses: serapeum-org/github-actions/actions/release/github@release-github/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           increment: ${{ inputs.increment }}
@@ -101,7 +101,7 @@ jobs:
 
 ```yaml
 - name: Release with pip
-  uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+  uses: serapeum-org/github-actions/actions/release/github@release-github/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     package-manager: 'pip'
@@ -123,7 +123,7 @@ dev = [
 
 ```yaml
 - name: Release with uv
-  uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+  uses: serapeum-org/github-actions/actions/release/github@release-github/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     package-manager: 'uv'
@@ -159,7 +159,7 @@ git commit -m "chore: add uv.lock"
 
 ```yaml
 - name: Release with pixi
-  uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+  uses: serapeum-org/github-actions/actions/release/github@release-github/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     package-manager: 'pixi'
@@ -190,7 +190,7 @@ release = "cz bump"
 
 ```yaml
 - name: Patch Release
-  uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+  uses: serapeum-org/github-actions/actions/release/github@release-github/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     increment: 'patch'
@@ -210,7 +210,7 @@ git commit -m "fix: patch memory leak"
 
 ```yaml
 - name: Minor Release
-  uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+  uses: serapeum-org/github-actions/actions/release/github@release-github/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     increment: 'minor'
@@ -230,7 +230,7 @@ git commit -m "feat: implement OAuth login"
 
 ```yaml
 - name: Major Release
-  uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+  uses: serapeum-org/github-actions/actions/release/github@release-github/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     increment: 'major'
@@ -256,7 +256,7 @@ BREAKING CHANGE: The old auth methods are no longer supported"
 
 ```yaml
 - name: Alpha Release
-  uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+  uses: serapeum-org/github-actions/actions/release/github@release-github/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     increment: 'patch'
@@ -274,7 +274,7 @@ BREAKING CHANGE: The old auth methods are no longer supported"
 
 ```yaml
 - name: Beta Release
-  uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+  uses: serapeum-org/github-actions/actions/release/github@release-github/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     increment: 'minor'
@@ -292,7 +292,7 @@ BREAKING CHANGE: The old auth methods are no longer supported"
 
 ```yaml
 - name: Release Candidate
-  uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+  uses: serapeum-org/github-actions/actions/release/github@release-github/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     increment: 'major'
@@ -335,7 +335,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create Prerelease
-        uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+        uses: serapeum-org/github-actions/actions/release/github@release-github/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           increment: 'minor'
@@ -347,7 +347,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create Final Release
-        uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+        uses: serapeum-org/github-actions/actions/release/github@release-github/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           increment: 'minor'
@@ -362,7 +362,7 @@ jobs:
 
 ```yaml
 - name: Release from Develop
-  uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+  uses: serapeum-org/github-actions/actions/release/github@release-github/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     release-branch: 'develop'
@@ -373,7 +373,7 @@ jobs:
 
 ```yaml
 - name: Release v2.x
-  uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+  uses: serapeum-org/github-actions/actions/release/github@release-github/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     release-branch: 'release/v2.0'
@@ -405,7 +405,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create Release
-        uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+        uses: serapeum-org/github-actions/actions/release/github@release-github/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           release-branch: ${{ inputs.branch }}
@@ -420,7 +420,7 @@ jobs:
 
 ```yaml
 - name: Release with Dev and Docs Groups
-  uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+  uses: serapeum-org/github-actions/actions/release/github@release-github/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     install-groups: 'groups: dev docs'
@@ -445,7 +445,7 @@ docs = [
 
 ```yaml
 - name: Release with Extras
-  uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+  uses: serapeum-org/github-actions/actions/release/github@release-github/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     install-groups: 'extras: aws viz'
@@ -469,7 +469,7 @@ viz = [
 
 ```yaml
 - name: Release with Groups and Extras
-  uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+  uses: serapeum-org/github-actions/actions/release/github@release-github/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     install-groups: 'groups: dev docs, extras: aws'
@@ -479,7 +479,7 @@ viz = [
 
 ```yaml
 - name: Release with Core Only
-  uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+  uses: serapeum-org/github-actions/actions/release/github@release-github/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     install-groups: ''
@@ -503,7 +503,7 @@ dependencies = [
 
 ```yaml
 - name: Create Draft Release
-  uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+  uses: serapeum-org/github-actions/actions/release/github@release-github/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     increment: 'minor'
@@ -532,7 +532,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create Draft
-        uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+        uses: serapeum-org/github-actions/actions/release/github@release-github/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           draft: 'true'
@@ -603,7 +603,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create GitHub Release
-        uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+        uses: serapeum-org/github-actions/actions/release/github@release-github/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           increment: ${{ inputs.increment }}
@@ -653,7 +653,7 @@ jobs:
 
       - name: Create Beta Release
         if: steps.check.outputs.has_changes == 'true'
-        uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+        uses: serapeum-org/github-actions/actions/release/github@release-github/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           increment: 'patch'
@@ -698,7 +698,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create Release
-        uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+        uses: serapeum-org/github-actions/actions/release/github@release-github/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           python-version: '3.12'  # Use latest for release
@@ -743,7 +743,7 @@ jobs:
           fi
 
       - name: Create Release
-        uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+        uses: serapeum-org/github-actions/actions/release/github@release-github/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           release-branch: ${{ github.ref_name }}
@@ -762,7 +762,7 @@ For monorepos where each package manages its own version and changelog:
 
 ```yaml
 - name: Release sub-package
-  uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+  uses: serapeum-org/github-actions/actions/release/github@release-github/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     increment: 'minor'
@@ -822,7 +822,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create Release
-        uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+        uses: serapeum-org/github-actions/actions/release/github@release-github/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           increment: ${{ inputs.increment }}
@@ -839,7 +839,7 @@ jobs:
 
 ```yaml
 - name: First Release
-  uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+  uses: serapeum-org/github-actions/actions/release/github@release-github/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     increment: 'patch'
@@ -880,7 +880,7 @@ git commit -m "fix: resolve setup issue"
 
 ```yaml
 - name: Release Minimal Project
-  uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+  uses: serapeum-org/github-actions/actions/release/github@release-github/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     install-groups: ''
@@ -927,7 +927,7 @@ git tag -d 1.2.3  # Delete local tag
 
 ```yaml
 - name: Safe Release
-  uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+  uses: serapeum-org/github-actions/actions/release/github@release-github/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     draft: 'true'  # Safe to retry
@@ -964,7 +964,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create Release
-        uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+        uses: serapeum-org/github-actions/actions/release/github@release-github/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -989,7 +989,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create Hotfix Release
-        uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+        uses: serapeum-org/github-actions/actions/release/github@release-github/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           release-branch: ${{ github.ref_name }}
@@ -1044,7 +1044,7 @@ jobs:
           path: dist/
 
       - name: Create Release
-        uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+        uses: serapeum-org/github-actions/actions/release/github@release-github/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -1086,7 +1086,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create Release
-        uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+        uses: serapeum-org/github-actions/actions/release/github@release-github/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -1145,7 +1145,7 @@ prerelease-type: 'beta'
 Reference specific action versions:
 
 ```yaml
-uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1.0.0
+uses: serapeum-org/github-actions/actions/release/github@release-github/v1.0.0
 ```
 
 ### 7. **Set Proper Permissions**

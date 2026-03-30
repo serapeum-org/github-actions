@@ -20,7 +20,7 @@ Reusable GitHub Actions for Python CI/CD workflows. Cross-platform, multi-packag
     ```yaml
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@uv/v1
+      - uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1
         with:
           install-groups: 'groups: dev test'
     ```
@@ -30,7 +30,7 @@ Reusable GitHub Actions for Python CI/CD workflows. Cross-platform, multi-packag
     ```yaml
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@pip/v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pip@pip/v1
         with:
           cache: 'pip'
           install-groups: 'extras: dev test'
@@ -41,7 +41,7 @@ Reusable GitHub Actions for Python CI/CD workflows. Cross-platform, multi-packag
     ```yaml
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@pixi/v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pixi@pixi/v1
         with:
           environments: 'default'
     ```
@@ -93,7 +93,7 @@ pixi/v1.0.0   pixi/v1
 Pin to a major version for automatic bug fixes:
 
 ```yaml
-uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@uv/v1
+uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1
 ```
 
 See the [Versioning Guide](VERSIONING.md) for details.
