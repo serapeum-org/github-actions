@@ -1,4 +1,4 @@
-# Serapieum GitHub Actions
+# Serapeum GitHub Actions
 
 [![Test pip](https://github.com/serapeum-org/github-actions/actions/workflows/test-python-setup-pip.yml/badge.svg)](https://github.com/serapeum-org/github-actions/actions/workflows/test-python-setup-pip.yml)
 [![Test uv](https://github.com/serapeum-org/github-actions/actions/workflows/test-python-setup-uv.yml/badge.svg)](https://github.com/serapeum-org/github-actions/actions/workflows/test-python-setup-uv.yml)

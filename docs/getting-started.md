@@ -1,6 +1,6 @@
 # Getting Started
 
-This guide walks you through using the Serapieum GitHub Actions in your Python project.
+This guide walks you through using the Serapeum GitHub Actions in your Python project.
 
 ## Prerequisites
 

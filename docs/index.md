@@ -1,4 +1,4 @@
-# Serapieum GitHub Actions
+# Serapeum GitHub Actions
 
 Reusable GitHub Actions for Python CI/CD workflows. Cross-platform, multi-package-manager, production-ready.
 
