@@ -43,7 +43,7 @@ This action provides a complete Python environment setup using [pixi](https://pr
 - ✅ Intelligent caching with lock file validation
 - ✅ Lock file verification modes (locked/frozen)
 
-**Location**: `Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1`
+**Location**: `serapeum-org/github-actions/actions/python-setup/pixi@v1`
 
 ## Quick Start
 
@@ -52,7 +52,7 @@ This action provides a complete Python environment setup using [pixi](https://pr
 ```yaml
 steps:
   - uses: actions/checkout@v5
-  - uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+  - uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
 
   # The default environment is automatically activated!
   - run: python --version
@@ -64,7 +64,7 @@ steps:
 ```yaml
 steps:
   - uses: actions/checkout@v5
-  - uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+  - uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
     with:
       environments: 'dev test prod'
       activate-environment: 'dev'
@@ -77,7 +77,7 @@ steps:
 ```yaml
 steps:
   - uses: actions/checkout@v5
-  - uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+  - uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
     with:
       cache: 'true'
 
@@ -311,7 +311,7 @@ Shell commands automatically adapt to the platform (bash on Linux/macOS, PowerSh
 Install and manage multiple environments in a single workflow:
 
 ```yaml
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+- uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
   with:
     environments: 'py311 py312 py313'
     activate-environment: 'py311'
@@ -359,7 +359,7 @@ jobs:
       - uses: actions/checkout@v5
       
       - name: Setup Python with pixi
-        uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+        uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
         with:
           cache: 'false'
       
@@ -414,7 +414,7 @@ jobs:
       - uses: actions/checkout@v5
       
       - name: Setup dev environment
-        uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+        uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
         with:
           environments: 'dev'
           activate-environment: 'dev'
@@ -434,7 +434,7 @@ jobs:
       - uses: actions/checkout@v5
       
       - name: Setup prod environment
-        uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+        uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
         with:
           environments: 'prod'
           activate-environment: 'prod'
@@ -482,7 +482,7 @@ jobs:
       - uses: actions/checkout@v5
       
       - name: Setup all environments
-        uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+        uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
         with:
           environments: 'dev test'
           activate-environment: 'dev'  # Dev is active by default
@@ -541,7 +541,7 @@ jobs:
       - uses: actions/checkout@v5
       
       - name: Setup Python environment
-        uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+        uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
         with:
           environments: ${{ matrix.python-env }}
           activate-environment: ${{ matrix.python-env }}
@@ -615,7 +615,7 @@ jobs:
       - uses: actions/checkout@v5
       
       - name: Setup CI environment
-        uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+        uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
         with:
           environments: 'ci'
           activate-environment: 'ci'
@@ -641,7 +641,7 @@ jobs:
       - uses: actions/checkout@v5
       
       - name: Setup ML environment
-        uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+        uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
         with:
           environments: 'ml'
           activate-environment: 'ml'
@@ -671,7 +671,7 @@ jobs:
       - uses: actions/checkout@v5
       
       - name: Setup Python
-        uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+        uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
         with:
           cache: 'false'  # No caching
       
@@ -692,7 +692,7 @@ jobs:
       - uses: actions/checkout@v5
       
       - name: Setup Python with caching
-        uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+        uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
         with:
           cache: 'true'  # Enable caching
       
@@ -717,7 +717,7 @@ The action will fail if you enable caching without a lock file:
 **Workflow (will fail):**
 ```yaml
 - name: Setup Python with caching
-  uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+  uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
   with:
     cache: 'true'  # ❌ Will fail - no pixi.lock!
 ```
@@ -777,7 +777,7 @@ The `verify-lock` input controls how pixi uses the lock file:
 **Example:**
 ```yaml
 - name: Setup with verification
-  uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+  uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
   with:
     verify-lock: 'true'  # Default
 ```
@@ -812,7 +812,7 @@ pandas = ">=2.0"  # ⚠️ NEW!
 **Example:**
 ```yaml
 - name: Setup without verification
-  uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+  uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
   with:
     verify-lock: 'false'
 ```
@@ -1101,7 +1101,7 @@ my-project/
 **Optimal configuration:**
 ```yaml
 # Main branch - write cache
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+- uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
   with:
     cache: 'true'
     verify-lock: 'true'  # Verify even with cache
@@ -1263,7 +1263,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
         with:
           cache: 'false'
       
@@ -1282,7 +1282,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
         with:
           environments: ${{ matrix.python-env }}
           activate-environment: ${{ matrix.python-env }}
@@ -1303,7 +1303,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
         with:
           cache: 'false'
       
@@ -1323,7 +1323,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
         with:
           environments: ${{ matrix.python-env }}
           activate-environment: ${{ matrix.python-env }}
@@ -1341,7 +1341,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
         with:
           environments: 'dev test'
           activate-environment: 'dev'
@@ -1367,7 +1367,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
         with:
           verify-lock: 'true'  # Should pass
           cache: 'false'
@@ -1390,7 +1390,7 @@ jobs:
           echo "[tool.pixi.dependencies]" >> pyproject.toml
           echo "newpackage = \">=1.0\"" >> pyproject.toml
       
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
         id: setup
         continue-on-error: true
         with:
@@ -1415,7 +1415,7 @@ jobs:
       
       - run: rm pixi.lock  # Remove lock file
       
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
         id: setup
         continue-on-error: true
         with:
@@ -1439,7 +1439,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
         with:
           cache: 'true'
       
@@ -1455,7 +1455,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
         with:
           cache: 'true'
       
@@ -1467,7 +1467,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
         id: setup
         with:
           cache: 'true'
@@ -1648,7 +1648,7 @@ with:
 To get more information about what's happening:
 
 ```yaml
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+- uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
   with:
     cache: 'false'
 
@@ -1908,7 +1908,7 @@ This catches PRs with outdated lock files early.
 
 **After (pixi):**
 ```yaml
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+- uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
   with:
     cache: 'true'
 ```
@@ -1931,7 +1931,7 @@ This catches PRs with outdated lock files early.
 
 **After (pixi):**
 ```yaml
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+- uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
   with:
     cache: 'true'
 ```
@@ -1954,7 +1954,7 @@ This catches PRs with outdated lock files early.
 
 **After (pixi):**
 ```yaml
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pixi@v1
+- uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
   with:
     cache: 'true'
 ```
@@ -1966,7 +1966,7 @@ Pixi is faster than micromamba and has better lock file support!
 - **Pixi Documentation**: https://prefix.dev/docs/pixi
 - **Pixi GitHub**: https://github.com/prefix-dev/pixi
 - **Conda-forge**: https://conda-forge.org/
-- **Action Source**: `Serapieum-of-alex/github-actions/actions/python-setup/pixi`
+- **Action Source**: `serapeum-org/github-actions/actions/python-setup/pixi`
 
 ## Examples Repository
 

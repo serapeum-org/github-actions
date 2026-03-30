@@ -1,0 +1,44 @@
+name: Deploy Documentation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - 'mkdocs.yml'
+      - 'actions/**/action.yml'
+      - 'scripts/generate_action_docs.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install documentation dependencies
+        run: |
+          pip install mkdocs mkdocs-material pymdown-extensions mike
+
+      - name: Generate action reference pages
+        run: python scripts/generate_action_docs.py
+
+      - name: Configure Git
+        run: |
+          git config --global user.name '${{ github.actor }}'
+          git config --global user.email '${{ github.actor }}@users.noreply.github.com'
+
+      - name: Deploy with mike
+        run: |
+          mike deploy --push --update-aliases main latest
+          mike set-default --push latest

@@ -19,6 +19,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
+
       - name: Copy test fixture files (pip/uv)
         if: matrix.package-manager != 'pixi'
         run: |
@@ -50,9 +53,6 @@ jobs:
             echo "groups=groups: docs" >> $GITHUB_OUTPUT
           fi
 
-      - name: Setup fake git remote for testing
-        uses: ./.github/workflows/test-helpers/setup-fake-remote
-
       - name: Test MkDocs deploy for PR
         uses: ./actions/mkdocs-deploy
         with:
@@ -73,15 +73,15 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
+
       - name: Copy test fixture files
         run: |
           cp tests/data/mkdocs-deploy/test-main-trigger/pyproject.toml .
           cp tests/data/mkdocs-deploy/test-main-trigger/uv.lock .
           cp tests/data/mkdocs-deploy/test-main-trigger/mkdocs.yml .
           cp -r tests/data/mkdocs-deploy/test-main-trigger/docs .
-
-      - name: Setup fake git remote for testing
-        uses: ./.github/workflows/test-helpers/setup-fake-remote
 
       - name: Test MkDocs deploy for main
         uses: ./actions/mkdocs-deploy
@@ -109,6 +109,9 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
 
       - name: Copy test fixture files (pip/uv)
         if: matrix.package-manager != 'pixi'
@@ -139,9 +142,6 @@ jobs:
           else
             echo "groups=groups: docs" >> $GITHUB_OUTPUT
           fi
-
-      - name: Setup fake git remote for testing
-        uses: ./.github/workflows/test-helpers/setup-fake-remote
 
       - name: Test MkDocs deploy for release
         uses: ./actions/mkdocs-deploy
@@ -181,15 +181,15 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
+
       - name: Copy test fixture files
         run: |
           cp tests/data/mkdocs-deploy/test-custom-configuration/pyproject.toml .
           cp tests/data/mkdocs-deploy/test-custom-configuration/mkdocs.yml .
           cp tests/data/mkdocs-deploy/test-custom-configuration/uv.lock .
           cp -r tests/data/mkdocs-deploy/test-custom-configuration/docs .
-
-      - name: Setup fake git remote for testing
-        uses: ./.github/workflows/test-helpers/setup-fake-remote
 
       - name: Test with custom configuration
         uses: ./actions/mkdocs-deploy
@@ -266,6 +266,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
+
       - name: Copy test fixture files
         run: |
           cp tests/data/mkdocs-deploy/test-git-configuration/pyproject.toml .
@@ -276,9 +279,6 @@ jobs:
         run: |
           git config --global --unset user.name || true
           git config --global --unset user.email || true
-
-      - name: Setup fake git remote for testing
-        uses: ./.github/workflows/test-helpers/setup-fake-remote
 
       - name: Test git configuration
         uses: ./actions/mkdocs-deploy
@@ -300,6 +300,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
+
       - name: Copy test fixture files
         run: |
           cp tests/data/mkdocs-deploy/test-package-manager-commands/pyproject.toml .
@@ -313,9 +316,6 @@ jobs:
           if [ -f tests/data/mkdocs-deploy/test-package-manager-commands/pixi.lock ]; then
             cp tests/data/mkdocs-deploy/test-package-manager-commands/pixi.lock .
           fi
-
-      - name: Setup fake git remote for testing
-        uses: ./.github/workflows/test-helpers/setup-fake-remote
 
       - name: Test pip command execution
         uses: ./actions/mkdocs-deploy
@@ -348,15 +348,15 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
+
       - name: Copy test fixture files
         run: |
           cp tests/data/mkdocs-deploy/test-release-tag-resolution/pyproject.toml .
           cp tests/data/mkdocs-deploy/test-release-tag-resolution/mkdocs.yml .
           cp tests/data/mkdocs-deploy/test-release-tag-resolution/uv.lock .
           cp -r tests/data/mkdocs-deploy/test-release-tag-resolution/docs .
-
-      - name: Setup fake git remote for testing
-        uses: ./.github/workflows/test-helpers/setup-fake-remote
 
       - name: Test with explicit release tag
         uses: ./actions/mkdocs-deploy
@@ -386,6 +386,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
+
       - name: Copy test fixture files (pip/uv)
         if: matrix.package-manager != 'pixi'
         run: |
@@ -413,9 +416,6 @@ jobs:
             echo "groups=groups: docs" >> $GITHUB_OUTPUT
           fi
 
-      - name: Setup fake git remote for testing
-        uses: ./.github/workflows/test-helpers/setup-fake-remote
-
       - name: Test with default install-groups (groups docs)
         uses: ./actions/mkdocs-deploy
         with:
@@ -440,6 +440,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
+
       - name: Copy test fixture files
         run: |
           cp tests/data/mkdocs-deploy/test-pull-request-pixi/pyproject.toml .
@@ -448,9 +451,6 @@ jobs:
           if [ -f tests/data/mkdocs-deploy/test-pull-request-pixi/pixi.lock ]; then
             cp tests/data/mkdocs-deploy/test-pull-request-pixi/pixi.lock .
           fi
-
-      - name: Setup fake git remote for testing
-        uses: ./.github/workflows/test-helpers/setup-fake-remote
 
       - name: Test pixi with environment "${{ matrix.install-groups }}"
         uses: ./actions/mkdocs-deploy
@@ -476,15 +476,15 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
+
       - name: Copy test fixture files
         run: |
           cp tests/data/mkdocs-deploy/test-custom-configuration/pyproject.toml .
           cp tests/data/mkdocs-deploy/test-custom-configuration/mkdocs.yml .
           cp tests/data/mkdocs-deploy/test-custom-configuration/uv.lock .
           cp -r tests/data/mkdocs-deploy/test-custom-configuration/docs .
-
-      - name: Setup fake git remote for testing
-        uses: ./.github/workflows/test-helpers/setup-fake-remote
 
       - name: Test install-groups format "${{ matrix.install-groups }}"
         uses: ./actions/mkdocs-deploy
@@ -525,15 +525,15 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
+
       - name: Copy test fixture files
         run: |
           cp tests/data/mkdocs-deploy/test-custom-configuration/pyproject.toml .
           cp tests/data/mkdocs-deploy/test-custom-configuration/mkdocs.yml .
           cp tests/data/mkdocs-deploy/test-custom-configuration/uv.lock .
           cp -r tests/data/mkdocs-deploy/test-custom-configuration/docs .
-
-      - name: Setup fake git remote for testing
-        uses: ./.github/workflows/test-helpers/setup-fake-remote
 
       - name: Test install-groups format "${{ matrix.install-groups }}"
         uses: ./actions/mkdocs-deploy

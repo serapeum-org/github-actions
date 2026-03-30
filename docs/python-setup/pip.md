@@ -26,7 +26,7 @@ This action wraps `actions/setup-python@v6` with additional functionality for ma
 - Cross-platform support (Linux, Windows, macOS)
 - Architecture selection (x64, x86)
 
-**Location**: `Serapieum-of-alex/github-actions/actions/python-setup/pip@v1`
+**Location**: `serapeum-org/github-actions/actions/python-setup/pip@v1`
 
 ## Quick Start
 
@@ -35,7 +35,7 @@ This action wraps `actions/setup-python@v6` with additional functionality for ma
 ```yaml
 steps:
   - uses: actions/checkout@v5
-  - uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+  - uses: serapeum-org/github-actions/actions/python-setup/pip@v1
 ```
 
 This sets up Python 3.12 (default) without caching. Suitable for projects without `pyproject.toml` or `requirements.txt`.
@@ -45,7 +45,7 @@ This sets up Python 3.12 (default) without caching. Suitable for projects withou
 ```yaml
 steps:
   - uses: actions/checkout@v5
-  - uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+  - uses: serapeum-org/github-actions/actions/python-setup/pip@v1
     with:
       cache: 'pip'
 ```
@@ -57,7 +57,7 @@ steps:
 ```yaml
 steps:
   - uses: actions/checkout@v5
-  - uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+  - uses: serapeum-org/github-actions/actions/python-setup/pip@v1
     with:
       install-groups: 'extras: dev test'
 ```
@@ -172,7 +172,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pip@v1
 
       - name: Verify Python installation
         run: |
@@ -202,7 +202,7 @@ dependencies = ["requests", "numpy"]
 
 ```yaml
 - uses: actions/checkout@v5
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+- uses: serapeum-org/github-actions/actions/python-setup/pip@v1
   with:
     cache: 'pip'
 ```
@@ -234,7 +234,7 @@ build = ["build", "twine"]
 
 ```yaml
 - uses: actions/checkout@v5
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+- uses: serapeum-org/github-actions/actions/python-setup/pip@v1
   with:
     cache: 'pip'
     install-groups: 'extras: dev test'
@@ -257,7 +257,7 @@ strategy:
 
 steps:
   - uses: actions/checkout@v5
-  - uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+  - uses: serapeum-org/github-actions/actions/python-setup/pip@v1
     with:
       python-version: ${{ matrix.python-version }}
       cache: 'pip'
@@ -279,7 +279,7 @@ numpy==1.26.0
 
 ```yaml
 - uses: actions/checkout@v5
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+- uses: serapeum-org/github-actions/actions/python-setup/pip@v1
   with:
     cache: 'pip'
 ```
@@ -295,7 +295,7 @@ numpy==1.26.0
 
 ```yaml
 - uses: actions/checkout@v5
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+- uses: serapeum-org/github-actions/actions/python-setup/pip@v1
   with:
     architecture: 'x86'
     cache: 'pip'
@@ -325,7 +325,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pip@v1
         with:
           cache: 'pip'
           install-groups: 'groups: dev, extras: aws'
@@ -360,7 +360,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pip@v1
         with:
           cache: 'poetry'
 
@@ -377,7 +377,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pip@v1
         with:
           cache: 'pipenv'
 
@@ -398,7 +398,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pip@v1
         with:
           install-groups: 'groups: , extras: aws'
 
@@ -426,7 +426,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pip@v1
         with:
           install-groups: 'invalid format without colons'
 
@@ -453,7 +453,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pip@v1
         with:
           install-groups: '  groups:  dev   test  ,  extras:  aws   viz  '
 
@@ -493,7 +493,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pip@v1
         # No install-groups parameter
 
       - name: Verify only core installed
@@ -537,7 +537,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pip@v1
         with:
           cache: 'pip'
           install-groups: 'groups: dev test docs, extras: aws azure gcp'
@@ -575,7 +575,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pip@v1
         with:
           install-groups: 'extras: aws, groups: dev'
 
@@ -734,7 +734,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pip@v1
         with:
           install-groups: 'extras: test'
       - run: pytest --cov=src
@@ -747,7 +747,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pip@v1
         with:
           install-groups: 'extras: dev'
       - run: black --check .
@@ -761,7 +761,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pip@v1
         with:
           install-groups: 'extras: docs'
       - run: mkdocs build
@@ -775,7 +775,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pip@v1
         with:
           install-groups: 'groups: dev test, extras: aws'
       - run: black --check .
@@ -789,7 +789,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pip@v1
         # No install-groups = core only
       - run: python app.py
 ```
@@ -812,7 +812,7 @@ dev = ["pytest", "black"]
 **Option 2: Use the uv action** (has full PEP 735 support)
 ```yaml
 # Instead of pip action
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+- uses: serapeum-org/github-actions/actions/python-setup/uv@v1
   with:
     install-groups: 'groups: dev test'  # Full PEP 735 support
 ```
@@ -967,7 +967,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pip@v1
         with:
           cache: 'pip'
           install-groups: 'extras: dev test'
@@ -989,7 +989,7 @@ jobs:
         python-version: ['3.11', '3.12', '3.13']
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pip@v1
         with:
           python-version: ${{ matrix.python-version }}
           cache: 'pip'
@@ -1010,7 +1010,7 @@ jobs:
       - uses: actions/checkout@v5
       
       - name: First run (populate cache)
-        uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+        uses: serapeum-org/github-actions/actions/python-setup/pip@v1
         with:
           cache: 'pip'
       
@@ -1084,7 +1084,7 @@ Tests verify that:
 **Solution**:
 ```yaml
 # Option 1: Disable cache
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+- uses: serapeum-org/github-actions/actions/python-setup/pip@v1
   with:
     cache: ''  # Explicitly disable
 
@@ -1097,7 +1097,7 @@ Tests verify that:
     version = "0.1.0"
     EOF
 
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+- uses: serapeum-org/github-actions/actions/python-setup/pip@v1
   with:
     cache: 'pip'
 ```
@@ -1169,7 +1169,7 @@ Cache restored from key: ...
 
 ```yaml
 # Good: Stable project with versioned dependencies
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+- uses: serapeum-org/github-actions/actions/python-setup/pip@v1
   with:
     cache: 'pip'
 ```
@@ -1209,7 +1209,7 @@ strategy:
     python-version: ['3.10', '3.11', '3.12']
 
 steps:
-  - uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+  - uses: serapeum-org/github-actions/actions/python-setup/pip@v1
     with:
       python-version: ${{ matrix.python-version }}
 ```
@@ -1218,7 +1218,7 @@ steps:
 
 ```yaml
 # If dependencies change frequently (e.g., from git branches)
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+- uses: serapeum-org/github-actions/actions/python-setup/pip@v1
   # No cache parameter (defaults to '')
 ```
 
@@ -1226,20 +1226,20 @@ steps:
 
 ```yaml
 # Good: Pin to major version (gets bug fixes)
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+- uses: serapeum-org/github-actions/actions/python-setup/pip@v1
 
 # Acceptable: Pin to exact commit (maximum stability)
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@abc1234
+- uses: serapeum-org/github-actions/actions/python-setup/pip@abc1234
 
 # Avoid: Using @main (unpredictable)
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@main
+- uses: serapeum-org/github-actions/actions/python-setup/pip@main
 ```
 
 ### 7. Combine with Other Actions
 
 ```yaml
 - uses: actions/checkout@v5
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+- uses: serapeum-org/github-actions/actions/python-setup/pip@v1
   with:
     cache: 'pip'
     install-groups: 'test'
@@ -1290,7 +1290,7 @@ steps:
 
 **After**:
 ```yaml
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+- uses: serapeum-org/github-actions/actions/python-setup/pip@v1
   with:
     python-version: '3.12'
     cache: 'pip'
@@ -1311,7 +1311,7 @@ steps:
 
 **After**:
 ```yaml
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/pip@v1
+- uses: serapeum-org/github-actions/actions/python-setup/pip@v1
   with:
     cache: 'pip'
     install-groups: 'dev test'
@@ -1327,5 +1327,5 @@ steps:
 ## Support
 
 For issues, questions, or contributions:
-- Repository: https://github.com/Serapieum-of-alex/github-actions
-- Issues: https://github.com/Serapieum-of-alex/github-actions/issues
+- Repository: https://github.com/serapeum-org/github-actions
+- Issues: https://github.com/serapeum-org/github-actions/issues

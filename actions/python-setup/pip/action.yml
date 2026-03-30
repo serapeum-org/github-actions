@@ -3,19 +3,37 @@ description: 'Setup Python environment with pip package manager for pyproject.to
 
 inputs:
   python-version:
-    description: 'Python version to install, default is 3.12'
+    description: >
+      Python version to install. Supports semantic versioning and version ranges.
+      Examples: "3.12", "3.11", "3.10", "3.9", "3.12.0", "3.x".
+      Default is "3.12".
     required: false
     default: '3.12'
   cache:
-    description: 'Cache packages dependencies (pip, pipenv, poetry), if empty no caching is performed, default is empty'
+    description: >
+      Cache type for pip dependencies (passed to actions/setup-python cache input).
+      Set to "pip" to enable caching with pip, or leave empty to disable caching.
+      Requires a pyproject.toml or requirements.txt file when enabled.
+      Examples: "pip", "pipenv", "poetry", "" (empty to disable).
+      Default is "" (no caching).
     required: false
     default: ''
   install-groups:
-    description: 'examples: "groups: dev test, extras: aws viz" or "groups: dev" or "extras: aws viz". Leave empty to install only core dependencies. default is empty'
+    description: >
+      Dependency groups (PEP 735) and/or optional dependencies (extras) to install.
+      Uses a prefixed format with "groups:" and/or "extras:" sections.
+      Space or comma-separated values within each section.
+      Leave empty to install only core dependencies.
+      Examples: "groups: dev test", "extras: aws viz",
+      "groups: dev docs, extras: aws", "extras: test,lint".
+      Default is "" (core dependencies only).
     required: false
     default: ''
   architecture:
-    description: 'Target architecture for Python to use (x64, x86), default is x64'
+    description: >
+      Target architecture for Python (passed to actions/setup-python).
+      Examples: "x64", "x86".
+      Default is "x64".
     required: false
     default: 'x64'
 

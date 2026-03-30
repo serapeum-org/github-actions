@@ -26,7 +26,7 @@ This action provides a complete Python environment setup using [uv](https://gith
 - Activates the virtual environment automatically
 - Caches dependencies for faster CI runs
 
-**Location**: `Serapieum-of-alex/github-actions/actions/python-setup/uv@v1`
+**Location**: `serapeum-org/github-actions/actions/python-setup/uv@v1`
 
 ## Quick Start
 
@@ -35,7 +35,7 @@ This action provides a complete Python environment setup using [uv](https://gith
 ```yaml
 steps:
   - uses: actions/checkout@v5
-  - uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+  - uses: serapeum-org/github-actions/actions/python-setup/uv@v1
 
   # Virtual environment is automatically activated!
   - run: python --version
@@ -47,7 +47,7 @@ steps:
 ```yaml
 steps:
   - uses: actions/checkout@v5
-  - uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+  - uses: serapeum-org/github-actions/actions/python-setup/uv@v1
     with:
       install-groups: 'dev test'
 
@@ -107,7 +107,7 @@ The action automatically activates the `.venv` virtual environment by:
 **Result**: All subsequent steps can use `python`, `pytest`, `black`, etc. directly without manual activation or `uv run`.
 
 ```yaml
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+- uses: serapeum-org/github-actions/actions/python-setup/uv@v1
   with:
     install-groups: 'dev test'
 
@@ -146,14 +146,14 @@ docs = ["mkdocs"]
 Ensures reproducible builds by validating `uv.lock` matches `pyproject.toml`:
 
 ```yaml
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+- uses: serapeum-org/github-actions/actions/python-setup/uv@v1
   with:
     verify-lock: 'true'  # Fails if lock is outdated
 ```
 
 **Skip verification** (useful for dynamic dependency updates):
 ```yaml
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+- uses: serapeum-org/github-actions/actions/python-setup/uv@v1
   with:
     verify-lock: 'false'
 ```
@@ -194,7 +194,7 @@ Environment information
 ```yaml
 steps:
   - uses: actions/checkout@v5
-  - uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+  - uses: serapeum-org/github-actions/actions/python-setup/uv@v1
 
   - name: Run application
     run: python main.py
@@ -217,7 +217,7 @@ dependencies = ["requests", "pydantic"]
 ```yaml
 steps:
   - uses: actions/checkout@v5
-  - uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+  - uses: serapeum-org/github-actions/actions/python-setup/uv@v1
     with:
       install-groups: 'dev'
 
@@ -244,7 +244,7 @@ dev = ["black", "mypy", "ruff"]
 ```yaml
 steps:
   - uses: actions/checkout@v5
-  - uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+  - uses: serapeum-org/github-actions/actions/python-setup/uv@v1
     with:
       install-groups: 'groups: test'
 
@@ -271,7 +271,7 @@ test = ["pytest", "pytest-cov", "coverage"]
 ```yaml
 steps:
   - uses: actions/checkout@v5
-  - uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+  - uses: serapeum-org/github-actions/actions/python-setup/uv@v1
     with:
       install-groups: 'docs'
 
@@ -297,7 +297,7 @@ docs = ["mkdocs", "mkdocs-material"]
 ```yaml
 steps:
   - uses: actions/checkout@v5
-  - uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+  - uses: serapeum-org/github-actions/actions/python-setup/uv@v1
     with:
       install-groups: 'dev test'
 
@@ -336,7 +336,7 @@ strategy:
 
 steps:
   - uses: actions/checkout@v5
-  - uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+  - uses: serapeum-org/github-actions/actions/python-setup/uv@v1
     with:
       python-version: ${{ matrix.python-version }}
       install-groups: 'groups: test'
@@ -357,7 +357,7 @@ strategy:
 
 steps:
   - uses: actions/checkout@v5
-  - uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+  - uses: serapeum-org/github-actions/actions/python-setup/uv@v1
     with:
       install-groups: 'test'
 
@@ -386,7 +386,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/uv@v1
         with:
           verify-lock: 'false'  # Skip lock check for dynamic deps
           install-groups: 'groups: dev'
@@ -419,7 +419,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/uv@v1
 
       - name: Run application
         run: python app.py
@@ -460,7 +460,7 @@ jobs:
           - 'groups: dev, test docs'
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/uv@v1
         with:
           install-groups: ${{ matrix.format }}
 
@@ -502,7 +502,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/uv@v1
         with:
           install-groups: 'groups: dev test lint, extras: postgres redis'
 
@@ -520,7 +520,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/uv@v1
         with:
           install-groups: 'groups: docs'
 
@@ -535,7 +535,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/uv@v1
         with:
           install-groups: 'extras: aws postgres'  # No dev groups
 
@@ -556,7 +556,7 @@ jobs:
       - uses: actions/checkout@v5
       
       - name: Verify lock file is up to date
-        uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+        uses: serapeum-org/github-actions/actions/python-setup/uv@v1
         with:
           verify-lock: 'true'  # Default, but explicit
           install-groups: 'groups: dev'
@@ -593,7 +593,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/uv@v1
         with:
           install-groups: 'groups: dev'
 
@@ -632,7 +632,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/uv@v1
         # No install-groups = core only
 
       - name: Verify minimal install
@@ -663,7 +663,7 @@ jobs:
       - uses: actions/checkout@v5
       
       - name: First run (populate cache)
-        uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+        uses: serapeum-org/github-actions/actions/python-setup/uv@v1
         with:
           cache: 'true'  # Default
           install-groups: 'groups: dev test'
@@ -898,7 +898,7 @@ This makes it clear exactly what's being installed and why.
 - CI/CD pipelines (catch dependency drift early)
 
 ```yaml
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+- uses: serapeum-org/github-actions/actions/python-setup/uv@v1
   with:
     verify-lock: 'true'  # Fails if lock is outdated
 ```
@@ -918,7 +918,7 @@ error: The lockfile at `uv.lock` needs to be updated, but `--locked` was provide
 - Prototyping/testing new dependencies
 
 ```yaml
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+- uses: serapeum-org/github-actions/actions/python-setup/uv@v1
   with:
     verify-lock: 'false'
 ```
@@ -947,7 +947,7 @@ The action automatically activates the virtual environment created by `uv sync` 
 
 **Direct Python/CLI commands** (recommended):
 ```yaml
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+- uses: serapeum-org/github-actions/actions/python-setup/uv@v1
   with:
     install-groups: 'dev test'
 
@@ -1108,7 +1108,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/uv@v1
         with:
           install-groups: 'groups: dev test'
       - run: pytest
@@ -1117,7 +1117,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/uv@v1
         with:
           install-groups: 'groups: test'
       
@@ -1131,7 +1131,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+      - uses: serapeum-org/github-actions/actions/python-setup/uv@v1
         with:
           verify-lock: 'true'
       - run: echo "Lock file verified"
@@ -1271,7 +1271,7 @@ git push
 
 **Or** disable verification temporarily:
 ```yaml
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+- uses: serapeum-org/github-actions/actions/python-setup/uv@v1
   with:
     verify-lock: 'false'
 ```
@@ -1297,7 +1297,7 @@ git push
 
 **Solution**: Specify version explicitly:
 ```yaml
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+- uses: serapeum-org/github-actions/actions/python-setup/uv@v1
   with:
     python-version: '3.10'
 ```
@@ -1333,7 +1333,7 @@ git push
 
 **Solution**: Use latest version of the action which uses `--no-default-groups`:
 ```yaml
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1  # Latest
+- uses: serapeum-org/github-actions/actions/python-setup/uv@v1  # Latest
 ```
 
 ### Virtual Environment Not Activated
@@ -1415,7 +1415,7 @@ dev = ["black", "mypy", "pytest", "mkdocs"]  # Too broad
 
 ```yaml
 # Good: Catch dependency drift early
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+- uses: serapeum-org/github-actions/actions/python-setup/uv@v1
   with:
     verify-lock: 'true'  # Default, but explicit is clear
 ```
@@ -1424,13 +1424,13 @@ dev = ["black", "mypy", "pytest", "mkdocs"]  # Too broad
 
 ```yaml
 # Good: Pin to major version (gets updates)
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@v1
+- uses: serapeum-org/github-actions/actions/python-setup/uv@v1
 
 # Good: Pin to exact commit (maximum stability)
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@abc1234
+- uses: serapeum-org/github-actions/actions/python-setup/uv@abc1234
 
 # Avoid: Using @main (unpredictable)
-- uses: Serapieum-of-alex/github-actions/actions/python-setup/uv@main
+- uses: serapeum-org/github-actions/actions/python-setup/uv@main
 ```
 
 ### 6. Separate Workflows by Purpose
@@ -1503,5 +1503,5 @@ steps:
 ## Support
 
 For issues, questions, or contributions:
-- Repository: https://github.com/Serapieum-of-alex/github-actions
-- Issues: https://github.com/Serapieum-of-alex/github-actions/issues
+- Repository: https://github.com/serapeum-org/github-actions
+- Issues: https://github.com/serapeum-org/github-actions/issues

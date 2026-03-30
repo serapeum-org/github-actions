@@ -3,19 +3,38 @@ description: 'Setup Python environment with pixi package manager and install dep
 
 inputs:
   environments:
-    description: 'Pixi environments to install (e.g., "py311", "py312 py313")'
+    description: >
+      Pixi environments to install. Space-separated list of environment names
+      defined in pixi.toml/pyproject.toml.
+      Examples: "default", "py311", "py312 py313", "test docs".
+      Default is "default".
     required: false
     default: 'default'
   activate-environment:
-    description: 'Environment to activate after installation'
+    description: >
+      Environment to activate after installation. Must be one of the environments
+      listed in the 'environments' input.
+      Examples: "default", "py311", "test".
+      Default is "default".
     required: false
     default: 'default'
   cache:
-    description: 'Whether to enable caching of pixi environments'
+    description: >
+      Whether to enable caching of pixi environments. Set to "true" to cache
+      environments between runs (cache key is based on pixi.lock hash).
+      Cache writes only happen on pushes to main.
+      Examples: "true", "false".
+      Default is "false".
     required: false
     default: 'false'
   verify-lock:
-    description: 'Whether to verify the lock file is up to date'
+    description: >
+      Whether to verify the lock file is up to date (uses --locked mode).
+      When "true", fails if pixi.lock is out of sync with pixi.toml/pyproject.toml.
+      When "false", uses --frozen mode (installs exactly what is in the lock file
+      without checking).
+      Examples: "true", "false".
+      Default is "true".
     required: false
     default: 'true'
 

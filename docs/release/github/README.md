@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create GitHub Release
-        uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+        uses: serapeum-org/github-actions/actions/release/github@release-github/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           increment: ${{ inputs.increment }}
@@ -50,7 +50,7 @@ jobs:
 
 ```yaml
 - name: Create GitHub Release
-  uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+  uses: serapeum-org/github-actions/actions/release/github@release-github/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     release-branch: 'main'
@@ -98,7 +98,7 @@ Use the `config-file` input to release a sub-package in a monorepo that has its 
 
 ```yaml
 - name: Release sub-package
-  uses: Serapieum-of-alex/github-actions/actions/release/github@release-github/v1
+  uses: serapeum-org/github-actions/actions/release/github@release-github/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     increment: 'minor'
@@ -361,4 +361,4 @@ For the first release, ensure:
 
 ## Support
 
-For issues and feature requests, please use the [GitHub Issues](https://github.com/Serapieum-of-alex/github-actions/issues).
+For issues and feature requests, please use the [GitHub Issues](https://github.com/serapeum-org/github-actions/issues).
