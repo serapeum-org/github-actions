@@ -101,10 +101,6 @@ jobs:
           git log --oneline -n 5
           git tag -l
 
-  # ============================================================================
-  # Test with pixi package manager
-  # ============================================================================
-
   test-release-pixi:
     name: Test release - pixi (patch)
     runs-on: ubuntu-latest
@@ -169,10 +165,6 @@ jobs:
           echo "Pixi release action completed successfully"
           git log --oneline -n 5
           git tag -l
-
-  # ============================================================================
-  # Test prerelease types
-  # ============================================================================
 
   test-release-prerelease:
     name: Test release - ${{ matrix.prerelease-type }} prerelease
@@ -264,10 +256,6 @@ jobs:
             exit 1
           fi
 
-  # ============================================================================
-  # Test with different install-groups configurations
-  # ============================================================================
-
   test-release-groups-and-extras:
     name: Test release - ${{ matrix.install-type }}
     runs-on: ubuntu-latest
@@ -346,10 +334,6 @@ jobs:
           source .venv/bin/activate
           python -c "${{ matrix.verify-import }}" || echo "[WARNING] Verification imports may differ in CI"
 
-  # ============================================================================
-  # Test with different Python versions
-  # ============================================================================
-
   test-release-python-versions:
     name: Test release - Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
@@ -414,10 +398,6 @@ jobs:
           python --version
           echo "[OK] Release works with Python ${{ matrix.python-version }}"
 
-  # ============================================================================
-  # Test with different release branches
-  # ============================================================================
-
   test-release-different-branch:
     name: Test release - custom branch
     runs-on: ubuntu-latest
@@ -480,10 +460,6 @@ jobs:
         run: |
           echo "[OK] Release works on custom branch"
           git log --oneline -n 5
-
-  # ============================================================================
-  # Test cross-platform
-  # ============================================================================
 
   test-release-cross-platform:
     name: Test release - ${{ matrix.os }}
@@ -551,10 +527,6 @@ jobs:
         shell: bash
         run: |
           echo "[OK] Release works on ${{ matrix.os }}"
-
-  # ============================================================================
-  # Test edge cases
-  # ============================================================================
 
   test-release-no-dependency-groups:
     name: Test release - no dependency-groups section
@@ -682,10 +654,6 @@ jobs:
             echo "[WARNING] Git configuration may differ"
           fi
 
-  # ============================================================================
-  # Test config-file input (monorepo per-package commitizen config)
-  # ============================================================================
-
   test-release-with-config:
     name: Test release - config-file (monorepo)
     runs-on: ubuntu-latest
@@ -783,4 +751,246 @@ jobs:
             exit 1
           else
             echo "[OK] Root changelog untouched"
+          fi
+
+  test-release-changelog-no-duplicates:
+    name: Test release - changelog no duplicates (normal path)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Copy test fixture
+        run: |
+          cp tests/data/release-github/test-basic-uv/pyproject.toml .
+          cp tests/data/release-github/test-basic-uv/uv.lock .
+
+      - name: Clean up repository tags
+        run: git tag -l | xargs -r git tag -d
+
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
+
+      - name: Create multiple test commits for changelog
+        run: |
+          git config user.name "Test Bot"
+          git config user.email "test@example.com"
+
+          # Create initial CHANGELOG.md
+          cat > CHANGELOG.md << 'EOF'
+          # Changelog
+
+          All notable changes to this project will be documented in this file.
+          EOF
+
+          git add pyproject.toml CHANGELOG.md
+          git commit -m "chore: initial commit"
+          git tag 0.1.0
+          git push origin main
+          git push origin 0.1.0
+
+          # Create several distinct commits so we can check for duplicates
+          echo "feature-a" > feature_a.py
+          git add feature_a.py
+          git commit -m "feat: add feature A for testing"
+
+          echo "feature-b" > feature_b.py
+          git add feature_b.py
+          git commit -m "feat: add feature B for testing"
+
+          echo "bugfix" > bugfix.py
+          git add bugfix.py
+          git commit -m "fix: resolve bug in processing"
+
+          git push origin main
+
+      - name: Test release action
+        uses: ./actions/release/github
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          increment: 'minor'
+          package-manager: 'uv'
+          python-version: '3.12'
+          install-groups: 'groups: dev docs'
+          skip-github-release: 'true'
+
+      - name: Verify no duplicate changelog entries
+        run: |
+          echo "=== CHANGELOG.md contents ==="
+          cat CHANGELOG.md
+          echo ""
+          echo "=== Checking for duplicate entries ==="
+
+          # Extract only feat/fix lines (the substantive changelog entries)
+          ENTRIES=$(grep -E '^\s*-\s+' CHANGELOG.md | sed 's/^[[:space:]]*//' | sort)
+          UNIQUE_ENTRIES=$(echo "$ENTRIES" | sort -u)
+
+          echo "All entries:"
+          echo "$ENTRIES"
+          echo ""
+          echo "Unique entries:"
+          echo "$UNIQUE_ENTRIES"
+
+          TOTAL=$(echo "$ENTRIES" | wc -l)
+          UNIQUE=$(echo "$UNIQUE_ENTRIES" | wc -l)
+
+          if [ "$TOTAL" -ne "$UNIQUE" ]; then
+            echo ""
+            echo "[ERROR] Found duplicate changelog entries!"
+            echo "Total entries: $TOTAL, Unique entries: $UNIQUE"
+            echo ""
+            echo "Duplicates:"
+            echo "$ENTRIES" | sort | uniq -d
+            exit 1
+          else
+            echo ""
+            echo "[OK] No duplicate changelog entries found ($TOTAL entries, all unique)"
+          fi
+
+  test-release-recovery-no-duplicates:
+    name: Test release - recovery path no duplicates (issue #4)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Copy test fixture
+        run: |
+          cp tests/data/release-github/test-basic-uv/pyproject.toml .
+          cp tests/data/release-github/test-basic-uv/uv.lock .
+
+      - name: Clean up repository tags
+        run: git tag -l | xargs -r git tag -d
+
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
+
+      - name: Set up Python environment
+        uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1
+        with:
+          python-version: '3.12'
+          install-groups: 'groups: dev docs'
+
+      - name: Create repo with commits for bump
+        run: |
+          git config user.name "Test Bot"
+          git config user.email "test@example.com"
+
+          # Create initial CHANGELOG.md
+          cat > CHANGELOG.md << 'EOF'
+          # Changelog
+
+          All notable changes to this project will be documented in this file.
+          EOF
+
+          git add pyproject.toml CHANGELOG.md
+          git commit -m "chore: initial commit"
+          git tag 0.1.0
+          git push origin main
+          git push origin 0.1.0
+
+          # Create feature commits
+          echo "feature-a" > feature_a.py
+          git add feature_a.py
+          git commit -m "feat: add feature A for testing"
+
+          echo "feature-b" > feature_b.py
+          git add feature_b.py
+          git commit -m "feat: add feature B for testing"
+
+          echo "bugfix" > bugfix.py
+          git add bugfix.py
+          git commit -m "fix: resolve bug in processing"
+
+          git push origin main
+
+      - name: Simulate failed cz bump with partial changelog write
+        run: |
+          echo "=== Simulating partial changelog write from failed cz bump ==="
+
+          # Calculate next version (same as the action does)
+          NEXT_VERSION=$(uv run cz bump --dry-run --yes --increment minor | grep "tag to create" | awk '{print $NF}')
+          echo "Next version: $NEXT_VERSION"
+
+          # Simulate what happens when update_changelog_on_bump = true and
+          # cz bump fails AFTER writing changelog but BEFORE completing:
+          # The changelog gets new entries written to it.
+          uv run cz changelog --incremental --unreleased-version="$NEXT_VERSION"
+
+          echo ""
+          echo "=== Changelog after partial write (simulating failed bump) ==="
+          cat CHANGELOG.md
+
+      - name: Run recovery path (the fix from issue #4)
+        run: |
+          echo "=== Running recovery path ==="
+
+          # Read changelog_file from commitizen config (same as action does)
+          CHANGELOG_FILE=$(grep -A 20 "^\[tool\.commitizen\]" pyproject.toml | grep "^changelog_file" | head -1 | sed 's/.*=\s*"\(.*\)"/\1/' || true)
+          if [ -z "$CHANGELOG_FILE" ]; then
+            CHANGELOG_FILE="CHANGELOG.md"
+          fi
+          echo "Changelog file: $CHANGELOG_FILE"
+
+          NEXT_VERSION=$(uv run cz bump --dry-run --yes --increment minor | grep "tag to create" | awk '{print $NF}')
+
+          # THE FIX: Reset changelog to pre-bump state
+          git checkout -- "$CHANGELOG_FILE"
+          echo "✓ Changelog reset to pre-bump state"
+
+          # Regenerate full changelog
+          uv run cz changelog --unreleased-version="$NEXT_VERSION"
+          echo "✓ Changelog regenerated"
+
+          # Bump version (files only, skip tag/commit)
+          uv run cz bump --yes --increment minor --files-only
+          echo "✓ Version bumped (files-only)"
+
+          echo ""
+          echo "=== Changelog after recovery ==="
+          cat CHANGELOG.md
+
+      - name: Verify no duplicate changelog entries
+        run: |
+          echo "=== Checking for duplicate entries ==="
+
+          # Extract only feat/fix lines (the substantive changelog entries)
+          ENTRIES=$(grep -E '^\s*-\s+' CHANGELOG.md | sed 's/^[[:space:]]*//' | sort)
+          UNIQUE_ENTRIES=$(echo "$ENTRIES" | sort -u)
+
+          echo "All entries:"
+          echo "$ENTRIES"
+          echo ""
+          echo "Unique entries:"
+          echo "$UNIQUE_ENTRIES"
+
+          TOTAL=$(echo "$ENTRIES" | wc -l)
+          UNIQUE=$(echo "$UNIQUE_ENTRIES" | wc -l)
+
+          if [ "$TOTAL" -ne "$UNIQUE" ]; then
+            echo ""
+            echo "[ERROR] Found duplicate changelog entries!"
+            echo "Total entries: $TOTAL, Unique entries: $UNIQUE"
+            echo ""
+            echo "Duplicates:"
+            echo "$ENTRIES" | sort | uniq -d
+            exit 1
+          else
+            echo ""
+            echo "[OK] No duplicate changelog entries found ($TOTAL entries, all unique)"
+          fi
+
+      - name: Verify version was bumped correctly
+        run: |
+          NEW_VERSION=$(grep '^version' pyproject.toml | head -1 | sed 's/version = "//;s/"//')
+          echo "New version: $NEW_VERSION"
+          if [ "$NEW_VERSION" = "0.2.0" ]; then
+            echo "[OK] Version bumped to 0.2.0"
+          else
+            echo "[ERROR] Expected 0.2.0, got: $NEW_VERSION"
+            exit 1
           fi
