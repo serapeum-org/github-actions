@@ -283,6 +283,15 @@ runs:
         echo "Working directory: $WORK_DIR"
         cd "$WORK_DIR"
 
+        # Read changelog_file from commitizen config (needed for recovery path)
+        CHANGELOG_FILE=""
+        if [ -f "pyproject.toml" ]; then
+          CHANGELOG_FILE=$(grep -A 20 "^\[tool\.commitizen\]" pyproject.toml | grep "^changelog_file" | head -1 | sed 's/.*=\s*"\(.*\)"/\1/' || true)
+        fi
+        if [ -z "$CHANGELOG_FILE" ]; then
+          CHANGELOG_FILE="CHANGELOG.md"
+        fi
+
         echo "::group::Getting current version"
         CURRENT_VERSION=$($CZ_CMD version --project)
         echo "✓ Current version: $CURRENT_VERSION"
@@ -321,7 +330,10 @@ runs:
         # If bump failed, recover by generating full changelog and retrying with --files-only
         if [ $BUMP_EXIT_CODE -ne 0 ]; then
           echo "⚠ cz bump encountered an issue (exit code: $BUMP_EXIT_CODE)"
-          echo "Recovering: generating full changelog and retrying..."
+          echo "Recovering: resetting changelog and regenerating..."
+
+          # Reset changelog to pre-bump state to avoid duplicate entries
+          git checkout -- "$CHANGELOG_FILE"
 
           # Generate full changelog
           $CZ_CMD changelog --unreleased-version="$NEXT_VERSION"
