@@ -101,10 +101,6 @@ jobs:
           git log --oneline -n 5
           git tag -l
 
-  # ============================================================================
-  # Test with pixi package manager
-  # ============================================================================
-
   test-release-pixi:
     name: Test release - pixi (patch)
     runs-on: ubuntu-latest
@@ -169,10 +165,6 @@ jobs:
           echo "Pixi release action completed successfully"
           git log --oneline -n 5
           git tag -l
-
-  # ============================================================================
-  # Test prerelease types
-  # ============================================================================
 
   test-release-prerelease:
     name: Test release - ${{ matrix.prerelease-type }} prerelease
@@ -264,10 +256,6 @@ jobs:
             exit 1
           fi
 
-  # ============================================================================
-  # Test with different install-groups configurations
-  # ============================================================================
-
   test-release-groups-and-extras:
     name: Test release - ${{ matrix.install-type }}
     runs-on: ubuntu-latest
@@ -346,10 +334,6 @@ jobs:
           source .venv/bin/activate
           python -c "${{ matrix.verify-import }}" || echo "[WARNING] Verification imports may differ in CI"
 
-  # ============================================================================
-  # Test with different Python versions
-  # ============================================================================
-
   test-release-python-versions:
     name: Test release - Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
@@ -414,10 +398,6 @@ jobs:
           python --version
           echo "[OK] Release works with Python ${{ matrix.python-version }}"
 
-  # ============================================================================
-  # Test with different release branches
-  # ============================================================================
-
   test-release-different-branch:
     name: Test release - custom branch
     runs-on: ubuntu-latest
@@ -480,10 +460,6 @@ jobs:
         run: |
           echo "[OK] Release works on custom branch"
           git log --oneline -n 5
-
-  # ============================================================================
-  # Test cross-platform
-  # ============================================================================
 
   test-release-cross-platform:
     name: Test release - ${{ matrix.os }}
@@ -551,10 +527,6 @@ jobs:
         shell: bash
         run: |
           echo "[OK] Release works on ${{ matrix.os }}"
-
-  # ============================================================================
-  # Test edge cases
-  # ============================================================================
 
   test-release-no-dependency-groups:
     name: Test release - no dependency-groups section
@@ -682,10 +654,6 @@ jobs:
             echo "[WARNING] Git configuration may differ"
           fi
 
-  # ============================================================================
-  # Test config-file input (monorepo per-package commitizen config)
-  # ============================================================================
-
   test-release-with-config:
     name: Test release - config-file (monorepo)
     runs-on: ubuntu-latest
@@ -784,3 +752,586 @@ jobs:
           else
             echo "[OK] Root changelog untouched"
           fi
+
+      - name: Verify release notes extraction works with monorepo (prefixed tag + custom changelog path)
+        run: |
+          VERSION="test-pkg-0.2.0"
+          CHANGELOG_FILE="libs/pkg/docs/change-log.md"
+          ESCAPED_VERSION=$(echo "$VERSION" | sed 's/\./\\./g')
+          BODY=$(awk "
+            /^## .*${ESCAPED_VERSION}/ { found=1; next }
+            found && /^## / { exit }
+            found { print }
+          " "$CHANGELOG_FILE")
+
+          echo "Extracted release notes for $VERSION:"
+          echo "$BODY"
+
+          if [ -z "$BODY" ]; then
+            echo "[ERROR] Failed to extract release notes from monorepo changelog"
+            exit 1
+          fi
+
+          if echo "$BODY" | grep -q "add feature to sub-package"; then
+            echo "[OK] Release notes contain the expected commit"
+          else
+            echo "[ERROR] Release notes missing expected commit"
+            exit 1
+          fi
+
+  test-release-changelog-no-duplicates:
+    name: Test release - changelog no duplicates (normal path)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Copy test fixture
+        run: |
+          cp tests/data/release-github/test-basic-uv/pyproject.toml .
+          cp tests/data/release-github/test-basic-uv/uv.lock .
+
+      - name: Clean up repository tags
+        run: git tag -l | xargs -r git tag -d
+
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
+
+      - name: Create multiple test commits for changelog
+        run: |
+          git config user.name "Test Bot"
+          git config user.email "test@example.com"
+
+          # Create initial CHANGELOG.md
+          cat > CHANGELOG.md << 'EOF'
+          # Changelog
+
+          All notable changes to this project will be documented in this file.
+          EOF
+
+          git add pyproject.toml CHANGELOG.md
+          git commit -m "chore: initial commit"
+          git tag 0.1.0
+          git push origin main
+          git push origin 0.1.0
+
+          # Create several distinct commits so we can check for duplicates
+          echo "feature-a" > feature_a.py
+          git add feature_a.py
+          git commit -m "feat: add feature A for testing"
+
+          echo "feature-b" > feature_b.py
+          git add feature_b.py
+          git commit -m "feat: add feature B for testing"
+
+          echo "bugfix" > bugfix.py
+          git add bugfix.py
+          git commit -m "fix: resolve bug in processing"
+
+          git push origin main
+
+      - name: Test release action
+        uses: ./actions/release/github
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          increment: 'minor'
+          package-manager: 'uv'
+          python-version: '3.12'
+          install-groups: 'groups: dev docs'
+          skip-github-release: 'true'
+
+      - name: Verify no duplicate changelog entries
+        run: |
+          echo "=== CHANGELOG.md contents ==="
+          cat CHANGELOG.md
+          echo ""
+          echo "=== Checking for duplicate entries ==="
+
+          # Extract only feat/fix lines (the substantive changelog entries)
+          ENTRIES=$(grep -E '^\s*-\s+' CHANGELOG.md | sed 's/^[[:space:]]*//' | sort)
+          UNIQUE_ENTRIES=$(echo "$ENTRIES" | sort -u)
+
+          echo "All entries:"
+          echo "$ENTRIES"
+          echo ""
+          echo "Unique entries:"
+          echo "$UNIQUE_ENTRIES"
+
+          TOTAL=$(echo "$ENTRIES" | wc -l)
+          UNIQUE=$(echo "$UNIQUE_ENTRIES" | wc -l)
+
+          if [ "$TOTAL" -ne "$UNIQUE" ]; then
+            echo ""
+            echo "[ERROR] Found duplicate changelog entries!"
+            echo "Total entries: $TOTAL, Unique entries: $UNIQUE"
+            echo ""
+            echo "Duplicates:"
+            echo "$ENTRIES" | sort | uniq -d
+            exit 1
+          else
+            echo ""
+            echo "[OK] No duplicate changelog entries found ($TOTAL entries, all unique)"
+          fi
+
+  test-release-recovery-no-duplicates:
+    name: Test release - recovery path no duplicates (issue #4)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Copy test fixture
+        run: |
+          cp tests/data/release-github/test-basic-uv/pyproject.toml .
+          cp tests/data/release-github/test-basic-uv/uv.lock .
+
+      - name: Clean up repository tags
+        run: git tag -l | xargs -r git tag -d
+
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
+
+      - name: Set up Python environment
+        uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1
+        with:
+          python-version: '3.12'
+          install-groups: 'groups: dev docs'
+
+      - name: Create repo with commits for bump
+        run: |
+          git config user.name "Test Bot"
+          git config user.email "test@example.com"
+
+          # Create initial CHANGELOG.md
+          cat > CHANGELOG.md << 'EOF'
+          # Changelog
+
+          All notable changes to this project will be documented in this file.
+          EOF
+
+          git add pyproject.toml CHANGELOG.md
+          git commit -m "chore: initial commit"
+          git tag 0.1.0
+          git push origin main
+          git push origin 0.1.0
+
+          # Create feature commits
+          echo "feature-a" > feature_a.py
+          git add feature_a.py
+          git commit -m "feat: add feature A for testing"
+
+          echo "feature-b" > feature_b.py
+          git add feature_b.py
+          git commit -m "feat: add feature B for testing"
+
+          echo "bugfix" > bugfix.py
+          git add bugfix.py
+          git commit -m "fix: resolve bug in processing"
+
+          git push origin main
+
+      - name: Simulate failed cz bump with partial changelog write
+        run: |
+          echo "=== Simulating partial changelog write from failed cz bump ==="
+
+          # Calculate next version (same as the action does)
+          NEXT_VERSION=$(uv run cz bump --dry-run --yes --increment minor | grep "tag to create" | awk '{print $NF}')
+          echo "Next version: $NEXT_VERSION"
+
+          # Simulate what happens when update_changelog_on_bump = true and
+          # cz bump fails AFTER writing changelog but BEFORE completing:
+          # The changelog gets new entries written to it.
+          uv run cz changelog --incremental --unreleased-version="$NEXT_VERSION"
+
+          echo ""
+          echo "=== Changelog after partial write (simulating failed bump) ==="
+          cat CHANGELOG.md
+
+      - name: Run recovery path (the fix from issue #4)
+        run: |
+          echo "=== Running recovery path ==="
+
+          # Read changelog_file from commitizen config (same as action does)
+          CHANGELOG_FILE=$(grep -A 20 "^\[tool\.commitizen\]" pyproject.toml | grep "^changelog_file" | head -1 | sed 's/.*=\s*"\(.*\)"/\1/' || true)
+          if [ -z "$CHANGELOG_FILE" ]; then
+            CHANGELOG_FILE="CHANGELOG.md"
+          fi
+          echo "Changelog file: $CHANGELOG_FILE"
+
+          NEXT_VERSION=$(uv run cz bump --dry-run --yes --increment minor | grep "tag to create" | awk '{print $NF}')
+
+          # THE FIX: Reset changelog to pre-bump state
+          git checkout -- "$CHANGELOG_FILE"
+          echo "✓ Changelog reset to pre-bump state"
+
+          # Regenerate full changelog
+          uv run cz changelog --unreleased-version="$NEXT_VERSION"
+          echo "✓ Changelog regenerated"
+
+          # Bump version (files only, skip tag/commit)
+          uv run cz bump --yes --increment minor --files-only
+          echo "✓ Version bumped (files-only)"
+
+          echo ""
+          echo "=== Changelog after recovery ==="
+          cat CHANGELOG.md
+
+      - name: Verify no duplicate changelog entries
+        run: |
+          echo "=== Checking for duplicate entries ==="
+
+          # Extract only feat/fix lines (the substantive changelog entries)
+          ENTRIES=$(grep -E '^\s*-\s+' CHANGELOG.md | sed 's/^[[:space:]]*//' | sort)
+          UNIQUE_ENTRIES=$(echo "$ENTRIES" | sort -u)
+
+          echo "All entries:"
+          echo "$ENTRIES"
+          echo ""
+          echo "Unique entries:"
+          echo "$UNIQUE_ENTRIES"
+
+          TOTAL=$(echo "$ENTRIES" | wc -l)
+          UNIQUE=$(echo "$UNIQUE_ENTRIES" | wc -l)
+
+          if [ "$TOTAL" -ne "$UNIQUE" ]; then
+            echo ""
+            echo "[ERROR] Found duplicate changelog entries!"
+            echo "Total entries: $TOTAL, Unique entries: $UNIQUE"
+            echo ""
+            echo "Duplicates:"
+            echo "$ENTRIES" | sort | uniq -d
+            exit 1
+          else
+            echo ""
+            echo "[OK] No duplicate changelog entries found ($TOTAL entries, all unique)"
+          fi
+
+      - name: Verify version was bumped correctly
+        run: |
+          NEW_VERSION=$(grep '^version' pyproject.toml | head -1 | sed 's/version = "//;s/"//')
+          echo "New version: $NEW_VERSION"
+          if [ "$NEW_VERSION" = "0.2.0" ]; then
+            echo "[OK] Version bumped to 0.2.0"
+          else
+            echo "[ERROR] Expected 0.2.0, got: $NEW_VERSION"
+            exit 1
+          fi
+
+  # Test that release notes are extracted from changelog, not auto-generated (issue #3)
+  test-release-notes-from-changelog:
+    name: Test release - release notes scoped to current version (issue #3)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Copy test fixture
+        run: |
+          cp tests/data/release-github/test-basic-uv/pyproject.toml .
+          cp tests/data/release-github/test-basic-uv/uv.lock .
+
+      - name: Clean up repository tags
+        run: git tag -l | xargs -r git tag -d
+
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
+
+      - name: Set up Python environment
+        uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1
+        with:
+          python-version: '3.12'
+          install-groups: 'groups: dev docs'
+
+      - name: Create repo with two releases worth of commits
+        run: |
+          git config user.name "Test Bot"
+          git config user.email "test@example.com"
+
+          # Create initial CHANGELOG.md
+          cat > CHANGELOG.md << 'EOF'
+          # Changelog
+
+          All notable changes to this project will be documented in this file.
+          EOF
+
+          git add pyproject.toml CHANGELOG.md
+          git commit -m "chore: initial commit"
+          git tag 0.1.0
+          git push origin main
+          git push origin 0.1.0
+
+          # First release commits (will become 0.2.0)
+          echo "old-feature" > old_feature.py
+          git add old_feature.py
+          git commit -m "feat: add old feature from first release"
+
+          git push origin main
+
+          # Bump to 0.2.0
+          uv run cz bump --yes --increment minor
+          git push origin main --tags
+
+          # Second release commits (will become 0.3.0)
+          echo "new-feature" > new_feature.py
+          git add new_feature.py
+          git commit -m "feat: add new feature for second release"
+
+          echo "bugfix" > bugfix.py
+          git add bugfix.py
+          git commit -m "fix: resolve critical bug"
+
+          git push origin main
+
+      - name: Extract release notes using the same logic as the action
+        id: extract
+        run: |
+          # Calculate next version
+          NEXT_VERSION=$(uv run cz bump --dry-run --yes --increment minor | grep "tag to create" | awk '{print $NF}')
+          echo "Next version: $NEXT_VERSION"
+
+          # Bump and generate changelog
+          uv run cz bump --yes --increment minor
+
+          # Read changelog file path
+          CHANGELOG_FILE=$(grep -A 20 "^\[tool\.commitizen\]" pyproject.toml | grep "^changelog_file" | head -1 | sed 's/.*=\s*"\(.*\)"/\1/' || true)
+          if [ -z "$CHANGELOG_FILE" ]; then
+            CHANGELOG_FILE="CHANGELOG.md"
+          fi
+
+          echo "=== Full CHANGELOG.md ==="
+          cat "$CHANGELOG_FILE"
+          echo ""
+
+          # Extract notes for current version only (same awk as the action)
+          ESCAPED_VERSION=$(echo "$NEXT_VERSION" | sed 's/\./\\./g')
+          BODY=$(awk "
+            /^## .*${ESCAPED_VERSION}/ { found=1; next }
+            found && /^## / { exit }
+            found { print }
+          " "$CHANGELOG_FILE")
+
+          echo "=== Extracted release notes for $NEXT_VERSION ==="
+          echo "$BODY"
+
+          echo "body<<RELEASE_NOTES_EOF" >> $GITHUB_OUTPUT
+          echo "$BODY" >> $GITHUB_OUTPUT
+          echo "RELEASE_NOTES_EOF" >> $GITHUB_OUTPUT
+          echo "version=$NEXT_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Verify release notes only contain current version changes
+        run: |
+          BODY="${{ steps.extract.outputs.body }}"
+          VERSION="${{ steps.extract.outputs.version }}"
+
+          echo "Checking release notes for version $VERSION"
+          echo "---"
+          echo "$BODY"
+          echo "---"
+
+          # Must contain the new commits
+          if echo "$BODY" | grep -q "add new feature for second release"; then
+            echo "[OK] Contains 'add new feature for second release'"
+          else
+            echo "[ERROR] Missing commit from current release"
+            exit 1
+          fi
+
+          if echo "$BODY" | grep -q "resolve critical bug"; then
+            echo "[OK] Contains 'resolve critical bug'"
+          else
+            echo "[ERROR] Missing commit from current release"
+            exit 1
+          fi
+
+          # Must NOT contain commits from the previous release
+          if echo "$BODY" | grep -q "old feature from first release"; then
+            echo "[ERROR] Release notes contain commits from previous release (0.2.0)"
+            echo "This is the bug from issue #3 — wrong comparison range"
+            exit 1
+          else
+            echo "[OK] Does NOT contain commits from previous release"
+          fi
+
+          echo ""
+          echo "[OK] Release notes are correctly scoped to version $VERSION only"
+
+  # Test release notes extraction with custom changelog_file path
+  test-release-notes-custom-changelog-path:
+    name: Test release - release notes with custom changelog path
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Copy test fixture and set custom changelog path
+        run: |
+          cp tests/data/release-github/test-basic-uv/pyproject.toml .
+          cp tests/data/release-github/test-basic-uv/uv.lock .
+          # Add custom changelog_file to commitizen config
+          echo 'changelog_file = "docs/change-log.md"' >> pyproject.toml
+          mkdir -p docs
+
+      - name: Clean up repository tags
+        run: git tag -l | xargs -r git tag -d
+
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
+
+      - name: Set up Python environment
+        uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1
+        with:
+          python-version: '3.12'
+          install-groups: 'groups: dev docs'
+
+      - name: Create repo and bump
+        run: |
+          git config user.name "Test Bot"
+          git config user.email "test@example.com"
+
+          echo "# Changelog" > docs/change-log.md
+
+          git add pyproject.toml docs/change-log.md
+          git commit -m "chore: initial commit"
+          git tag 0.1.0
+          git push origin main
+          git push origin 0.1.0
+
+          echo "custom-feature" > custom.py
+          git add custom.py
+          git commit -m "feat: feature with custom changelog path"
+          git push origin main
+
+          uv run cz bump --yes --increment minor
+
+      - name: Verify release notes extraction from custom path
+        run: |
+          CHANGELOG_FILE=$(grep -A 20 "^\[tool\.commitizen\]" pyproject.toml | grep "^changelog_file" | head -1 | sed 's/.*=\s*"\(.*\)"/\1/' || true)
+          if [ -z "$CHANGELOG_FILE" ]; then
+            CHANGELOG_FILE="CHANGELOG.md"
+          fi
+
+          echo "Changelog file: $CHANGELOG_FILE"
+          echo "=== Changelog contents ==="
+          cat "$CHANGELOG_FILE"
+
+          VERSION="0.2.0"
+          ESCAPED_VERSION=$(echo "$VERSION" | sed 's/\./\\./g')
+          BODY=$(awk "
+            /^## .*${ESCAPED_VERSION}/ { found=1; next }
+            found && /^## / { exit }
+            found { print }
+          " "$CHANGELOG_FILE")
+
+          echo "=== Extracted body ==="
+          echo "$BODY"
+
+          if [ -z "$BODY" ]; then
+            echo "[ERROR] Failed to extract release notes from custom changelog path"
+            exit 1
+          fi
+
+          if echo "$BODY" | grep -q "feature with custom changelog path"; then
+            echo "[OK] Extraction works with custom changelog_file path"
+          else
+            echo "[ERROR] Missing expected commit in extracted notes"
+            exit 1
+          fi
+
+  # Test release notes extraction on first release (no previous ## boundary)
+  test-release-notes-first-release:
+    name: Test release - release notes on first release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Copy test fixture
+        run: |
+          cp tests/data/release-github/test-basic-uv/pyproject.toml .
+          cp tests/data/release-github/test-basic-uv/uv.lock .
+          # Set version to 0.0.0 for first release scenario
+          sed -i 's/version = "0.1.0"/version = "0.0.0"/g' pyproject.toml
+
+      - name: Clean up repository tags
+        run: git tag -l | xargs -r git tag -d
+
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
+
+      - name: Set up Python environment
+        uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1
+        with:
+          python-version: '3.12'
+          install-groups: 'groups: dev docs'
+
+      - name: Create repo and do first-ever release
+        run: |
+          git config user.name "Test Bot"
+          git config user.email "test@example.com"
+
+          echo "# Changelog" > CHANGELOG.md
+
+          git add pyproject.toml CHANGELOG.md
+          git commit -m "chore: initial commit"
+          git tag 0.0.0
+          git push origin main
+          git push origin 0.0.0
+
+          echo "first" > first.py
+          git add first.py
+          git commit -m "feat: the very first feature"
+
+          echo "second" > second.py
+          git add second.py
+          git commit -m "fix: first bugfix"
+
+          git push origin main
+
+          uv run cz bump --yes --increment minor
+
+      - name: Verify release notes extraction on first release
+        run: |
+          echo "=== Changelog contents ==="
+          cat CHANGELOG.md
+
+          VERSION="0.1.0"
+          ESCAPED_VERSION=$(echo "$VERSION" | sed 's/\./\\./g')
+          BODY=$(awk "
+            /^## .*${ESCAPED_VERSION}/ { found=1; next }
+            found && /^## / { exit }
+            found { print }
+          " CHANGELOG.md)
+
+          echo "=== Extracted body ==="
+          echo "$BODY"
+
+          if [ -z "$BODY" ]; then
+            echo "[ERROR] Failed to extract release notes on first release"
+            exit 1
+          fi
+
+          if echo "$BODY" | grep -q "the very first feature"; then
+            echo "[OK] Contains feat commit"
+          else
+            echo "[ERROR] Missing feat commit"
+            exit 1
+          fi
+
+          if echo "$BODY" | grep -q "first bugfix"; then
+            echo "[OK] Contains fix commit"
+          else
+            echo "[ERROR] Missing fix commit"
+            exit 1
+          fi
+
+          echo "[OK] First-release extraction works correctly"

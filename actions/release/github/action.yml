@@ -283,6 +283,15 @@ runs:
         echo "Working directory: $WORK_DIR"
         cd "$WORK_DIR"
 
+        # Read changelog_file from commitizen config (needed for recovery path)
+        CHANGELOG_FILE=""
+        if [ -f "pyproject.toml" ]; then
+          CHANGELOG_FILE=$(grep -A 20 "^\[tool\.commitizen\]" pyproject.toml | grep "^changelog_file" | head -1 | sed 's/.*=\s*"\(.*\)"/\1/' || true)
+        fi
+        if [ -z "$CHANGELOG_FILE" ]; then
+          CHANGELOG_FILE="CHANGELOG.md"
+        fi
+
         echo "::group::Getting current version"
         CURRENT_VERSION=$($CZ_CMD version --project)
         echo "✓ Current version: $CURRENT_VERSION"
@@ -321,7 +330,10 @@ runs:
         # If bump failed, recover by generating full changelog and retrying with --files-only
         if [ $BUMP_EXIT_CODE -ne 0 ]; then
           echo "⚠ cz bump encountered an issue (exit code: $BUMP_EXIT_CODE)"
-          echo "Recovering: generating full changelog and retrying..."
+          echo "Recovering: resetting changelog and regenerating..."
+
+          # Reset changelog to pre-bump state to avoid duplicate entries
+          git checkout -- "$CHANGELOG_FILE"
 
           # Generate full changelog
           $CZ_CMD changelog --unreleased-version="$NEXT_VERSION"
@@ -344,6 +356,8 @@ runs:
         # Using it here ensures the release step references the tag commitizen created.
         NEW_VERSION=$NEXT_VERSION
         echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
+        echo "CHANGELOG_FILE=$CHANGELOG_FILE" >> $GITHUB_OUTPUT
+        echo "WORK_DIR=$WORK_DIR" >> $GITHUB_OUTPUT
 
         if git rev-parse "$NEW_VERSION" >/dev/null 2>&1; then
           echo "✓ Tag verified in git: $NEW_VERSION"
@@ -412,6 +426,43 @@ runs:
         fi
         echo "::endgroup::"
 
+    - name: Extract release notes from changelog
+      id: release_notes
+      shell: bash
+      run: |
+        echo "::group::Extracting release notes from changelog"
+        VERSION="${{ steps.bump_version.outputs.NEW_VERSION }}"
+        CHANGELOG_FILE="${{ steps.bump_version.outputs.CHANGELOG_FILE }}"
+        WORK_DIR="${{ steps.bump_version.outputs.WORK_DIR }}"
+        cd "$WORK_DIR"
+
+        echo "Extracting notes for version $VERSION from $CHANGELOG_FILE"
+
+        # Escape dots in version for safe regex matching (0.3.0 -> 0\.3\.0)
+        ESCAPED_VERSION=$(echo "$VERSION" | sed 's/\./\\./g')
+
+        # Extract the section between this version's heading and the next version heading.
+        # Commitizen changelog format: ## <version> (date)
+        BODY=$(awk "
+          /^## .*${ESCAPED_VERSION}/ { found=1; next }
+          found && /^## / { exit }
+          found { print }
+        " "$CHANGELOG_FILE")
+
+        if [ -z "$BODY" ]; then
+          echo "::warning::Could not extract release notes for $VERSION, using full changelog section"
+          BODY="Release $VERSION"
+        fi
+
+        echo "Release notes extracted:"
+        echo "$BODY"
+
+        # Use heredoc delimiter for multi-line output
+        echo "body<<RELEASE_NOTES_EOF" >> $GITHUB_OUTPUT
+        echo "$BODY" >> $GITHUB_OUTPUT
+        echo "RELEASE_NOTES_EOF" >> $GITHUB_OUTPUT
+        echo "::endgroup::"
+
     - name: Publish GitHub Release
       if: ${{ inputs.skip-github-release != 'true' }}
       uses: softprops/action-gh-release@v2
@@ -419,9 +470,9 @@ runs:
         token: ${{ inputs.github-token }}
         name: ${{ steps.bump_version.outputs.NEW_VERSION }}
         tag_name: ${{ steps.bump_version.outputs.NEW_VERSION }}
+        body: ${{ steps.release_notes.outputs.body }}
         draft: ${{ inputs.draft == 'true' }}
         prerelease: ${{ contains(steps.bump_version.outputs.NEW_VERSION, 'alpha') || contains(steps.bump_version.outputs.NEW_VERSION, 'beta') || contains(steps.bump_version.outputs.NEW_VERSION, 'rc') }}
-        generate_release_notes: true
 
     - name: Release summary
       shell: bash

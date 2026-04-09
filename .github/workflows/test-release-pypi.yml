@@ -8,7 +8,6 @@ on:
 permissions:
   contents: read
 
-# ============================================================================
 # SECRETS REQUIRED for publish jobs:
 #   PYPI_TEST_PUBLISH - API token from https://test.pypi.org
 #                     Set as a repository secret named PYPI_TEST_PUBLISH.
@@ -20,18 +19,13 @@ permissions:
 #       is sufficient.
 #
 #   Create / manage tokens at: https://test.pypi.org/manage/account/token/
-# ============================================================================
 
 jobs:
 
-  # ============================================================================
   # Build-only tests — all package managers
   # Validates that the action sets up the environment correctly and produces a
   # distributable package. No credentials required.
-  #
   # Lock files are committed in the fixtures — no on-the-fly generation needed.
-  # ============================================================================
-
   test-build-package-managers:
     name: Test build - ${{ matrix.package-manager }}
     runs-on: ubuntu-latest
@@ -90,10 +84,6 @@ jobs:
           echo "✓ Sdist:  $TAR"
           echo "::endgroup::"
 
-  # ============================================================================
-  # Build-only — Python version matrix (uv)
-  # ============================================================================
-
   test-build-python-versions:
     name: Test build - Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
@@ -135,10 +125,6 @@ jobs:
           ls dist/*.whl dist/*.tar.gz
           echo "[OK] Build artifacts present"
 
-  # ============================================================================
-  # Build-only — cross-platform (uv)
-  # ============================================================================
-
   test-build-cross-platform:
     name: Test build - ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
@@ -172,12 +158,9 @@ jobs:
           ls dist/*.whl dist/*.tar.gz
           echo "[OK] Build artifacts present on ${{ matrix.os }}"
 
-  # ============================================================================
   # Build-only — install-groups variations (uv)
   # Verifies that the action correctly forwards install-groups to python-setup/uv
   # and that the requested dependencies are installed before building.
-  # ============================================================================
-
   test-build-install-groups:
     name: Test build - ${{ matrix.install-type }}
     runs-on: ubuntu-latest
@@ -234,15 +217,9 @@ jobs:
           ls dist/*.whl dist/*.tar.gz
           echo "[OK] Build artifacts present"
 
-  # ============================================================================
   # Build-only — verify-lock behaviour
-  # verify-lock='true': lock check runs and passes (lock is freshly generated
-  #                     so it is always consistent with pyproject.toml).
+  # verify-lock='true': lock check runs and passes (freshly generated lock).
   # verify-lock='false': lock check is skipped entirely.
-  # The lock is generated on-the-fly here so the 'true' case never fails due
-  # to stale CI locks.
-  # ============================================================================
-
   test-build-verify-lock:
     name: Test build - verify-lock=${{ matrix.verify-lock }}
     runs-on: ubuntu-latest
@@ -285,12 +262,8 @@ jobs:
           ls dist/*.whl dist/*.tar.gz
           echo "[OK] Build succeeded with verify-lock=${{ matrix.verify-lock }}"
 
-  # ============================================================================
   # Build-only — custom repository URL propagation (uv)
-  # Verifies that pypi-repository-url is forwarded to the action without
-  # actually publishing (skip-publish=true).
-  # ============================================================================
-
+  # Verifies that pypi-repository-url is forwarded without actually publishing.
   test-build-custom-repository-url:
     name: Test build - custom repository URL (no publish)
     runs-on: ubuntu-latest
@@ -319,20 +292,9 @@ jobs:
           ls dist/*.whl dist/*.tar.gz
           echo "[OK] Build artifacts present; pypi-repository-url accepted by action"
 
-  # ============================================================================
   # Build-only — 'package' input (workspace member selection)
-  #
   # Uses a two-member virtual workspace (pkg-alpha, pkg-beta).
-  # Verifies that the action builds ONLY the named package:
-  #   - dist/ must contain the alpha wheel
-  #   - dist/ must NOT contain the beta wheel
-  #
-  # Covers all three package managers:
-  #   uv   → `uv build --package <name>`           (native workspace support)
-  #   pip  → locate pyproject.toml by name, then `python -m build <dir> --outdir dist/`
-  #   pixi → same directory discovery as pip, run inside pixi environment
-  # ============================================================================
-
+  # Verifies that the action builds ONLY the named package.
   test-build-package:
     name: Test build - package input (${{ matrix.package-manager }})
     runs-on: ubuntu-latest
@@ -417,19 +379,9 @@ jobs:
 
           echo "::endgroup::"
 
-  # ============================================================================
   # Full publish to TestPyPI — pip and uv
-  #
-  # Publishes a real package to https://test.pypi.org to exercise the complete
-  # build → publish pipeline.
-  #
   # Requires repository secret: PYPI_TEST_PUBLISH (see top of file for scope notes).
-  #
-  # Version uniqueness: each run publishes 0.0.dev<run-number> so uploads
-  # never conflict with a previously uploaded version.
-  # The uv lock must be regenerated after patching the version in pyproject.toml.
-  # ============================================================================
-
+  # Each run publishes 0.0.dev<run-number> so uploads never conflict.
   test-publish-testpypi:
     name: Test publish - TestPyPI (${{ matrix.package-manager }})
     runs-on: ubuntu-latest
@@ -505,13 +457,8 @@ jobs:
             echo "::warning::The package may still be indexing — this is a soft failure"
           fi
 
-  # ============================================================================
   # Full publish to TestPyPI — pixi
   # Separate job because pixi uses a different fixture layout.
-  # The committed pixi.lock does not embed the local package version, so it
-  # remains valid even after patching pyproject.toml.
-  # ============================================================================
-
   test-publish-testpypi-pixi:
     name: Test publish - TestPyPI (pixi)
     runs-on: ubuntu-latest
