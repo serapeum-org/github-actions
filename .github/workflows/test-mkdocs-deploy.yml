@@ -521,6 +521,7 @@ jobs:
         if: matrix.package-manager != 'pixi'
         run: |
           cp tests/data/mkdocs-deploy/test-with-notebooks-pip-uv/pyproject.toml .
+          cp tests/data/mkdocs-deploy/test-with-notebooks-pip-uv/uv.lock .
           cp tests/data/mkdocs-deploy/test-with-notebooks-pip-uv/mkdocs.yml .
           cp -r tests/data/mkdocs-deploy/test-with-notebooks-pip-uv/docs .
           cp -r tests/data/mkdocs-deploy/test-with-notebooks-pip-uv/src .
@@ -529,6 +530,7 @@ jobs:
         if: matrix.package-manager == 'pixi'
         run: |
           cp tests/data/mkdocs-deploy/test-with-notebooks-pixi/pyproject.toml .
+          cp tests/data/mkdocs-deploy/test-with-notebooks-pixi/pixi.lock .
           cp tests/data/mkdocs-deploy/test-with-notebooks-pixi/mkdocs.yml .
           cp -r tests/data/mkdocs-deploy/test-with-notebooks-pixi/docs .
           cp -r tests/data/mkdocs-deploy/test-with-notebooks-pixi/src .
