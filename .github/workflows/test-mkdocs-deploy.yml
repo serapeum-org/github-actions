@@ -208,6 +208,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
+
       - name: Test without MkDocs configuration
         id: no-mkdocs-test
         continue-on-error: true
