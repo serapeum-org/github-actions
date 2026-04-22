@@ -1,0 +1,14 @@
+site_name: Test Notebook Documentation
+site_description: Fixture for testing notebook execution + caching
+
+theme:
+  name: material
+
+plugins:
+  - search
+  - mkdocs-jupyter:
+      execute: false
+
+nav:
+  - Home: index.md
+  - Notebook: notebook/hello.ipynb

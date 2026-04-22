@@ -499,6 +499,130 @@ jobs:
           python --version
           echo "Python ${{ matrix.python-version }} test completed for ${{ matrix.package-manager }}"
 
+  test-with-notebooks:
+    name: Test Notebook Execution
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package-manager: [pip, uv, pixi]
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
+
+      - name: Copy test fixture files (pip/uv)
+        if: matrix.package-manager != 'pixi'
+        run: |
+          cp tests/data/mkdocs-deploy/test-with-notebooks-pip-uv/pyproject.toml .
+          cp tests/data/mkdocs-deploy/test-with-notebooks-pip-uv/mkdocs.yml .
+          cp -r tests/data/mkdocs-deploy/test-with-notebooks-pip-uv/docs .
+          cp -r tests/data/mkdocs-deploy/test-with-notebooks-pip-uv/src .
+
+      - name: Copy test fixture files (pixi)
+        if: matrix.package-manager == 'pixi'
+        run: |
+          cp tests/data/mkdocs-deploy/test-with-notebooks-pixi/pyproject.toml .
+          cp tests/data/mkdocs-deploy/test-with-notebooks-pixi/mkdocs.yml .
+          cp -r tests/data/mkdocs-deploy/test-with-notebooks-pixi/docs .
+          cp -r tests/data/mkdocs-deploy/test-with-notebooks-pixi/src .
+
+      - name: Set install-groups for package manager
+        id: set-groups
+        run: |
+          if [ "${{ matrix.package-manager }}" = "pixi" ]; then
+            echo "groups=docs" >> $GITHUB_OUTPUT
+          else
+            echo "groups=groups: docs" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Assert notebook has no outputs before action runs
+        run: |
+          python -c "
+          import json, sys
+          nb = json.load(open('docs/notebook/hello.ipynb'))
+          for cell in nb['cells']:
+              if cell['cell_type'] == 'code' and cell.get('outputs'):
+                  print('FAIL: pre-run notebook should have no outputs', file=sys.stderr)
+                  sys.exit(1)
+          print('OK: pre-run notebook has no outputs (as expected)')
+          "
+
+      - name: Run mkdocs-deploy with notebook execution
+        uses: ./actions/mkdocs-deploy
+        with:
+          trigger: 'pull_request'
+          package-manager: ${{ matrix.package-manager }}
+          install-groups: ${{ steps.set-groups.outputs.groups }}
+          deploy-token: ${{ secrets.GITHUB_TOKEN }}
+          notebooks-path: 'docs/notebook'
+
+      - name: Assert notebook has outputs after action runs
+        run: |
+          python -c "
+          import json, sys
+          nb = json.load(open('docs/notebook/hello.ipynb'))
+          code_cells = [c for c in nb['cells'] if c['cell_type'] == 'code']
+          if not code_cells:
+              print('FAIL: no code cells in notebook', file=sys.stderr)
+              sys.exit(1)
+          missing = [i for i, c in enumerate(code_cells) if not c.get('outputs')]
+          if missing:
+              print(f'FAIL: code cells {missing} have no outputs after execution', file=sys.stderr)
+              sys.exit(1)
+          print(f'OK: all {len(code_cells)} code cells have outputs')
+          "
+
+      - name: Assert cache directory was populated
+        run: |
+          if [ ! -d ".jupyter_cache/executed" ]; then
+            echo "FAIL: .jupyter_cache/executed was not created"
+            exit 1
+          fi
+          if [ ! -f ".jupyter_cache/executed/hello.ipynb" ]; then
+            echo "FAIL: .jupyter_cache/executed/hello.ipynb was not saved"
+            ls -R .jupyter_cache || true
+            exit 1
+          fi
+          echo "OK: .jupyter_cache/executed/hello.ipynb was saved"
+
+  test-notebooks-path-disabled-by-default:
+    name: Test Notebooks Skipped When notebooks-path Empty
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
+
+      - name: Copy a non-notebooks fixture
+        run: |
+          cp tests/data/mkdocs-deploy/test-pull-request-pip-uv/pyproject.toml .
+          cp tests/data/mkdocs-deploy/test-pull-request-pip-uv/uv.lock .
+          cp tests/data/mkdocs-deploy/test-pull-request-pip-uv/mkdocs.yml .
+          cp -r tests/data/mkdocs-deploy/test-pull-request-pip-uv/docs .
+
+      - name: Run mkdocs-deploy without notebooks-path
+        uses: ./actions/mkdocs-deploy
+        with:
+          trigger: 'pull_request'
+          package-manager: 'uv'
+          install-groups: 'groups: docs'
+          deploy-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Assert no .jupyter_cache was created
+        run: |
+          if [ -d ".jupyter_cache" ]; then
+            echo "FAIL: .jupyter_cache was created even though notebooks-path was empty"
+            exit 1
+          fi
+          echo "OK: notebook execution was correctly skipped"
+
   test-install-groups-variations:
     name: Test install-groups Format Variations
     runs-on: ubuntu-latest
