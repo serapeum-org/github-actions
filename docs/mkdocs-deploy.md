@@ -130,10 +130,33 @@ workflows see no change.
 
 ### Requirements
 
-- **Dependencies**: `jupyter`, `nbconvert`, `ipykernel`, and `mkdocs-jupyter`
-  must be in the dependency group passed via `install-groups`. The action
-  runs a preflight import check and fails fast with a clear error if any are
-  missing.
+- **Dependencies**: four packages must be in the dependency group passed via
+  `install-groups`, split by role:
+    - `jupyter`, `nbconvert`, `ipykernel` — used by the action's notebook
+      execution step. The action runs a preflight import check against
+      these three and fails fast with an actionable error if any are
+      missing.
+    - `mkdocs-jupyter` — used later by the mkdocs build itself to render
+      notebooks. A missing `mkdocs-jupyter` passes preflight but fails at
+      build time with an mkdocs plugin error — so add it alongside the
+      other three.
+
+  Concrete example (statista's layout; adapt the group name to whatever you
+  pass via `install-groups`):
+
+  ```toml
+  # pyproject.toml
+  [dependency-groups]
+  docs = [
+      "mkdocs>=1.5",
+      "mkdocs-material",
+      "mkdocs-jupyter",   # rendering (mkdocs build)
+      "mike",
+      "jupyter",          # preflighted; drives nbconvert --execute
+      "nbconvert",
+      "ipykernel",
+  ]
+  ```
 - **mkdocs-jupyter config**: set `execute: false` in `mkdocs.yml` so the
   plugin reads pre-executed outputs instead of re-running notebooks during
   the mkdocs build:
