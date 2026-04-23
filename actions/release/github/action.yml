@@ -338,11 +338,26 @@ runs:
           # Generate full changelog
           $CZ_CMD changelog --unreleased-version="$NEXT_VERSION"
 
+          # cz bump --files-only still triggers an incremental changelog update when
+          # update_changelog_on_bump = true, and that update fails with exit 16
+          # because we just regenerated the changelog in full above (the pre-existing
+          # unreleased section confuses cz's incremental logic).
+          # Toggle the setting off for the retry and restore it afterwards.
+          TOGGLED_CL=false
+          if grep -qE '^update_changelog_on_bump\s*=\s*true' pyproject.toml; then
+            sed -i -E 's/^update_changelog_on_bump\s*=\s*true/update_changelog_on_bump = false/' pyproject.toml
+            TOGGLED_CL=true
+          fi
+
           # Retry bump with --files-only (skip changelog since we just generated it)
           if [ "${{ inputs.prerelease-type }}" != "none" ]; then
             $CZ_CMD bump --yes --increment ${{ inputs.increment }} --prerelease ${{ inputs.prerelease-type }} --files-only
           else
             $CZ_CMD bump --yes --increment ${{ inputs.increment }} --files-only
+          fi
+
+          if [ "$TOGGLED_CL" = "true" ]; then
+            sed -i -E 's/^update_changelog_on_bump\s*=\s*false/update_changelog_on_bump = true/' pyproject.toml
           fi
           echo "✓ Recovery successful"
         fi
