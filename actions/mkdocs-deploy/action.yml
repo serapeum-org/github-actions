@@ -59,6 +59,24 @@ inputs:
       Default is "latest".
     required: false
     default: 'latest'
+  notebooks-path:
+    description: >
+      Root directory containing notebooks to execute and cache before the
+      mkdocs build. When set, the action walks this directory recursively for
+      "*.ipynb" files, reuses cached executed copies where available, and runs
+      "jupyter nbconvert --execute" for any uncached notebook. Cache is keyed
+      on notebook contents, "src/**/*.py", and "pyproject.toml", persisted via
+      actions/cache. Requires four packages in the dependency group passed via
+      install-groups: "jupyter", "nbconvert", and "ipykernel" (preflight-checked
+      and used for execution) plus "mkdocs-jupyter" (used later by the mkdocs
+      build to render the executed notebooks; missing mkdocs-jupyter passes
+      preflight but fails at build time). Assumes src-layout (library code under
+      "src/") with "pyproject.toml" at repo root. When empty (default), notebook
+      execution is skipped entirely.
+      Examples: "docs/notebook", "docs/notebooks", "examples/notebooks".
+      Default is "" (skip).
+    required: false
+    default: ''
 
 runs:
   using: 'composite'
@@ -86,6 +104,49 @@ runs:
         environments: ${{ inputs.install-groups }}
         activate-environment: ${{ inputs.install-groups }}
         verify-lock: false
+
+    - name: Restore notebook execution cache
+      if: ${{ inputs.notebooks-path != '' }}
+      uses: actions/cache@v4
+      with:
+        path: .jupyter_cache
+        key: jupyter-cache-${{ hashFiles(format('{0}/**/*.ipynb', inputs.notebooks-path), 'src/**/*.py', 'pyproject.toml') }}
+
+    - name: Verify notebook execution dependencies
+      if: ${{ inputs.notebooks-path != '' }}
+      shell: bash
+      env:
+        PACKAGE_MANAGER: ${{ inputs.package-manager }}
+        INSTALL_GROUPS: ${{ inputs.install-groups }}
+      run: |
+        echo "::group::Verifying jupyter / nbconvert / ipykernel are installed"
+        if [ "$PACKAGE_MANAGER" = "pip" ]; then
+          RUN=""
+        else
+          RUN="$PACKAGE_MANAGER run"
+        fi
+        if ! $RUN python -c "import jupyter, nbconvert, ipykernel" 2>/dev/null; then
+          echo "::error::notebooks-path is set but jupyter/nbconvert/ipykernel are not importable."
+          echo "::error::Add them to the dependency group passed via install-groups (currently: '${INSTALL_GROUPS}')."
+          exit 1
+        fi
+        echo "::endgroup::"
+
+    - name: Prepare notebook outputs (execute uncached, merge cached)
+      if: ${{ inputs.notebooks-path != '' }}
+      shell: bash
+      env:
+        PACKAGE_MANAGER: ${{ inputs.package-manager }}
+        NOTEBOOK_ROOT: ${{ inputs.notebooks-path }}
+      run: |
+        echo "::group::Preparing notebook outputs"
+        SCRIPT="${{ github.action_path }}/scripts/prep_notebooks.py"
+        if [ "$PACKAGE_MANAGER" = "pip" ]; then
+          python "$SCRIPT"
+        else
+          $PACKAGE_MANAGER run python "$SCRIPT"
+        fi
+        echo "::endgroup::"
 
     - name: Configure Git
       shell: bash

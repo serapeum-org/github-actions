@@ -9,3 +9,6 @@ __pycache__/
 .idea/
 .vscode/
 *.swp
+
+# Local-only planning and design notes — never committed
+planning/
