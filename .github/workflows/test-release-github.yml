@@ -972,9 +972,23 @@ jobs:
           uv run cz changelog --unreleased-version="$NEXT_VERSION"
           echo "✓ Changelog regenerated"
 
+          # Temporarily disable update_changelog_on_bump: cz bump --files-only
+          # would otherwise try to do an incremental changelog update and fail with
+          # exit 16 because we just regenerated the full changelog above (matches
+          # the fix in actions/release/github/action.yml recovery path).
+          TOGGLED_CL=false
+          if grep -qE '^update_changelog_on_bump\s*=\s*true' pyproject.toml; then
+            sed -i -E 's/^update_changelog_on_bump\s*=\s*true/update_changelog_on_bump = false/' pyproject.toml
+            TOGGLED_CL=true
+          fi
+
           # Bump version (files only, skip tag/commit)
           uv run cz bump --yes --increment minor --files-only
           echo "✓ Version bumped (files-only)"
+
+          if [ "$TOGGLED_CL" = "true" ]; then
+            sed -i -E 's/^update_changelog_on_bump\s*=\s*false/update_changelog_on_bump = true/' pyproject.toml
+          fi
 
           echo ""
           echo "=== Changelog after recovery ==="
@@ -1273,6 +1287,9 @@ jobs:
         with:
           python-version: '3.12'
           install-groups: 'groups: dev docs'
+          # The sed above mutates version in pyproject.toml so uv.lock is
+          # intentionally out of sync for this test scenario.
+          verify-lock: 'false'
 
       - name: Create repo and do first-ever release
         run: |

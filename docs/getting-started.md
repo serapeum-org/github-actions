@@ -109,7 +109,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs-deploy/v1
+      - uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1
         with:
           trigger: ${{ github.event_name }}
           deploy-token: ${{ secrets.GITHUB_TOKEN }}

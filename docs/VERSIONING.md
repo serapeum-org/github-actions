@@ -24,7 +24,7 @@ This repository contains reusable GitHub Actions (composite actions). Unlike tra
 This repository supports **two versioning strategies**:
 
 1. **Global Versioning**: All actions share the same version tags (e.g., `v1`, `v2`)
-2. **Namespaced Versioning**: Each action has independent version tags (e.g., `python-setup/pip/v1.0.0`, `mkdocs-deploy/v1.0.0`)
+2. **Namespaced Versioning**: Each action has independent version tags (e.g., `python-setup/pip/v1.0.0`, `mkdocs/v1.0.0`)
 
 **Key Principles:**
 - ✅ Use semantic versioning (e.g., `v1.0.0`, `v1.1.0`, `v2.0.0`)
@@ -113,12 +113,12 @@ In this strategy, **each action has its own independent version tags**. You can 
 - `python-setup/pip/v1.0.0`, `python-setup/pip/v1`
 - `python-setup/uv/v1.0.0`, `python-setup/uv/v1`
 - `python-setup/pixi/v1.0.0`, `python-setup/pixi/v1`
-- `mkdocs-deploy/v1.0.0`, `mkdocs-deploy/v1`
+- `mkdocs/v1.0.0`, `mkdocs/v1`
 
 **Usage example:**
 ```yaml
 - uses: serapeum-org/github-actions/actions/python-setup/pip@python-setup/pip/v1
-- uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs-deploy/v1.0.0
+- uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1.0.0
 ```
 
 **Benefits:**
@@ -170,7 +170,7 @@ We maintain two types of Git tags:
 - uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
 
 # Namespaced versioning - Use major version for updates
-- uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs-deploy/v1
+- uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1
 ```
 
 ### Visual Representation
@@ -807,14 +807,14 @@ gh release create python-setup/pip/v1.0.1 \
 
 ```bash
 # New feature release for mkdocs-deploy
-git tag -a mkdocs-deploy/v1.1.0 -m "Release mkdocs-deploy v1.1.0: Add custom domain support"
-git push origin mkdocs-deploy/v1.1.0
+git tag -a mkdocs/v1.1.0 -m "Release mkdocs-deploy v1.1.0: Add custom domain support"
+git push origin mkdocs/v1.1.0
 
-# Move mkdocs-deploy/v1 to include the feature
-git tag -fa mkdocs-deploy/v1 -m "Update mkdocs-deploy v1 to v1.1.0"
-git push origin mkdocs-deploy/v1 --force
+# Move mkdocs/v1 to include the feature
+git tag -fa mkdocs/v1 -m "Update mkdocs-deploy v1 to v1.1.0"
+git push origin mkdocs/v1 --force
 
-gh release create mkdocs-deploy/v1.1.0 \
+gh release create mkdocs/v1.1.0 \
   --title "mkdocs-deploy v1.1.0 - Custom Domain Support" \
   --notes "## New Features
 
@@ -853,10 +853,10 @@ git tag -fa python-setup/pip/v1 -m "Update to v1.0.1"
 git push origin python-setup/pip/v1 --force
 
 # Release mkdocs-deploy v1.2.0 (different version, same commit)
-git tag -a mkdocs-deploy/v1.2.0 -m "Release mkdocs-deploy v1.2.0"
-git push origin mkdocs-deploy/v1.2.0
-git tag -fa mkdocs-deploy/v1 -m "Update to v1.2.0"
-git push origin mkdocs-deploy/v1 --force
+git tag -a mkdocs/v1.2.0 -m "Release mkdocs-deploy v1.2.0"
+git push origin mkdocs/v1.2.0
+git tag -fa mkdocs/v1 -m "Update to v1.2.0"
+git push origin mkdocs/v1 --force
 
 # python-setup/uv can stay at its current version - not affected
 ```
