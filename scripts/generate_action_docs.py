@@ -142,7 +142,7 @@ def _version_tag(ref: str) -> str:
     Examples:
         python-setup/pip  -> pip/v1
         mkdocs-deploy     -> mkdocs/v1
-        release/github    -> release-github/v1
+        release/github    -> github-release/v1
     """
     parts = ref.strip("/").split("/")
     if len(parts) == 1:
@@ -151,6 +151,8 @@ def _version_tag(ref: str) -> str:
         return f"{parts[0]}/v1"
     if parts[0] == "python-setup":
         return f"{parts[-1]}/v1"
+    if parts[0] == "release":
+        return f"{'-'.join(reversed(parts))}/v1"
     return f"{'-'.join(parts)}/v1"
 
 

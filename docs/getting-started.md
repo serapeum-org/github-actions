@@ -143,7 +143,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: serapeum-org/github-actions/actions/release/github@release-github/v1
+      - uses: serapeum-org/github-actions/actions/release/github@github-release/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           increment: ${{ inputs.increment }}
@@ -167,7 +167,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+      - uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
         with:
           pypi-username: '__token__'
           pypi-password: ${{ secrets.PYPI_TOKEN }}

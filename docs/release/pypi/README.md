@@ -37,7 +37,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Publish to PyPI
-        uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+        uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
         with:
           pypi-username: __token__
           pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -47,7 +47,7 @@ jobs:
 
 ```yaml
 - name: Publish to PyPI
-  uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+  uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
   with:
     pypi-username: __token__
     pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -92,7 +92,7 @@ Set `package` to the package **name** (the `[project] name` value in `pyproject.
 only that member of a multi-package workspace:
 
 ```yaml
-- uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+- uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
   with:
     pypi-username: __token__
     pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -260,7 +260,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+      - uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
         with:
           pypi-username: __token__
           pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -286,7 +286,7 @@ jobs:
   github-release:
     runs-on: ubuntu-latest
     steps:
-      - uses: serapeum-org/github-actions/actions/release/github@release-github/v1
+      - uses: serapeum-org/github-actions/actions/release/github@github-release/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           increment: ${{ inputs.increment }}
@@ -297,7 +297,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+      - uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
         with:
           pypi-username: __token__
           pypi-password: ${{ secrets.PYPI_API_TOKEN }}

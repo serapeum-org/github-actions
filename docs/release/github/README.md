@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create GitHub Release
-        uses: serapeum-org/github-actions/actions/release/github@release-github/v1
+        uses: serapeum-org/github-actions/actions/release/github@github-release/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           increment: ${{ inputs.increment }}
@@ -50,7 +50,7 @@ jobs:
 
 ```yaml
 - name: Create GitHub Release
-  uses: serapeum-org/github-actions/actions/release/github@release-github/v1
+  uses: serapeum-org/github-actions/actions/release/github@github-release/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     release-branch: 'main'
@@ -98,7 +98,7 @@ Use the `config-file` input to release a sub-package in a monorepo that has its 
 
 ```yaml
 - name: Release sub-package
-  uses: serapeum-org/github-actions/actions/release/github@release-github/v1
+  uses: serapeum-org/github-actions/actions/release/github@github-release/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     increment: 'minor'

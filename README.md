@@ -59,8 +59,8 @@ assumption, concrete `pyproject.toml` snippet).
 
 | Action | Usage | Guide | Examples |
 |---|---|---|---|
-| **GitHub Release** | `serapeum-org/github-actions/actions/release/github@release-github/v1` | [guide](docs/release/github/README.md) | [examples](docs/release/github/EXAMPLES.md) |
-| **PyPI Release** | `serapeum-org/github-actions/actions/release/pypi@release-pypi/v1` | [guide](docs/release/pypi/README.md) | [examples](docs/release/pypi/EXAMPLES.md) |
+| **GitHub Release** | `serapeum-org/github-actions/actions/release/github@github-release/v1` | [guide](docs/release/github/README.md) | [examples](docs/release/github/EXAMPLES.md) |
+| **PyPI Release** | `serapeum-org/github-actions/actions/release/pypi@pypi-release/v1` | [guide](docs/release/pypi/README.md) | [examples](docs/release/pypi/EXAMPLES.md) |
 
 The `release/github` action automates version bumping via
 [Commitizen](https://commitizen-tools.github.io/commitizen/), writes the
@@ -129,8 +129,8 @@ pip/v1.0.0      pip/v1       # Python setup with pip
 uv/v1.2.0       uv/v1        # Python setup with uv
 pixi/v1.0.0     pixi/v1      # Python setup with pixi
 mkdocs/v1.1.0   mkdocs/v1    # MkDocs deploy (notebook execution in v1.1.0)
-release-github/v1.0.0        release-github/v1
-release-pypi/v1.0.0          release-pypi/v1
+github-release/v1.0.0        github-release/v1
+pypi-release/v1.0.0          pypi-release/v1
 ```
 
 Pin to a major-version tag for automatic patch/minor updates, or pin to an

@@ -40,7 +40,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Publish to PyPI
-        uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+        uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
         with:
           pypi-username: __token__
           pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -88,7 +88,7 @@ src/
   uses: actions/checkout@v5
 
 - name: Publish to PyPI with pip
-  uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+  uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
   with:
     pypi-username: __token__
     pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -125,7 +125,7 @@ dev = ["pytest>=7.0.0"]
   uses: actions/checkout@v5
 
 - name: Publish to PyPI with uv
-  uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+  uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
   with:
     pypi-username: __token__
     pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -163,7 +163,7 @@ dev = ["pytest>=7.0.0"]
   uses: actions/checkout@v5
 
 - name: Publish to PyPI with pixi
-  uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+  uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
   with:
     pypi-username: __token__
     pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -211,7 +211,7 @@ git commit -m "chore: add pixi.lock"
 Leave `pypi-repository-url` empty (or omit it entirely):
 
 ```yaml
-- uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+- uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
   with:
     pypi-username: __token__
     pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -225,7 +225,7 @@ Leave `pypi-repository-url` empty (or omit it entirely):
 Use TestPyPI to validate the full build-and-publish pipeline without affecting the production index:
 
 ```yaml
-- uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+- uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
   with:
     pypi-username: __token__
     pypi-password: ${{ secrets.TEST_PYPI_TOKEN }}
@@ -246,7 +246,7 @@ Manage TestPyPI tokens at: <https://test.pypi.org/manage/account/token/>
     VERSION="0.0.dev${{ github.run_number }}"
     sed -i "s/version = \"0.1.0\"/version = \"$VERSION\"/" pyproject.toml
 
-- uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+- uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
   with:
     pypi-username: __token__
     pypi-password: ${{ secrets.TEST_PYPI_TOKEN }}
@@ -261,7 +261,7 @@ Manage TestPyPI tokens at: <https://test.pypi.org/manage/account/token/>
 Use any PEP 503-compatible index (e.g., AWS CodeArtifact, Nexus, Artifactory):
 
 ```yaml
-- uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+- uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
   with:
     pypi-username: ${{ secrets.PRIVATE_INDEX_USER }}
     pypi-password: ${{ secrets.PRIVATE_INDEX_TOKEN }}
@@ -277,7 +277,7 @@ Use any PEP 503-compatible index (e.g., AWS CodeArtifact, Nexus, Artifactory):
 No extra groups are installed — only the project's `dependencies`:
 
 ```yaml
-- uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+- uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
   with:
     pypi-username: __token__
     pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -289,7 +289,7 @@ No extra groups are installed — only the project's `dependencies`:
 ### Install a PEP 735 dependency group (uv)
 
 ```yaml
-- uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+- uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
   with:
     pypi-username: __token__
     pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -351,7 +351,7 @@ When using pixi, `install-groups` selects which pixi environment is activated an
 building and publishing:
 
 ```yaml
-- uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+- uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
   with:
     pypi-username: __token__
     pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -383,7 +383,7 @@ release = ["release"]
 Ensures the lock file exactly matches `pyproject.toml` before installing:
 
 ```yaml
-- uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+- uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
   with:
     pypi-username: __token__
     pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -403,7 +403,7 @@ Useful in CI when the lock file is generated on-the-fly (e.g., after patching th
 - name: Generate fresh lock after version patch
   run: uv lock
 
-- uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+- uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
   with:
     pypi-username: __token__
     pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -426,7 +426,7 @@ the build pipeline without consuming TestPyPI quota or requiring credentials.
   uses: actions/checkout@v5
 
 - name: Validate build
-  uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+  uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
   with:
     pypi-username: __token__
     pypi-password: unused-in-build-only-mode
@@ -457,7 +457,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+      - uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
         with:
           pypi-username: __token__
           pypi-password: unused
@@ -485,7 +485,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+      - uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
         with:
           pypi-username: __token__
           pypi-password: unused
@@ -513,7 +513,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+      - uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
         with:
           pypi-username: __token__
           pypi-password: unused
@@ -553,7 +553,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Publish to PyPI
-        uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+        uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
         with:
           pypi-username: __token__
           pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -581,7 +581,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+      - uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
         with:
           pypi-username: __token__
           pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -609,7 +609,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+      - uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
         with:
           pypi-username: __token__
           pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -643,7 +643,7 @@ jobs:
   github-release:
     runs-on: ubuntu-latest
     steps:
-      - uses: serapeum-org/github-actions/actions/release/github@release-github/v1
+      - uses: serapeum-org/github-actions/actions/release/github@github-release/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           increment: ${{ inputs.increment }}
@@ -657,7 +657,7 @@ jobs:
           # Pull the version bump commit pushed by the release action
           ref: main
 
-      - uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+      - uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
         with:
           pypi-username: __token__
           pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -688,7 +688,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+      - uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
         with:
           pypi-username: __token__
           pypi-password: unused
@@ -702,7 +702,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+      - uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
         with:
           pypi-username: __token__
           pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -717,7 +717,7 @@ Install extra dependency groups needed for pre-build steps (e.g., code generatio
 ```yaml
 - uses: actions/checkout@v5
 
-- uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+- uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
   with:
     pypi-username: __token__
     pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -770,7 +770,7 @@ jobs:
 
       - run: uv lock
 
-      - uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+      - uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
         with:
           pypi-username: __token__
           pypi-password: ${{ secrets.TEST_PYPI_TOKEN }}
@@ -788,7 +788,7 @@ jobs:
           VERSION="0.1.dev${{ github.run_number }}"
           sed -i "s/version = \".*\"/version = \"$VERSION\"/" pyproject.toml
 
-      - uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+      - uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
         with:
           pypi-username: __token__
           pypi-password: ${{ secrets.TEST_PYPI_TOKEN }}
@@ -805,7 +805,7 @@ jobs:
           VERSION="0.2.dev${{ github.run_number }}"
           sed -i "s/version = \".*\"/version = \"$VERSION\"/" pyproject.toml
 
-      - uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+      - uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
         with:
           pypi-username: __token__
           pypi-password: ${{ secrets.TEST_PYPI_TOKEN }}
@@ -829,7 +829,7 @@ For a uv workspace where multiple packages live under `packages/`:
 ```yaml
 - uses: actions/checkout@v5
 
-- uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+- uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
   with:
     pypi-username: __token__
     pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -853,7 +853,7 @@ members = ["packages/*"]
 ```yaml
 - uses: actions/checkout@v5
 
-- uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+- uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
   with:
     pypi-username: __token__
     pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -871,7 +871,7 @@ and runs `python -m build packages/serapeum-core/ --outdir dist/`.
 ```yaml
 - uses: actions/checkout@v5
 
-- uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+- uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
   with:
     pypi-username: __token__
     pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -908,7 +908,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+      - uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
         with:
           pypi-username: __token__
           pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -933,7 +933,7 @@ create packages that do not yet exist on PyPI.
 ```yaml
 # Use a broadly-scoped token for the first upload only.
 # After the package exists, switch to a project-scoped token.
-- uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+- uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
   with:
     pypi-username: __token__
     pypi-password: ${{ secrets.PYPI_ALL_PROJECTS_TOKEN }}
@@ -982,7 +982,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+      - uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
         with:
           pypi-username: __token__
           pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -1004,7 +1004,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+      - uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
         with:
           pypi-username: __token__
           pypi-password: ${{ secrets.TEST_PYPI_TOKEN }}
@@ -1015,7 +1015,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+      - uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
         with:
           pypi-username: __token__
           pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -1037,7 +1037,7 @@ In test workflows where no lock file is committed, generate one first:
 
 - run: uv lock
 
-- uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+- uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
   with:
     pypi-username: __token__
     pypi-password: unused
@@ -1050,7 +1050,7 @@ In test workflows where no lock file is committed, generate one first:
 ### Custom Python version
 
 ```yaml
-- uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+- uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
   with:
     pypi-username: __token__
     pypi-password: ${{ secrets.PYPI_API_TOKEN }}
@@ -1068,7 +1068,7 @@ through to the underlying `python-setup` action.
 
 ```yaml
 - uses: actions/checkout@v5
-- uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+- uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
   with: ...
 ```
 
@@ -1116,10 +1116,10 @@ PyPI quota or requiring secrets.
 
 ```yaml
 # Specific version — no surprise updates
-uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1.0.0
+uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1.0.0
 
 # Major version — receives compatible updates automatically
-uses: serapeum-org/github-actions/actions/release/pypi@release-pypi/v1
+uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
 ```
 
 ---

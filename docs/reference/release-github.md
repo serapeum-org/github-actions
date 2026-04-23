@@ -5,7 +5,7 @@
 ## Usage
 
 ```yaml
-- uses: serapeum-org/github-actions/actions/release/github@release-github/v1
+- uses: serapeum-org/github-actions/actions/release/github@github-release/v1
   with:
     github-token: # required
     increment: 'patch'
