@@ -2997,7 +2997,7 @@
 <p>This repository supports <strong>two versioning strategies</strong>:</p>
 <ol>
 <li><strong>Global Versioning</strong>: All actions share the same version tags (e.g., <code>v1</code>, <code>v2</code>)</li>
-<li><strong>Namespaced Versioning</strong>: Each action has independent version tags (e.g., <code>python-setup/pip/v1.0.0</code>, <code>mkdocs-deploy/v1.0.0</code>)</li>
+<li><strong>Namespaced Versioning</strong>: Each action has independent version tags (e.g., <code>python-setup/pip/v1.0.0</code>, <code>mkdocs/v1.0.0</code>)</li>
 </ol>
 <p><strong>Key Principles:</strong>
 - ✅ Use semantic versioning (e.g., <code>v1.0.0</code>, <code>v1.1.0</code>, <code>v2.0.0</code>)
@@ -3089,10 +3089,10 @@
 - <code>python-setup/pip/v1.0.0</code>, <code>python-setup/pip/v1</code>
 - <code>python-setup/uv/v1.0.0</code>, <code>python-setup/uv/v1</code>
 - <code>python-setup/pixi/v1.0.0</code>, <code>python-setup/pixi/v1</code>
-- <code>mkdocs-deploy/v1.0.0</code>, <code>mkdocs-deploy/v1</code></p>
+- <code>mkdocs/v1.0.0</code>, <code>mkdocs/v1</code></p>
 <p><strong>Usage example:</strong>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">serapeum-org/github-actions/actions/python-setup/pip@python-setup/pip/v1</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs-deploy/v1.0.0</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1.0.0</span>
 </code></pre></div></p>
 <p><strong>Benefits:</strong>
 - Each action can be versioned independently
@@ -3130,7 +3130,7 @@
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">serapeum-org/github-actions/actions/python-setup/pixi@v1</span>
 <a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
 <a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># Namespaced versioning - Use major version for updates</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs-deploy/v1</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1</span>
 </code></pre></div></p>
 <h3 id="visual-representation">Visual Representation<a class="headerlink" href="#visual-representation" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>Timeline of commits and tags:
@@ -3663,14 +3663,14 @@
 </code></pre></div>
 <h4 id="example-3-new-feature-for-specific-action">Example 3: New Feature for Specific Action<a class="headerlink" href="#example-3-new-feature-for-specific-action" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a><span class="c1"># New feature release for mkdocs-deploy</span>
-<a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>mkdocs-deploy/v1.1.0<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Release mkdocs-deploy v1.1.0: Add custom domain support&quot;</span>
-<a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>mkdocs-deploy/v1.1.0
+<a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>mkdocs/v1.1.0<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Release mkdocs-deploy v1.1.0: Add custom domain support&quot;</span>
+<a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>mkdocs/v1.1.0
 <a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a>
-<a id="__codelineno-35-5" name="__codelineno-35-5" href="#__codelineno-35-5"></a><span class="c1"># Move mkdocs-deploy/v1 to include the feature</span>
-<a id="__codelineno-35-6" name="__codelineno-35-6" href="#__codelineno-35-6"></a>git<span class="w"> </span>tag<span class="w"> </span>-fa<span class="w"> </span>mkdocs-deploy/v1<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Update mkdocs-deploy v1 to v1.1.0&quot;</span>
-<a id="__codelineno-35-7" name="__codelineno-35-7" href="#__codelineno-35-7"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>mkdocs-deploy/v1<span class="w"> </span>--force
+<a id="__codelineno-35-5" name="__codelineno-35-5" href="#__codelineno-35-5"></a><span class="c1"># Move mkdocs/v1 to include the feature</span>
+<a id="__codelineno-35-6" name="__codelineno-35-6" href="#__codelineno-35-6"></a>git<span class="w"> </span>tag<span class="w"> </span>-fa<span class="w"> </span>mkdocs/v1<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Update mkdocs-deploy v1 to v1.1.0&quot;</span>
+<a id="__codelineno-35-7" name="__codelineno-35-7" href="#__codelineno-35-7"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>mkdocs/v1<span class="w"> </span>--force
 <a id="__codelineno-35-8" name="__codelineno-35-8" href="#__codelineno-35-8"></a>
-<a id="__codelineno-35-9" name="__codelineno-35-9" href="#__codelineno-35-9"></a>gh<span class="w"> </span>release<span class="w"> </span>create<span class="w"> </span>mkdocs-deploy/v1.1.0<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-35-9" name="__codelineno-35-9" href="#__codelineno-35-9"></a>gh<span class="w"> </span>release<span class="w"> </span>create<span class="w"> </span>mkdocs/v1.1.0<span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-35-10" name="__codelineno-35-10" href="#__codelineno-35-10"></a><span class="w">  </span>--title<span class="w"> </span><span class="s2">&quot;mkdocs-deploy v1.1.0 - Custom Domain Support&quot;</span><span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-35-11" name="__codelineno-35-11" href="#__codelineno-35-11"></a><span class="w">  </span>--notes<span class="w"> </span><span class="s2">&quot;## New Features</span>
 <a id="__codelineno-35-12" name="__codelineno-35-12" href="#__codelineno-35-12"></a>
@@ -3703,10 +3703,10 @@
 <a id="__codelineno-37-5" name="__codelineno-37-5" href="#__codelineno-37-5"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>python-setup/pip/v1<span class="w"> </span>--force
 <a id="__codelineno-37-6" name="__codelineno-37-6" href="#__codelineno-37-6"></a>
 <a id="__codelineno-37-7" name="__codelineno-37-7" href="#__codelineno-37-7"></a><span class="c1"># Release mkdocs-deploy v1.2.0 (different version, same commit)</span>
-<a id="__codelineno-37-8" name="__codelineno-37-8" href="#__codelineno-37-8"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>mkdocs-deploy/v1.2.0<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Release mkdocs-deploy v1.2.0&quot;</span>
-<a id="__codelineno-37-9" name="__codelineno-37-9" href="#__codelineno-37-9"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>mkdocs-deploy/v1.2.0
-<a id="__codelineno-37-10" name="__codelineno-37-10" href="#__codelineno-37-10"></a>git<span class="w"> </span>tag<span class="w"> </span>-fa<span class="w"> </span>mkdocs-deploy/v1<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Update to v1.2.0&quot;</span>
-<a id="__codelineno-37-11" name="__codelineno-37-11" href="#__codelineno-37-11"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>mkdocs-deploy/v1<span class="w"> </span>--force
+<a id="__codelineno-37-8" name="__codelineno-37-8" href="#__codelineno-37-8"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>mkdocs/v1.2.0<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Release mkdocs-deploy v1.2.0&quot;</span>
+<a id="__codelineno-37-9" name="__codelineno-37-9" href="#__codelineno-37-9"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>mkdocs/v1.2.0
+<a id="__codelineno-37-10" name="__codelineno-37-10" href="#__codelineno-37-10"></a>git<span class="w"> </span>tag<span class="w"> </span>-fa<span class="w"> </span>mkdocs/v1<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Update to v1.2.0&quot;</span>
+<a id="__codelineno-37-11" name="__codelineno-37-11" href="#__codelineno-37-11"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>mkdocs/v1<span class="w"> </span>--force
 <a id="__codelineno-37-12" name="__codelineno-37-12" href="#__codelineno-37-12"></a>
 <a id="__codelineno-37-13" name="__codelineno-37-13" href="#__codelineno-37-13"></a><span class="c1"># python-setup/uv can stay at its current version - not affected</span>
 </code></pre></div>
