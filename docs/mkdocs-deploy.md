@@ -15,7 +15,7 @@ This action deploys MkDocs documentation with automatic version management based
 ## Usage
 
 ```yaml
-- uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs-deploy/v1
+- uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1
   with:
     trigger: ${{ github.event_name }}
     deploy-token: ${{ secrets.GITHUB_TOKEN }}
@@ -56,7 +56,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs-deploy/v1
+      - uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1
         with:
           trigger: 'pull_request'
           deploy-token: ${{ secrets.GITHUB_TOKEN }}
@@ -86,7 +86,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs-deploy/v1
+      - uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1
         with:
           trigger: ${{ github.event_name == 'release' && 'release' || 'main' }}
           deploy-token: ${{ secrets.GITHUB_TOKEN }}
@@ -96,7 +96,7 @@ jobs:
 ### With pixi
 
 ```yaml
-- uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs-deploy/v1
+- uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1
   with:
     trigger: 'main'
     deploy-token: ${{ secrets.GITHUB_TOKEN }}
@@ -111,7 +111,7 @@ notebooks once, caches their outputs, and reuses the cache on subsequent runs
 so unchanged notebooks don't re-execute:
 
 ```yaml
-- uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs-deploy/v1
+- uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1
   with:
     trigger: ${{ github.event_name }}
     deploy-token: ${{ secrets.GITHUB_TOKEN }}

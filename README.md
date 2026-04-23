@@ -22,7 +22,7 @@ Set up Python with your preferred package manager, install dependencies, and con
 
 | Action | Usage |
 |--------|-------|
-| **[mkdocs-deploy](docs/mkdocs-deploy.md)** | `serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs-deploy/v1` |
+| **[mkdocs-deploy](docs/mkdocs-deploy.md)** | `serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1` |
 
 ### Release
 

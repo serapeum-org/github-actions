@@ -141,14 +141,14 @@ def _version_tag(ref: str) -> str:
 
     Examples:
         python-setup/pip  -> pip/v1
-        mkdocs-deploy     -> mkdocs-deploy/v1
+        mkdocs-deploy     -> mkdocs/v1
         release/github    -> release-github/v1
     """
     parts = ref.strip("/").split("/")
     if len(parts) == 1:
+        if parts[0] == "mkdocs-deploy":
+            return "mkdocs/v1"
         return f"{parts[0]}/v1"
-    # Use the last segment for single-depth (python-setup/pip -> pip)
-    # Use hyphen-joined for deeper paths (release/github -> release-github)
     if parts[0] == "python-setup":
         return f"{parts[-1]}/v1"
     return f"{'-'.join(parts)}/v1"
