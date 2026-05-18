@@ -297,6 +297,22 @@ runs:
         echo "✓ Current version: $CURRENT_VERSION"
         echo "::endgroup::"
 
+        # First-release handling: when no tags exist and
+        # update_changelog_on_bump=true, cz bump (even with --dry-run)
+        # exits 16 with "No tag found to do an incremental changelog".
+        # Toggle the setting off, generate the full changelog manually
+        # later, then restore the setting at the end of this step.
+        IS_FIRST_RELEASE=false
+        FIRST_RELEASE_TOGGLED_CL=false
+        if [ -z "$(git tag -l)" ]; then
+          IS_FIRST_RELEASE=true
+          echo "::notice::First release detected (no existing tags)"
+          if grep -qE '^update_changelog_on_bump\s*=\s*true' pyproject.toml; then
+            sed -i -E 's/^update_changelog_on_bump\s*=\s*true/update_changelog_on_bump = false/' pyproject.toml
+            FIRST_RELEASE_TOGGLED_CL=true
+          fi
+        fi
+
         echo "::group::Calculating next version"
         echo "Increment type: ${{ inputs.increment }}"
         if [ "${{ inputs.prerelease-type }}" != "none" ]; then
@@ -311,6 +327,17 @@ runs:
         echo "✓ Next version will be: $NEXT_VERSION"
         echo "  Version change: $CURRENT_VERSION → $NEXT_VERSION"
         echo "::endgroup::"
+
+        # On first release, generate the changelog manually (cz bump will skip
+        # it because we toggled update_changelog_on_bump off) and stage it so
+        # cz bump includes it in the version-bump commit.
+        if [ "$IS_FIRST_RELEASE" = "true" ]; then
+          echo "::group::Generating initial changelog"
+          $CZ_CMD changelog --unreleased-version="$NEXT_VERSION"
+          git add "$CHANGELOG_FILE"
+          echo "✓ Initial changelog generated and staged"
+          echo "::endgroup::"
+        fi
 
         echo "::group::Bumping version and generating changelog"
         echo "Running cz bump (handles both version and changelog)..."
@@ -360,6 +387,11 @@ runs:
             sed -i -E 's/^update_changelog_on_bump\s*=\s*false/update_changelog_on_bump = true/' pyproject.toml
           fi
           echo "✓ Recovery successful"
+        fi
+
+        # Restore the first-release toggle if we set it earlier.
+        if [ "$FIRST_RELEASE_TOGGLED_CL" = "true" ]; then
+          sed -i -E 's/^update_changelog_on_bump\s*=\s*false/update_changelog_on_bump = true/' pyproject.toml
         fi
 
         echo "✓ Version bump and changelog generation completed"
