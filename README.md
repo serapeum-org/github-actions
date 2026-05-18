@@ -133,16 +133,38 @@ github-release/v1.0.0        github-release/v1
 pypi-release/v1.0.0          pypi-release/v1
 ```
 
-Pin to a major-version tag for automatic patch/minor updates, or pin to an
-exact patch for maximum stability:
+Pin to a major-version tag for automatic patch/minor updates, pin to an
+exact patch for reproducibility, or pin to a commit SHA for supply-chain
+hardening:
 
 ```yaml
-# Auto-update within v1 (recommended)
+# Auto-update within v1 (recommended for most consumers)
 uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1
 
 # Exact patch (for reproducibility)
 uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1.2.0
+
+# Commit SHA (immutable — survives tag retagging)
+uses: serapeum-org/github-actions/actions/python-setup/uv@65da263cc0f804cba87da3cbe6024d528831be1d  # uv/v1
 ```
+
+### Current rolling-`v1` commit SHAs
+
+For SHA-based pinning, here is the commit each `…/v1` tag resolves to today.
+Update these when you bump a `v1` rolling tag.
+
+| Action | Rolling tag | Commit SHA |
+|---|---|---|
+| `actions/python-setup/pip` | `pip/v1` | `65da263cc0f804cba87da3cbe6024d528831be1d` |
+| `actions/python-setup/uv` | `uv/v1` | `65da263cc0f804cba87da3cbe6024d528831be1d` |
+| `actions/python-setup/pixi` | `pixi/v1` | `65da263cc0f804cba87da3cbe6024d528831be1d` |
+| `actions/mkdocs-deploy` | `mkdocs/v1` | `f861b115f7ac3c68629f9adbd40d9edd406d2a74` |
+| `actions/release/github` | `github-release/v1` | `6823246a90df2963d1576ef6de875e10467c64aa` |
+| `actions/release/pypi` | `pypi-release/v1` | `65da263cc0f804cba87da3cbe6024d528831be1d` |
+
+To verify locally: `git rev-parse <tag>^{commit}` (the `^{commit}` is
+required — `git rev-parse <tag>` returns the annotated-tag object SHA, not
+the commit it points at).
 
 See the [Versioning Guide](docs/VERSIONING.md) for release workflow, tag
 conventions, and breaking-change policy.
