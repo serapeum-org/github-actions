@@ -765,17 +765,19 @@ jobs:
               nb = json.load(open(path))
               return any(c["cell_type"] == "code" and c.get("outputs") for c in nb["cells"])
 
-          # Verify the failure was specifically the notebook-execution abort, not
-          # an unrelated setup failure that would also leave outcome == failure.
+          # Verify the failure was specifically the notebook-execution abort.
+          # flaky.ipynb sorts before hello.ipynb, so a strict walk reaches and
+          # fails on flaky before ever touching the good notebook. We therefore
+          # assert the good notebook in the working tree was left un-executed
+          # (no outputs), which is deterministic regardless of any restored
+          # .jupyter_cache (actions/cache may carry a cached hello.ipynb across
+          # runs, so cache-file presence is NOT a reliable signal here).
           checks = {
               # The action must have failed...
               "strict run failed": "${{ steps.strict.outcome }}" == "failure",
-              # ...after prep_notebooks.py started (it mkdirs the cache root first)...
-              "prepare step started": os.path.isdir(".jupyter_cache/executed"),
-              # ...aborting on flaky.ipynb before the good notebook (which sorts
-              # after it), so the good notebook was never executed or cached.
+              # ...aborting on flaky.ipynb before the good notebook, so the good
+              # notebook in the working tree was never executed.
               "good notebook NOT executed": not has_outputs("docs/notebook/hello.ipynb"),
-              "good notebook NOT cached": not os.path.exists(".jupyter_cache/executed/hello.ipynb"),
           }
           failed = [name for name, ok in checks.items() if not ok]
           for name, ok in checks.items():
