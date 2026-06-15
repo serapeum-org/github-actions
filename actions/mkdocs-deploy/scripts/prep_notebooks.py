@@ -138,6 +138,14 @@ def main() -> int:
         f"Done: {hits} hits, {misses} misses, {failures} failures, "
         f"{skipped} excluded, {len(notebooks)} executed-or-cached."
     )
+    if failures:
+        # Surface a top-level annotation so a tolerated failure is not buried
+        # inside the collapsed log group.
+        print(
+            f"::warning::{failures} notebook(s) failed to execute but were "
+            f"tolerated (notebooks-continue-on-error=true); their docs will "
+            f"show stale or missing outputs."
+        )
     return 0
 
 
