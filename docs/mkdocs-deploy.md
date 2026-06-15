@@ -194,8 +194,15 @@ whatever outputs they already carry. This mirrors pytest's `--ignore-glob`.
       zarr/*.ipynb
 ```
 
-A leading `**/` matches at any depth **including the root** (so
-`**/stac-cloud-*.ipynb` also matches a top-level `stac-cloud-foo.ipynb`).
+**Pattern semantics** (these mirror pytest's `--ignore-glob`, which uses
+`fnmatch`):
+
+- `*` matches across `/`, so a pattern like `dask/*.ipynb` matches **every**
+  notebook under `dask/` at any depth, not just its direct children — and a
+  bare `*.ipynb` matches every notebook in the tree. Anchor the pattern (e.g.
+  `dask/`, or a distinctive filename stem) to avoid over-excluding.
+- A leading `**/` matches at any depth **including the root**, so
+  `**/stac-cloud-*.ipynb` also matches a top-level `stac-cloud-foo.ipynb`.
 
 To keep executing the rest when a *non-excluded* notebook fails — rather than
 aborting the whole deploy — set `notebooks-continue-on-error: 'true'`. The
