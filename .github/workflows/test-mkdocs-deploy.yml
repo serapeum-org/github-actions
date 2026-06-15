@@ -749,11 +749,35 @@ jobs:
           deploy-token: ${{ secrets.GITHUB_TOKEN }}
           notebooks-path: 'docs/notebook'
 
-      - name: Assert the strict run aborted on the failing notebook
-        if: steps.strict.outcome != 'failure'
+      - name: Assert the strict run aborted in the prepare step on the failing notebook
         run: |
-          echo "FAIL: deploy should abort on a failing notebook when continue-on-error is false"
-          exit 1
+          python - <<'PY'
+          import json, os, sys
+
+          def has_outputs(path):
+              nb = json.load(open(path))
+              return any(c["cell_type"] == "code" and c.get("outputs") for c in nb["cells"])
+
+          # Verify the failure was specifically the notebook-execution abort, not
+          # an unrelated setup failure that would also leave outcome == failure.
+          checks = {
+              # The action must have failed...
+              "strict run failed": "${{ steps.strict.outcome }}" == "failure",
+              # ...after prep_notebooks.py started (it mkdirs the cache root first)...
+              "prepare step started": os.path.isdir(".jupyter_cache/executed"),
+              # ...aborting on flaky.ipynb before the good notebook (which sorts
+              # after it), so the good notebook was never executed or cached.
+              "good notebook NOT executed": not has_outputs("docs/notebook/hello.ipynb"),
+              "good notebook NOT cached": not os.path.exists(".jupyter_cache/executed/hello.ipynb"),
+          }
+          failed = [name for name, ok in checks.items() if not ok]
+          for name, ok in checks.items():
+              print(("OK  " if ok else "FAIL") + ": " + name)
+          if failed:
+              print("Negative control did not fail as expected:", failed, file=sys.stderr)
+              sys.exit(1)
+          print("Negative control verified: prepare step aborted on the failing notebook.")
+          PY
 
       - name: Deploy WITH continue-on-error should succeed
         uses: ./actions/mkdocs-deploy
