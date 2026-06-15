@@ -628,6 +628,198 @@ jobs:
           fi
           echo "OK: notebook execution was correctly skipped"
 
+  test-notebooks-exclude:
+    name: Test Notebook Exclude Globs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
+
+      - name: Copy notebook fixture (uv)
+        run: |
+          cp tests/data/mkdocs-deploy/test-with-notebooks-pip-uv/pyproject.toml .
+          cp tests/data/mkdocs-deploy/test-with-notebooks-pip-uv/uv.lock .
+          cp tests/data/mkdocs-deploy/test-with-notebooks-pip-uv/mkdocs.yml .
+          cp -r tests/data/mkdocs-deploy/test-with-notebooks-pip-uv/docs .
+          cp -r tests/data/mkdocs-deploy/test-with-notebooks-pip-uv/src .
+
+      - name: Add notebooks that fail if executed (must be excluded)
+        run: |
+          python - <<'PY'
+          import json, os
+          fail = {
+            "cells": [{"cell_type": "code", "execution_count": None, "id": "boom",
+                       "metadata": {}, "outputs": [],
+                       "source": ["raise RuntimeError('needs live network - must never run in CI')"]}],
+            "metadata": {"kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"}},
+            "nbformat": 4, "nbformat_minor": 5,
+          }
+          os.makedirs("docs/notebook/cloud", exist_ok=True)
+          os.makedirs("docs/notebook/scratch", exist_ok=True)
+          # Excluded via the directory glob "cloud/*.ipynb"
+          json.dump(fail, open("docs/notebook/cloud/needs-network.ipynb", "w"))
+          # Excluded via the root-matching globstar "**/skip-*.ipynb"
+          json.dump(fail, open("docs/notebook/skip-me.ipynb", "w"))
+          # Excluded via "scratch/*.ipynb" given on a comma-separated line
+          json.dump(fail, open("docs/notebook/scratch/wip.ipynb", "w"))
+          print("Wrote three intentionally-failing notebooks")
+          PY
+
+      - name: Run mkdocs-deploy excluding the failing notebooks
+        uses: ./actions/mkdocs-deploy
+        with:
+          trigger: 'pull_request'
+          package-manager: 'uv'
+          install-groups: 'groups: docs'
+          deploy-token: ${{ secrets.GITHUB_TOKEN }}
+          notebooks-path: 'docs/notebook'
+          # Mixes newline separation (between lines) with comma separation
+          # (within the second line) to exercise both split paths.
+          notebooks-exclude: |
+            cloud/*.ipynb
+            **/skip-*.ipynb, scratch/*.ipynb
+
+      - name: Assert excluded notebooks were neither executed nor cached
+        run: |
+          python - <<'PY'
+          import json, os, sys
+
+          def has_outputs(path):
+              nb = json.load(open(path))
+              return any(c["cell_type"] == "code" and c.get("outputs") for c in nb["cells"])
+
+          checks = {
+              "good notebook executed": has_outputs("docs/notebook/hello.ipynb"),
+              "good notebook cached": os.path.exists(".jupyter_cache/executed/hello.ipynb"),
+              "nested excluded NOT executed": not has_outputs("docs/notebook/cloud/needs-network.ipynb"),
+              "root excluded NOT executed": not has_outputs("docs/notebook/skip-me.ipynb"),
+              "comma excluded NOT executed": not has_outputs("docs/notebook/scratch/wip.ipynb"),
+              "nested excluded NOT cached": not os.path.exists(".jupyter_cache/executed/cloud/needs-network.ipynb"),
+              "root excluded NOT cached": not os.path.exists(".jupyter_cache/executed/skip-me.ipynb"),
+              "comma excluded NOT cached": not os.path.exists(".jupyter_cache/executed/scratch/wip.ipynb"),
+          }
+          failed = [name for name, ok in checks.items() if not ok]
+          for name, ok in checks.items():
+              print(("OK  " if ok else "FAIL") + ": " + name)
+          if failed:
+              sys.exit(1)
+          print("All exclude-glob assertions passed (nested + root globstar + comma-separated).")
+          PY
+
+  test-notebooks-continue-on-error:
+    name: Test Notebook Continue-On-Error
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
+
+      - name: Copy notebook fixture (uv)
+        run: |
+          cp tests/data/mkdocs-deploy/test-with-notebooks-pip-uv/pyproject.toml .
+          cp tests/data/mkdocs-deploy/test-with-notebooks-pip-uv/uv.lock .
+          cp tests/data/mkdocs-deploy/test-with-notebooks-pip-uv/mkdocs.yml .
+          cp -r tests/data/mkdocs-deploy/test-with-notebooks-pip-uv/docs .
+          cp -r tests/data/mkdocs-deploy/test-with-notebooks-pip-uv/src .
+
+      - name: Add a notebook that fails to execute (NOT excluded)
+        run: |
+          python - <<'PY'
+          import json
+          fail = {
+            "cells": [{"cell_type": "code", "execution_count": None, "id": "boom",
+                       "metadata": {}, "outputs": [],
+                       "source": ["raise RuntimeError('flaky notebook')"]}],
+            "metadata": {"kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"}},
+            "nbformat": 4, "nbformat_minor": 5,
+          }
+          # Sorts before hello.ipynb, so it is reached first during the walk.
+          json.dump(fail, open("docs/notebook/flaky.ipynb", "w"))
+          print("Wrote docs/notebook/flaky.ipynb")
+          PY
+
+      - name: Deploy WITHOUT continue-on-error should fail (negative control)
+        id: strict
+        continue-on-error: true
+        uses: ./actions/mkdocs-deploy
+        with:
+          trigger: 'pull_request'
+          package-manager: 'uv'
+          install-groups: 'groups: docs'
+          deploy-token: ${{ secrets.GITHUB_TOKEN }}
+          notebooks-path: 'docs/notebook'
+
+      - name: Assert the strict run aborted in the prepare step on the failing notebook
+        run: |
+          python - <<'PY'
+          import json, os, sys
+
+          def has_outputs(path):
+              nb = json.load(open(path))
+              return any(c["cell_type"] == "code" and c.get("outputs") for c in nb["cells"])
+
+          # Verify the failure was specifically the notebook-execution abort.
+          # flaky.ipynb sorts before hello.ipynb, so a strict walk reaches and
+          # fails on flaky before ever touching the good notebook. We therefore
+          # assert the good notebook in the working tree was left un-executed
+          # (no outputs), which is deterministic regardless of any restored
+          # .jupyter_cache (actions/cache may carry a cached hello.ipynb across
+          # runs, so cache-file presence is NOT a reliable signal here).
+          checks = {
+              # The action must have failed...
+              "strict run failed": "${{ steps.strict.outcome }}" == "failure",
+              # ...aborting on flaky.ipynb before the good notebook, so the good
+              # notebook in the working tree was never executed.
+              "good notebook NOT executed": not has_outputs("docs/notebook/hello.ipynb"),
+          }
+          failed = [name for name, ok in checks.items() if not ok]
+          for name, ok in checks.items():
+              print(("OK  " if ok else "FAIL") + ": " + name)
+          if failed:
+              print("Negative control did not fail as expected:", failed, file=sys.stderr)
+              sys.exit(1)
+          print("Negative control verified: prepare step aborted on the failing notebook.")
+          PY
+
+      - name: Deploy WITH continue-on-error should succeed
+        uses: ./actions/mkdocs-deploy
+        with:
+          trigger: 'pull_request'
+          package-manager: 'uv'
+          install-groups: 'groups: docs'
+          deploy-token: ${{ secrets.GITHUB_TOKEN }}
+          notebooks-path: 'docs/notebook'
+          notebooks-continue-on-error: 'true'
+
+      - name: Assert good notebook ran and failing one was tolerated, not cached
+        run: |
+          python - <<'PY'
+          import json, os, sys
+
+          def has_outputs(path):
+              nb = json.load(open(path))
+              return any(c["cell_type"] == "code" and c.get("outputs") for c in nb["cells"])
+
+          checks = {
+              "good notebook executed": has_outputs("docs/notebook/hello.ipynb"),
+              "good notebook cached": os.path.exists(".jupyter_cache/executed/hello.ipynb"),
+              "failing notebook NOT cached": not os.path.exists(".jupyter_cache/executed/flaky.ipynb"),
+          }
+          failed = [name for name, ok in checks.items() if not ok]
+          for name, ok in checks.items():
+              print(("OK  " if ok else "FAIL") + ": " + name)
+          if failed:
+              sys.exit(1)
+          print("continue-on-error tolerated the failing notebook; good notebook executed and cached.")
+          PY
+
   test-install-groups-variations:
     name: Test install-groups Format Variations
     runs-on: ubuntu-latest

@@ -72,11 +72,35 @@ inputs:
       build to render the executed notebooks; missing mkdocs-jupyter passes
       preflight but fails at build time). Assumes src-layout (library code under
       "src/") with "pyproject.toml" at repo root. When empty (default), notebook
-      execution is skipped entirely.
+      execution is skipped entirely. Use notebooks-exclude to skip individual
+      notebooks that cannot run in CI, and notebooks-continue-on-error to keep
+      going past an execution failure.
       Examples: "docs/notebook", "docs/notebooks", "examples/notebooks".
       Default is "" (skip).
     required: false
     default: ''
+  notebooks-exclude:
+    description: >
+      Newline- or comma-separated glob patterns identifying notebooks under
+      notebooks-path to skip executing. Patterns are matched against each
+      notebook's path relative to notebooks-path (POSIX-style, e.g.
+      "dask/*.ipynb" or "**/stac-cloud-*.ipynb"). Excluded notebooks are left
+      untouched and rendered without fresh execution. Mirrors pytest's
+      "--ignore-glob". When empty (default), no notebooks are excluded.
+      Examples: "**/lazy-*.ipynb", "dask/*.ipynb, zarr/*.ipynb".
+      Default is "" (exclude nothing).
+    required: false
+    default: ''
+  notebooks-continue-on-error:
+    description: >
+      When "true", a non-excluded notebook that fails to execute is downgraded
+      to a warning and the remaining notebooks still run, instead of aborting
+      the whole "Prepare notebook outputs" step. The failing notebook is left
+      with whatever outputs it had (not cached). When "false" (default), the
+      first execution failure fails the step.
+      Default is "false".
+    required: false
+    default: 'false'
 
 runs:
   using: 'composite'
@@ -138,6 +162,8 @@ runs:
       env:
         PACKAGE_MANAGER: ${{ inputs.package-manager }}
         NOTEBOOK_ROOT: ${{ inputs.notebooks-path }}
+        NOTEBOOK_EXCLUDE: ${{ inputs.notebooks-exclude }}
+        NOTEBOOK_CONTINUE_ON_ERROR: ${{ inputs.notebooks-continue-on-error }}
       run: |
         echo "::group::Preparing notebook outputs"
         SCRIPT="${{ github.action_path }}/scripts/prep_notebooks.py"

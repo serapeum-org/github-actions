@@ -33,6 +33,8 @@ This action deploys MkDocs documentation with automatic version management based
 | `release-tag` | Release tag version (for release trigger) | No | - |
 | `mike-alias` | Mike alias for releases | No | `latest` |
 | `notebooks-path` | Root directory of Jupyter notebooks to execute and cache. Empty = skip. | No | `` (skip) |
+| `notebooks-exclude` | Newline-/comma-separated globs (relative to `notebooks-path`) for notebooks to skip executing. | No | `` (none) |
+| `notebooks-continue-on-error` | Downgrade a non-excluded notebook execution failure to a warning instead of aborting. | No | `false` |
 
 ## Examples
 
@@ -170,6 +172,59 @@ workflows see no change.
   `src/**/*.py`, and `pyproject.toml`; flat-layout projects (library code at
   repo root rather than under `src/`) are not supported out of the box.
 
+### Excluding notebooks that can't run in CI
+
+Some notebooks can't execute on a clean runner — they need live network/cloud
+data, an optional extra that isn't installed for docs, or are intentionally
+flaky. List them in `notebooks-exclude` (newline- or comma-separated globs,
+matched against each notebook's path **relative to `notebooks-path`**) to skip
+their execution. Excluded notebooks are left untouched and rendered with
+whatever outputs they already carry. This mirrors pytest's `--ignore-glob`.
+
+```yaml
+- uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1
+  with:
+    trigger: ${{ github.event_name }}
+    deploy-token: ${{ secrets.GITHUB_TOKEN }}
+    notebooks-path: docs/examples
+    notebooks-exclude: |
+      dask/*.ipynb
+      **/lazy-*-complete.ipynb
+      **/stac-cloud-*.ipynb
+      zarr/*.ipynb
+```
+
+**Pattern semantics** (these mirror pytest's `--ignore-glob`, which uses
+`fnmatch`):
+
+- `*` matches across `/`, so a pattern like `dask/*.ipynb` matches **every**
+  notebook under `dask/` at any depth, not just its direct children — and a
+  bare `*.ipynb` matches every notebook in the tree. Anchor the pattern (e.g.
+  `dask/`, or a distinctive filename stem) to avoid over-excluding.
+- A leading `**/` matches at any depth **including the root**, so
+  `**/stac-cloud-*.ipynb` also matches a top-level `stac-cloud-foo.ipynb`.
+- Matching is **case-sensitive** on every runner OS (so `Foo.ipynb` is not
+  matched by `foo.*`).
+
+To keep executing the rest when a *non-excluded* notebook fails — rather than
+aborting the whole deploy — set `notebooks-continue-on-error: 'true'`. The
+failing notebook is logged as a CI warning and is not cached, so it re-runs on
+the next CI run; use it for genuinely flaky notebooks, and prefer
+`notebooks-exclude` for ones that can never run in CI.
+
+```yaml
+- uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1
+  with:
+    trigger: ${{ github.event_name }}
+    deploy-token: ${{ secrets.GITHUB_TOKEN }}
+    notebooks-path: docs/examples
+    # Never-runs-in-CI notebooks are excluded outright...
+    notebooks-exclude: |
+      **/stac-cloud-*.ipynb
+    # ...while an occasional flaky failure only warns instead of failing.
+    notebooks-continue-on-error: 'true'
+```
+
 ### Cache invalidation
 
 The cache key is:
@@ -196,8 +251,8 @@ outputs stripped. A `pre-commit` hook such as
    `actions/cache`, preflight-checks that `jupyter`/`nbconvert`/`ipykernel`
    are importable, and runs the vendored `prep_notebooks.py` script — which
    copies cached executed notebooks back into the working tree where
-   available, and executes (via `jupyter nbconvert --execute --inplace`) the
-   rest
+   available, executes (via `jupyter nbconvert --execute --inplace`) the
+   rest, and skips any notebook matching `notebooks-exclude`
 3. Configures git with the workflow actor's identity
 4. Runs the appropriate `mike` command based on trigger:
    - **pull_request**: `mike deploy --push develop`
