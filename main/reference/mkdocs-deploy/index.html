@@ -1303,6 +1303,8 @@
 <a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="nt">release-tag</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&#39;</span>
 <a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="nt">mike-alias</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;latest&#39;</span>
 <a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">    </span><span class="nt">notebooks-path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&#39;</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">    </span><span class="nt">notebooks-exclude</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&#39;</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">    </span><span class="nt">notebooks-continue-on-error</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;false&#39;</span>
 </code></pre></div>
 <h2 id="inputs">Inputs<a class="headerlink" href="#inputs" title="Permanent link">&para;</a></h2>
 <table>
@@ -1362,6 +1364,18 @@
 <td>Root directory containing notebooks to execute and cache before the mkdocs build</td>
 <td style="text-align: center;">No</td>
 <td>-</td>
+</tr>
+<tr>
+<td><code>notebooks-exclude</code></td>
+<td>Newline- or comma-separated glob patterns identifying notebooks under notebooks-path to skip executing</td>
+<td style="text-align: center;">No</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>notebooks-continue-on-error</code></td>
+<td>When "true", a non-excluded notebook that fails to execute is downgraded to a warning and the remaining notebooks still run, instead of aborting the whole "Prepare notebook outputs" step</td>
+<td style="text-align: center;">No</td>
+<td><code>false</code></td>
 </tr>
 </tbody>
 </table>

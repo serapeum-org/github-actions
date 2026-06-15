@@ -847,6 +847,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#excluding-notebooks-that-cant-run-in-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Excluding notebooks that can't run in CI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#cache-invalidation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1516,6 +1527,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#excluding-notebooks-that-cant-run-in-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Excluding notebooks that can't run in CI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#cache-invalidation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1681,6 +1703,18 @@
 <td style="text-align: center;">No</td>
 <td>`` (skip)</td>
 </tr>
+<tr>
+<td><code>notebooks-exclude</code></td>
+<td>Newline-/comma-separated globs (relative to <code>notebooks-path</code>) for notebooks to skip executing.</td>
+<td style="text-align: center;">No</td>
+<td>`` (none)</td>
+</tr>
+<tr>
+<td><code>notebooks-continue-on-error</code></td>
+<td>Downgrade a non-excluded notebook execution failure to a warning instead of aborting.</td>
+<td style="text-align: center;">No</td>
+<td><code>false</code></td>
+</tr>
 </tbody>
 </table>
 <h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
@@ -1798,9 +1832,55 @@ workflows see no change.</p>
   <code>src/</code>. The cache-invalidation hash covers notebook contents,
   <code>src/**/*.py</code>, and <code>pyproject.toml</code>; flat-layout projects (library code at
   repo root rather than under <code>src/</code>) are not supported out of the box.</p>
+<h3 id="excluding-notebooks-that-cant-run-in-ci">Excluding notebooks that can't run in CI<a class="headerlink" href="#excluding-notebooks-that-cant-run-in-ci" title="Permanent link">&para;</a></h3>
+<p>Some notebooks can't execute on a clean runner — they need live network/cloud
+data, an optional extra that isn't installed for docs, or are intentionally
+flaky. List them in <code>notebooks-exclude</code> (newline- or comma-separated globs,
+matched against each notebook's path <strong>relative to <code>notebooks-path</code></strong>) to skip
+their execution. Excluded notebooks are left untouched and rendered with
+whatever outputs they already carry. This mirrors pytest's <code>--ignore-glob</code>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="nt">trigger</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ github.event_name }}</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span><span class="nt">deploy-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GITHUB_TOKEN }}</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">    </span><span class="nt">notebooks-path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docs/examples</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">    </span><span class="nt">notebooks-exclude</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">      </span><span class="no">dask/*.ipynb</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">      </span><span class="no">**/lazy-*-complete.ipynb</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">      </span><span class="no">**/stac-cloud-*.ipynb</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">      </span><span class="no">zarr/*.ipynb</span>
+</code></pre></div>
+<p><strong>Pattern semantics</strong> (these mirror pytest's <code>--ignore-glob</code>, which uses
+<code>fnmatch</code>):</p>
+<ul>
+<li><code>*</code> matches across <code>/</code>, so a pattern like <code>dask/*.ipynb</code> matches <strong>every</strong>
+  notebook under <code>dask/</code> at any depth, not just its direct children — and a
+  bare <code>*.ipynb</code> matches every notebook in the tree. Anchor the pattern (e.g.
+  <code>dask/</code>, or a distinctive filename stem) to avoid over-excluding.</li>
+<li>A leading <code>**/</code> matches at any depth <strong>including the root</strong>, so
+  <code>**/stac-cloud-*.ipynb</code> also matches a top-level <code>stac-cloud-foo.ipynb</code>.</li>
+<li>Matching is <strong>case-sensitive</strong> on every runner OS (so <code>Foo.ipynb</code> is not
+  matched by <code>foo.*</code>).</li>
+</ul>
+<p>To keep executing the rest when a <em>non-excluded</em> notebook fails — rather than
+aborting the whole deploy — set <code>notebooks-continue-on-error: 'true'</code>. The
+failing notebook is logged as a CI warning and is not cached, so it re-runs on
+the next CI run; use it for genuinely flaky notebooks, and prefer
+<code>notebooks-exclude</code> for ones that can never run in CI.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">    </span><span class="nt">trigger</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ github.event_name }}</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">    </span><span class="nt">deploy-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GITHUB_TOKEN }}</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">    </span><span class="nt">notebooks-path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docs/examples</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">    </span><span class="c1"># Never-runs-in-CI notebooks are excluded outright...</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">    </span><span class="nt">notebooks-exclude</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">      </span><span class="no">**/stac-cloud-*.ipynb</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">    </span><span class="c1"># ...while an occasional flaky failure only warns instead of failing.</span>
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="w">    </span><span class="nt">notebooks-continue-on-error</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;true&#39;</span>
+</code></pre></div>
 <h3 id="cache-invalidation">Cache invalidation<a class="headerlink" href="#cache-invalidation" title="Permanent link">&para;</a></h3>
 <p>The cache key is:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>jupyter-cache-&lt;hashFiles(notebooks, src/**/*.py, pyproject.toml)&gt;
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>jupyter-cache-&lt;hashFiles(notebooks, src/**/*.py, pyproject.toml)&gt;
 </code></pre></div>
 <p>Any change to a notebook, to library source under <code>src/</code>, or to
 <code>pyproject.toml</code> invalidates the cache and triggers a full re-execute.
@@ -1817,8 +1897,8 @@ outputs stripped. A <code>pre-commit</code> hook such as
    <code>actions/cache</code>, preflight-checks that <code>jupyter</code>/<code>nbconvert</code>/<code>ipykernel</code>
    are importable, and runs the vendored <code>prep_notebooks.py</code> script — which
    copies cached executed notebooks back into the working tree where
-   available, and executes (via <code>jupyter nbconvert --execute --inplace</code>) the
-   rest</li>
+   available, executes (via <code>jupyter nbconvert --execute --inplace</code>) the
+   rest, and skips any notebook matching <code>notebooks-exclude</code></li>
 <li>Configures git with the workflow actor's identity</li>
 <li>Runs the appropriate <code>mike</code> command based on trigger:</li>
 <li><strong>pull_request</strong>: <code>mike deploy --push develop</code></li>
