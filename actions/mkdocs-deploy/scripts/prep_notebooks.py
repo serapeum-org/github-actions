@@ -47,12 +47,12 @@ CONTINUE_ON_ERROR = os.environ.get("NOTEBOOK_CONTINUE_ON_ERROR", "").strip().low
 
 
 def _matches(rel_posix: str, pat: str) -> bool:
-    """Match a POSIX relative path against one glob pattern.
+    """Match a POSIX relative path against one glob pattern (case-sensitively).
 
-    A leading ``**/`` is treated as matching zero or more directories (so
-    ``**/stac-cloud-*.ipynb`` also matches a top-level ``stac-cloud-*.ipynb``),
-    which is what callers expect and what ``Path.match``/``fnmatch`` do not do
-    on their own.
+    Matching uses ``fnmatchcase``. As a special case, a leading ``**/`` also
+    matches zero directories: the pattern is retried with the ``**/`` prefix
+    stripped so ``**/stac-cloud-*.ipynb`` matches a top-level
+    ``stac-cloud-foo.ipynb`` as well as nested ones.
     """
     if fnmatchcase(rel_posix, pat):
         return True
