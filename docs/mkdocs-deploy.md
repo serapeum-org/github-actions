@@ -203,6 +203,8 @@ whatever outputs they already carry. This mirrors pytest's `--ignore-glob`.
   `dask/`, or a distinctive filename stem) to avoid over-excluding.
 - A leading `**/` matches at any depth **including the root**, so
   `**/stac-cloud-*.ipynb` also matches a top-level `stac-cloud-foo.ipynb`.
+- Matching is **case-sensitive** on every runner OS (so `Foo.ipynb` is not
+  matched by `foo.*`).
 
 To keep executing the rest when a *non-excluded* notebook fails — rather than
 aborting the whole deploy — set `notebooks-continue-on-error: 'true'`. The
