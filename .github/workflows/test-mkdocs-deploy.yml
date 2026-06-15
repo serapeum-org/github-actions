@@ -659,11 +659,14 @@ jobs:
             "nbformat": 4, "nbformat_minor": 5,
           }
           os.makedirs("docs/notebook/cloud", exist_ok=True)
+          os.makedirs("docs/notebook/scratch", exist_ok=True)
           # Excluded via the directory glob "cloud/*.ipynb"
           json.dump(fail, open("docs/notebook/cloud/needs-network.ipynb", "w"))
           # Excluded via the root-matching globstar "**/skip-*.ipynb"
           json.dump(fail, open("docs/notebook/skip-me.ipynb", "w"))
-          print("Wrote two intentionally-failing notebooks")
+          # Excluded via "scratch/*.ipynb" given on a comma-separated line
+          json.dump(fail, open("docs/notebook/scratch/wip.ipynb", "w"))
+          print("Wrote three intentionally-failing notebooks")
           PY
 
       - name: Run mkdocs-deploy excluding the failing notebooks
@@ -674,9 +677,11 @@ jobs:
           install-groups: 'groups: docs'
           deploy-token: ${{ secrets.GITHUB_TOKEN }}
           notebooks-path: 'docs/notebook'
+          # Mixes newline separation (between lines) with comma separation
+          # (within the second line) to exercise both split paths.
           notebooks-exclude: |
             cloud/*.ipynb
-            **/skip-*.ipynb
+            **/skip-*.ipynb, scratch/*.ipynb
 
       - name: Assert excluded notebooks were neither executed nor cached
         run: |
@@ -692,15 +697,17 @@ jobs:
               "good notebook cached": os.path.exists(".jupyter_cache/executed/hello.ipynb"),
               "nested excluded NOT executed": not has_outputs("docs/notebook/cloud/needs-network.ipynb"),
               "root excluded NOT executed": not has_outputs("docs/notebook/skip-me.ipynb"),
+              "comma excluded NOT executed": not has_outputs("docs/notebook/scratch/wip.ipynb"),
               "nested excluded NOT cached": not os.path.exists(".jupyter_cache/executed/cloud/needs-network.ipynb"),
               "root excluded NOT cached": not os.path.exists(".jupyter_cache/executed/skip-me.ipynb"),
+              "comma excluded NOT cached": not os.path.exists(".jupyter_cache/executed/scratch/wip.ipynb"),
           }
           failed = [name for name, ok in checks.items() if not ok]
           for name, ok in checks.items():
               print(("OK  " if ok else "FAIL") + ": " + name)
           if failed:
               sys.exit(1)
-          print("All exclude-glob assertions passed (nested + root-level globstar).")
+          print("All exclude-glob assertions passed (nested + root globstar + comma-separated).")
           PY
 
   test-notebooks-continue-on-error:
