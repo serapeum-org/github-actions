@@ -212,6 +212,19 @@ failing notebook is logged as a CI warning and is not cached, so it re-runs on
 the next CI run; use it for genuinely flaky notebooks, and prefer
 `notebooks-exclude` for ones that can never run in CI.
 
+```yaml
+- uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1
+  with:
+    trigger: ${{ github.event_name }}
+    deploy-token: ${{ secrets.GITHUB_TOKEN }}
+    notebooks-path: docs/examples
+    # Never-runs-in-CI notebooks are excluded outright...
+    notebooks-exclude: |
+      **/stac-cloud-*.ipynb
+    # ...while an occasional flaky failure only warns instead of failing.
+    notebooks-continue-on-error: 'true'
+```
+
 ### Cache invalidation
 
 The cache key is:
