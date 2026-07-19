@@ -56,6 +56,16 @@ inputs:
       - uv
       - pixi
     default: 'uv'
+  package-manager-version:
+    description: |
+      Version of the package manager (uv or pixi) to install, forwarded to the
+      selected python-setup action's `version` input.
+      - uv: a version like '0.5.0' or 'latest'; empty resolves from the project or latest.
+      - pixi: a release tag like 'v0.65.0' or 'latest'; empty keeps the pinned default.
+      Ignored when package-manager is 'pip' (pip ships with Python).
+      Default is '' (use each package manager's own default).
+    required: false
+    default: ''
   python-version:
     description: |
       Python version to install (passed to actions/setup-python).
@@ -143,6 +153,11 @@ runs:
         echo "::group::Release Configuration"
         echo "=== GitHub Release Action Configuration ==="
         echo "✓ Package manager: ${{ inputs.package-manager }}"
+        if [ -n "${{ inputs.package-manager-version }}" ]; then
+          echo "✓ Package manager version: ${{ inputs.package-manager-version }}"
+        else
+          echo "✗ Package manager version: default (${{ inputs.package-manager }} chooses)"
+        fi
         echo "✓ Python version: ${{ inputs.python-version }}"
         echo "✓ Version increment: ${{ inputs.increment }}"
         if [ "${{ inputs.prerelease-type }}" != "none" ]; then
@@ -177,6 +192,7 @@ runs:
       with:
         python-version: ${{ inputs.python-version }}
         install-groups: ${{ inputs.install-groups }}
+        version: ${{ inputs.package-manager-version }}
 
     - name: Set up Python environment (pixi)
       if: ${{ inputs.package-manager == 'pixi' }}
@@ -184,6 +200,8 @@ runs:
       with:
         environments: ${{ inputs.install-groups }}
         activate-environment: ${{ inputs.install-groups }}
+        # Empty package-manager-version keeps pixi's own pinned default (v0.65.0).
+        version: ${{ inputs.package-manager-version != '' && inputs.package-manager-version || 'v0.65.0' }}
 
     - name: Configure Git
       shell: bash

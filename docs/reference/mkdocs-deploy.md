@@ -25,6 +25,7 @@
 |-------|-------------|:--------:|---------|
 | `trigger` | Deployment trigger type (pull_request, main, release) | Yes | - |
 | `package-manager` | Package manager to use (pip, uv, pixi) | No | `uv` |
+| `package-manager-version` | Version of the uv/pixi package manager to install (forwarded to its `version` input); empty uses each manager's default; ignored for pip | No | `""` |
 | `python-version` | Python version to install | No | `3.12` |
 | `install-groups` | Dependency groups to install | No | `groups: docs` |
 | `deploy-token` | GitHub token for deployment | Yes | - |

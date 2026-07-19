@@ -868,3 +868,60 @@ jobs:
         run: |
           echo "install-groups format test completed: ${{ matrix.install-groups }}"
 
+  test-package-manager-version:
+    name: Test package-manager-version input (${{ matrix.package-manager }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package-manager: [uv, pixi]
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
+
+      - name: Copy test fixture files (uv)
+        if: matrix.package-manager == 'uv'
+        run: |
+          cp tests/data/mkdocs-deploy/test-pull-request-pip-uv/pyproject.toml .
+          cp tests/data/mkdocs-deploy/test-pull-request-pip-uv/uv.lock .
+          cp tests/data/mkdocs-deploy/test-pull-request-pip-uv/mkdocs.yml .
+          cp -r tests/data/mkdocs-deploy/test-pull-request-pip-uv/docs .
+
+      - name: Copy test fixture files (pixi)
+        if: matrix.package-manager == 'pixi'
+        run: |
+          cp tests/data/mkdocs-deploy/test-pull-request-pixi/pyproject.toml .
+          cp tests/data/mkdocs-deploy/test-pull-request-pixi/pixi.lock .
+          cp tests/data/mkdocs-deploy/test-pull-request-pixi/mkdocs.yml .
+          cp -r tests/data/mkdocs-deploy/test-pull-request-pixi/docs .
+
+      - name: Set install-groups for package manager
+        id: set-groups
+        run: |
+          if [ "${{ matrix.package-manager }}" = "pixi" ]; then
+            echo "groups=docs" >> $GITHUB_OUTPUT
+          else
+            echo "groups=groups: docs" >> $GITHUB_OUTPUT
+          fi
+
+      # 'latest' is valid for both the uv and pixi setup actions and is always
+      # lock-compatible, so this stays green once uv/v1 and pixi/v1 are
+      # re-released with the version input. Until then the value is forwarded to
+      # the pinned sub-actions and harmlessly ignored (unexpected-input warning).
+      - name: Deploy with an explicit package-manager-version
+        uses: ./actions/mkdocs-deploy
+        with:
+          trigger: 'pull_request'
+          package-manager: ${{ matrix.package-manager }}
+          package-manager-version: 'latest'
+          install-groups: ${{ steps.set-groups.outputs.groups }}
+          deploy-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify deployment completed
+        run: |
+          echo "package-manager-version test completed for ${{ matrix.package-manager }}"
+

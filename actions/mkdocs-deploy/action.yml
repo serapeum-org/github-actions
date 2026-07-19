@@ -19,6 +19,16 @@ inputs:
       Default is "uv".
     required: false
     default: 'uv'
+  package-manager-version:
+    description: >
+      Version of the package manager (uv or pixi) to install, forwarded to the
+      selected python-setup action's version input. For uv use a value like
+      "0.5.0" or "latest"; for pixi use a release tag like "v0.65.0" or "latest".
+      Empty uses each package manager's own default (uv resolves from the project
+      or latest; pixi keeps its pinned default). Ignored for pip.
+      Default is "" (each package manager's own default).
+    required: false
+    default: ''
   python-version:
     description: >
       Python version to install (passed to the selected python-setup action).
@@ -120,6 +130,7 @@ runs:
         python-version: ${{ inputs.python-version }}
         install-groups: ${{ inputs.install-groups }}
         verify-lock: false
+        version: ${{ inputs.package-manager-version }}
 
     - name: Set up Python environment (pixi)
       if: ${{ inputs.package-manager == 'pixi' }}
@@ -128,6 +139,8 @@ runs:
         environments: ${{ inputs.install-groups }}
         activate-environment: ${{ inputs.install-groups }}
         verify-lock: false
+        # Empty package-manager-version keeps pixi's own pinned default (v0.65.0).
+        version: ${{ inputs.package-manager-version != '' && inputs.package-manager-version || 'v0.65.0' }}
 
     - name: Restore notebook execution cache
       if: ${{ inputs.notebooks-path != '' }}
