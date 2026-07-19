@@ -155,7 +155,9 @@ runs:
         echo "::group::Release Configuration"
         echo "=== GitHub Release Action Configuration ==="
         echo "✓ Package manager: ${{ inputs.package-manager }}"
-        echo "✓ Package manager version: ${{ inputs.package-manager-version }}"
+        if [ "${{ inputs.package-manager }}" != "pip" ]; then
+          echo "✓ Package manager version: ${{ inputs.package-manager-version }}"
+        fi
         echo "✓ Python version: ${{ inputs.python-version }}"
         echo "✓ Version increment: ${{ inputs.increment }}"
         if [ "${{ inputs.prerelease-type }}" != "none" ]; then
