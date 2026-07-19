@@ -1471,3 +1471,142 @@ jobs:
             exit 1
           fi
           echo "[OK] update_changelog_on_bump restored to true"
+
+  # Regression test for issue #14: the version-bump tag must contain the
+  # refreshed lockfile so `git checkout <tag> && <pm> sync --locked` succeeds.
+  # Before the fold-in-tag fix the lockfile lived in a follow-up commit past
+  # the tag, leaving the tagged tree stale.
+  test-release-lockfile-in-tag:
+    name: Test release - lockfile folded into tag (${{ matrix.package-manager }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - package-manager: uv
+            lock-file: uv.lock
+            install-groups: 'groups: dev docs'
+          - package-manager: pixi
+            lock-file: pixi.lock
+            install-groups: 'default'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Copy uv test fixture
+        if: ${{ matrix.package-manager == 'uv' }}
+        run: |
+          cp tests/data/release-github/test-basic-uv/pyproject.toml .
+          cp tests/data/release-github/test-basic-uv/uv.lock .
+
+      - name: Copy pixi test fixture
+        if: ${{ matrix.package-manager == 'pixi' }}
+        run: |
+          cp tests/data/release-github/test-basic-pixi/pyproject.toml .
+          cp tests/data/release-github/test-basic-pixi/pixi.toml .
+          cp tests/data/release-github/test-basic-pixi/pixi.lock .
+
+      - name: Clean up repository tags
+        run: git tag -l | xargs -r git tag -d
+
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
+
+      - name: Snapshot the pre-release lockfile
+        run: |
+          # Capture the fixture's original lockfile so we can prove the tagged
+          # lockfile is different from what was committed at release-init time.
+          cp "${{ matrix.lock-file }}" /tmp/prerelease.lock
+
+      - name: Create initial commits with a prior tag
+        run: |
+          git config user.name "Test Bot"
+          git config user.email "test@example.com"
+
+          cat > CHANGELOG.md << 'EOF'
+          # Changelog
+
+          All notable changes to this project will be documented in this file.
+          EOF
+
+          if [ "${{ matrix.package-manager }}" == "uv" ]; then
+            git add pyproject.toml uv.lock CHANGELOG.md
+          else
+            git add pyproject.toml pixi.toml pixi.lock CHANGELOG.md
+          fi
+          git commit -m "chore: initial commit"
+          git tag 0.1.0
+          git push origin main
+          git push origin 0.1.0
+
+          echo "feature" > feature.py
+          git add feature.py
+          git commit -m "feat: trigger a minor bump"
+          git push origin main
+
+      - name: Run release action
+        uses: ./actions/release/github
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          increment: 'minor'
+          prerelease-type: 'none'
+          package-manager: ${{ matrix.package-manager }}
+          python-version: '3.12'
+          install-groups: ${{ matrix.install-groups }}
+          skip-github-release: 'true'
+
+      - name: Verify the new tag exists and HEAD is on it
+        run: |
+          if ! git rev-parse 0.2.0 >/dev/null 2>&1; then
+            echo "::error::tag 0.2.0 was not created"
+            git tag -l
+            exit 1
+          fi
+          HEAD_SHA=$(git rev-parse HEAD)
+          TAG_SHA=$(git rev-parse "0.2.0^{commit}")
+          if [ "$HEAD_SHA" != "$TAG_SHA" ]; then
+            echo "::error::HEAD ($HEAD_SHA) is not the tagged commit ($TAG_SHA)"
+            echo "This means the lockfile amend/retag did not run or ran wrong."
+            git log --oneline -n 5
+            exit 1
+          fi
+          echo "[OK] tag 0.2.0 exists and HEAD is the tagged commit"
+
+      - name: Verify the tagged lockfile differs from the pre-release snapshot
+        run: |
+          # Prove the tag contains the FOLDED (refreshed) lockfile, not the
+          # pre-release lockfile that was committed at test setup.
+          git show "0.2.0:${{ matrix.lock-file }}" > /tmp/tagged.lock
+          if diff -q /tmp/prerelease.lock /tmp/tagged.lock >/dev/null; then
+            echo "::error::Tagged ${{ matrix.lock-file }} is identical to the pre-release lockfile"
+            echo "The action did not fold the refreshed lockfile into the tagged commit."
+            exit 1
+          fi
+          echo "[OK] tagged ${{ matrix.lock-file }} was refreshed (differs from pre-release lockfile)"
+
+      - name: Verify the tagged lockfile records the new version
+        run: |
+          # The freshly-generated lockfile should mention the new version 0.2.0
+          # in at least one line (the project's own version pin).
+          if ! git show "0.2.0:${{ matrix.lock-file }}" | grep -q '0\.2\.0'; then
+            echo "::error::Tagged ${{ matrix.lock-file }} does not reference the new version 0.2.0"
+            echo "First 40 lines of tagged lockfile:"
+            git show "0.2.0:${{ matrix.lock-file }}" | head -40
+            exit 1
+          fi
+          echo "[OK] tagged ${{ matrix.lock-file }} records version 0.2.0"
+
+      - name: Verify no follow-up commit past the tag
+        run: |
+          # If a follow-up lockfile commit existed past the tag (the pre-fix
+          # behavior), branch tip would be ahead of the tag.
+          BRANCH_TIP=$(git rev-parse HEAD)
+          TAG_COMMIT=$(git rev-parse "0.2.0^{commit}")
+          if [ "$BRANCH_TIP" != "$TAG_COMMIT" ]; then
+            echo "::error::Branch tip has moved past the tag (found a follow-up commit)"
+            git log --oneline "$TAG_COMMIT..$BRANCH_TIP"
+            exit 1
+          fi
+          echo "[OK] no follow-up commit past tag; lockfile lives inside the tagged commit"
