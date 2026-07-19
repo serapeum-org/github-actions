@@ -607,6 +607,16 @@ jobs:
       - name: Copy test fixture files
         run: cp tests/data/pip/test-pip-single-group/pyproject.toml .
 
+      - name: Precondition - core install (no groups) succeeds on this pip
+        shell: bash
+        run: |
+          # Prove the fixture installs cleanly on 3.8's pip, so the only thing
+          # left to fail in the action below is the --group step -- this
+          # attributes the expected failure to the missing --group support
+          # rather than to an unrelated build/install error.
+          python -m pip install .
+          echo "[OK] Core install works on pip $(pip --version | awk '{print $2}')"
+
       - name: Action must FAIL when groups are requested but pip lacks --group
         id: groups-unsupported
         continue-on-error: true
