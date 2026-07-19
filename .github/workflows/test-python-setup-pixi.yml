@@ -413,3 +413,34 @@ jobs:
           echo "Environment info:"
           pixi info
           pixi list -e ml
+
+  test-pixi-custom-version:
+    name: Test pixi action - Custom pixi version input
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Copy test fixture files
+        run: |
+          cp tests/data/pixi/test-pixi-basic/pyproject.toml .
+          cp tests/data/pixi/test-pixi-basic/pixi.lock .
+
+      - name: Setup pixi with an explicit version
+        uses: ./actions/python-setup/pixi
+        with:
+          version: 'v0.65.0'
+          cache: 'false'
+
+      - name: Verify the requested pixi version was installed
+        shell: bash
+        run: |
+          installed="$(pixi --version | awk '{print $2}')"
+          echo "Installed pixi: $installed"
+          # The version input must be honored: if it were not wired through,
+          # setup-pixi would fall back to its default (latest), which is newer
+          # than the pinned 0.65.0, so this assertion would fail.
+          if [ "$installed" != "0.65.0" ]; then
+            echo "::error::Expected pixi 0.65.0 from the version input, got $installed"
+            exit 1
+          fi
+          echo "[OK] version input honored: pixi 0.65.0 installed"

@@ -37,6 +37,13 @@ inputs:
       Default is "true".
     required: false
     default: 'true'
+  version:
+    description: >
+      Version of pixi to install (passed to prefix-dev/setup-pixi as pixi-version).
+      Use a release tag such as "v0.65.0", or "latest" for the newest release.
+      Default is "v0.65.0".
+    required: false
+    default: 'v0.65.0'
 
 runs:
   using: 'composite'
@@ -59,7 +66,7 @@ runs:
       with:
         environments: ${{ inputs.environments }}
         activate-environment: ${{ inputs.activate-environment }}
-        pixi-version: v0.65.0
+        pixi-version: ${{ inputs.version }}
         cache: true
         cache-key: pixi-${{ hashFiles('pixi.lock') }}
         cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
@@ -72,7 +79,7 @@ runs:
       with:
         environments: ${{ inputs.environments }}
         activate-environment: ${{ inputs.activate-environment }}
-        pixi-version: v0.65.0
+        pixi-version: ${{ inputs.version }}
         cache: false
         locked: ${{ inputs.verify-lock == 'true' }}
         frozen: ${{ inputs.verify-lock != 'true' }}

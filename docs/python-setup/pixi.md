@@ -92,6 +92,7 @@ steps:
 | `activate-environment` | Environment to activate after installation | No | `'default'` | Any environment name from your `pyproject.toml` |
 | `cache` | Enable caching of pixi environments | No | `'false'` | `'true'`, `'false'` |
 | `verify-lock` | Verify lock file is up to date | No | `'true'` | `'true'`, `'false'` |
+| `version` | Version of pixi to install | No | `'v0.65.0'` | Release tag (e.g., `'v0.65.0'`) or `'latest'` |
 
 ### Input Details
 
@@ -200,6 +201,24 @@ verify-lock: 'true'
 # Skip verification (faster, use cautiously)
 verify-lock: 'false'
 ```
+
+#### `version`
+Selects the pixi release installed by `prefix-dev/setup-pixi` (forwarded as its `pixi-version` input).
+
+**Default (`'v0.65.0'`)**: Pins the pixi CLI to 0.65.0 for reproducible runs.
+
+Use a specific release tag to pin a version, or `'latest'` to always install the newest release:
+
+```yaml
+# Pin a specific pixi version (recommended for reproducibility)
+version: 'v0.65.0'
+
+# Always use the newest pixi release
+version: 'latest'
+```
+
+**Note**: Pass the tag exactly as published by pixi, including the leading `v` (e.g. `'v0.65.0'`). The pinned
+version must be able to read your committed `pixi.lock` format.
 
 ## Features
 
