@@ -144,7 +144,7 @@ runs:
 
     - name: Restore notebook execution cache
       if: ${{ inputs.notebooks-path != '' }}
-      uses: actions/cache@v4
+      uses: actions/cache@v6
       with:
         path: .jupyter_cache
         key: jupyter-cache-${{ hashFiles(format('{0}/**/*.ipynb', inputs.notebooks-path), 'src/**/*.py', 'pyproject.toml') }}

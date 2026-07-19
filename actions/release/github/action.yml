@@ -529,7 +529,7 @@ runs:
 
     - name: Publish GitHub Release
       if: ${{ inputs.skip-github-release != 'true' }}
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v3
       with:
         token: ${{ inputs.github-token }}
         name: ${{ steps.bump_version.outputs.NEW_VERSION }}
