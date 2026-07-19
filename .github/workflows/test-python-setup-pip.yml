@@ -282,13 +282,8 @@ jobs:
           # Verify all requested dependencies are installed
           python -c "import requests; print('[OK] Core dependencies installed')"
           python -c "import boto3; print('[OK] AWS extra installed')"
-          # Dev group installation depends on pip version support for --group
-          if python -c "import httpx" 2>/dev/null; then
-            echo "[OK] Dev group installed (pip supports --group)"
-          else
-            echo "::error::Dev group not installed - pip version does not support --group"
-            exit 1
-          fi
+          # Requested dev group must be installed; the action fails loudly otherwise
+          python -c "import httpx; print('[OK] Dev group installed')"
 
   test-pip-dependency-groups-only:
     name: Test pip action - Dependency groups only
@@ -547,12 +542,8 @@ jobs:
           pip list
           python -c "import requests; print('[OK] Core dependencies installed')"
           python -c "import boto3; print('[OK] AWS extra installed')"
-          if python -c "import httpx" 2>/dev/null; then
-            echo "[OK] Dev group installed (pip supports PEP 735)"
-          else
-            echo "::error::Dev group not installed - pip doesn't support PEP 735"
-            exit 1
-          fi
+          # Requested dev group must be installed; the action fails loudly otherwise
+          python -c "import httpx; print('[OK] Dev group installed')"
 
   test-pip-cache-with-groups:
     name: Test pip action - Cache with groups and extras
