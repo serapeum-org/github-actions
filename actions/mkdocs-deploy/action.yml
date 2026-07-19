@@ -24,6 +24,8 @@ inputs:
       Version of the package manager (uv or pixi) to install, forwarded to the
       selected python-setup action's version input. For uv use a value like
       "0.5.0" or "latest"; for pixi use a release tag like "v0.65.0" or "latest".
+      Match the format to the selected package-manager (uv: bare number; pixi:
+      leading "v"); switching managers may require reformatting this value.
       Ignored for pip.
       Default is "latest".
     required: false
