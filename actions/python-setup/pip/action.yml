@@ -42,7 +42,7 @@ runs:
   using: 'composite'
   steps:
     - name: Validate cache requirements
-      if: ${{ inputs.cache != '' }}
+      if: inputs.cache != ''
       shell: bash
       run: |
         echo "::group::Validating cache requirements"
