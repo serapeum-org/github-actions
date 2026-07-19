@@ -1610,3 +1610,103 @@ jobs:
             exit 1
           fi
           echo "[OK] no follow-up commit past tag; lockfile lives inside the tagged commit"
+
+      - name: Verify the tagged lockfile is consistent (issue #14 acceptance)
+        run: |
+          # The DoD for issue #14: `git checkout <tag> && <pm> sync --locked`
+          # must succeed. HEAD is already the tagged commit, so a package-manager
+          # -agnostic equivalent is: re-locking against the tagged pyproject.toml
+          # must produce NO diff. If it does, the committed lock is stale.
+          case "${{ matrix.package-manager }}" in
+            uv)   uv lock ;;
+            pixi) pixi lock ;;
+          esac
+          if ! git diff --quiet -- "${{ matrix.lock-file }}"; then
+            echo "::error::Re-locking changed ${{ matrix.lock-file }}; the tagged lock is stale/incomplete"
+            git --no-pager diff -- "${{ matrix.lock-file }}"
+            exit 1
+          fi
+          echo "[OK] tagged ${{ matrix.lock-file }} satisfies --locked (re-lock is a no-op)"
+
+  # Regression guard for the issue #14 fix: pip has no native lockfile, so the
+  # fold step is guarded off for package-manager: pip. A pip release must still
+  # land the tag on the bump commit with NO amend and produce NO lockfile.
+  test-release-pip-no-lockfile-fold:
+    name: Test release - pip unaffected by lockfile fold
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Copy pip test fixture
+        run: |
+          cp tests/data/release-github/test-basic-pip/pyproject.toml .
+          cp -r tests/data/release-github/test-basic-pip/src .
+
+      - name: Clean up repository tags
+        run: git tag -l | xargs -r git tag -d
+
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
+
+      - name: Create initial commits with a prior tag
+        run: |
+          git config user.name "Test Bot"
+          git config user.email "test@example.com"
+
+          cat > CHANGELOG.md << 'EOF'
+          # Changelog
+
+          All notable changes to this project will be documented in this file.
+          EOF
+
+          git add pyproject.toml src CHANGELOG.md
+          git commit -m "chore: initial commit"
+          git tag 0.1.0
+          git push origin main
+          git push origin 0.1.0
+
+          echo "feature" > feature.py
+          git add feature.py
+          git commit -m "feat: trigger a minor bump"
+          git push origin main
+
+      - name: Run release action (pip)
+        uses: ./actions/release/github
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          increment: 'minor'
+          prerelease-type: 'none'
+          package-manager: 'pip'
+          python-version: '3.12'
+          install-groups: 'groups: dev docs'
+          skip-github-release: 'true'
+
+      - name: Verify tag created on the bump commit with no amend
+        run: |
+          if ! git rev-parse 0.2.0 >/dev/null 2>&1; then
+            echo "::error::tag 0.2.0 was not created"
+            git tag -l
+            exit 1
+          fi
+          HEAD_SHA=$(git rev-parse HEAD)
+          TAG_SHA=$(git rev-parse "0.2.0^{commit}")
+          if [ "$HEAD_SHA" != "$TAG_SHA" ]; then
+            echo "::error::HEAD ($HEAD_SHA) is not the tagged commit ($TAG_SHA) for a pip release"
+            echo "The fold step must be skipped for pip; something amended the commit."
+            git log --oneline -n 5
+            exit 1
+          fi
+          echo "[OK] pip: tag 0.2.0 sits on the bump commit (no amend)"
+
+      - name: Verify no lockfile was produced
+        run: |
+          for f in uv.lock pixi.lock; do
+            if [ -f "$f" ]; then
+              echo "::error::pip release unexpectedly produced $f"
+              exit 1
+            fi
+          done
+          echo "[OK] pip: no lockfile created; fold step correctly skipped"
