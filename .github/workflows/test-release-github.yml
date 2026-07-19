@@ -43,6 +43,19 @@ jobs:
       - name: Setup fake git remote for testing
         uses: ./.github/workflows/test-helpers/setup-fake-remote
 
+      - name: Normalize local branch to main (dispatch-testability)
+        shell: bash
+        run: |
+          # The suite hard-codes `git push origin main`, and the release action
+          # itself does a bare `git push`. Both need a local `main`. Under the
+          # push-to-main trigger that branch exists; under workflow_dispatch on
+          # a feature branch it does not, so every job would die at setup with
+          # "src refspec main does not match any". Force a local `main` at the
+          # current commit and set push.default=current so bare pushes resolve,
+          # making the suite runnable from any dispatched ref.
+          git checkout -B main
+          git config push.default current
+
       - name: Create test commit for version bumping
         run: |
           git config user.name "Test Bot"
@@ -125,6 +138,19 @@ jobs:
       - name: Setup fake git remote for testing
         uses: ./.github/workflows/test-helpers/setup-fake-remote
 
+      - name: Normalize local branch to main (dispatch-testability)
+        shell: bash
+        run: |
+          # The suite hard-codes `git push origin main`, and the release action
+          # itself does a bare `git push`. Both need a local `main`. Under the
+          # push-to-main trigger that branch exists; under workflow_dispatch on
+          # a feature branch it does not, so every job would die at setup with
+          # "src refspec main does not match any". Force a local `main` at the
+          # current commit and set push.default=current so bare pushes resolve,
+          # making the suite runnable from any dispatched ref.
+          git checkout -B main
+          git config push.default current
+
       - name: Create test commit for version bumping
         run: |
           git config user.name "Test Bot"
@@ -191,6 +217,19 @@ jobs:
           git tag -l | xargs -r git tag -d
       - name: Setup fake git remote for testing
         uses: ./.github/workflows/test-helpers/setup-fake-remote
+
+      - name: Normalize local branch to main (dispatch-testability)
+        shell: bash
+        run: |
+          # The suite hard-codes `git push origin main`, and the release action
+          # itself does a bare `git push`. Both need a local `main`. Under the
+          # push-to-main trigger that branch exists; under workflow_dispatch on
+          # a feature branch it does not, so every job would die at setup with
+          # "src refspec main does not match any". Force a local `main` at the
+          # current commit and set push.default=current so bare pushes resolve,
+          # making the suite runnable from any dispatched ref.
+          git checkout -B main
+          git config push.default current
 
       - name: Create test commit
         run: |
@@ -294,6 +333,19 @@ jobs:
       - name: Setup fake git remote for testing
         uses: ./.github/workflows/test-helpers/setup-fake-remote
 
+      - name: Normalize local branch to main (dispatch-testability)
+        shell: bash
+        run: |
+          # The suite hard-codes `git push origin main`, and the release action
+          # itself does a bare `git push`. Both need a local `main`. Under the
+          # push-to-main trigger that branch exists; under workflow_dispatch on
+          # a feature branch it does not, so every job would die at setup with
+          # "src refspec main does not match any". Force a local `main` at the
+          # current commit and set push.default=current so bare pushes resolve,
+          # making the suite runnable from any dispatched ref.
+          git checkout -B main
+          git config push.default current
+
       - name: Create test commit
         run: |
           git config user.name "Test Bot"
@@ -360,6 +412,19 @@ jobs:
       - name: Setup fake git remote for testing
         uses: ./.github/workflows/test-helpers/setup-fake-remote
 
+      - name: Normalize local branch to main (dispatch-testability)
+        shell: bash
+        run: |
+          # The suite hard-codes `git push origin main`, and the release action
+          # itself does a bare `git push`. Both need a local `main`. Under the
+          # push-to-main trigger that branch exists; under workflow_dispatch on
+          # a feature branch it does not, so every job would die at setup with
+          # "src refspec main does not match any". Force a local `main` at the
+          # current commit and set push.default=current so bare pushes resolve,
+          # making the suite runnable from any dispatched ref.
+          git checkout -B main
+          git config push.default current
+
       - name: Create test commit
         run: |
           git config user.name "Test Bot"
@@ -419,6 +484,19 @@ jobs:
           git tag -l | xargs -r git tag -d
       - name: Setup fake git remote for testing
         uses: ./.github/workflows/test-helpers/setup-fake-remote
+
+      - name: Normalize local branch to main (dispatch-testability)
+        shell: bash
+        run: |
+          # The suite hard-codes `git push origin main`, and the release action
+          # itself does a bare `git push`. Both need a local `main`. Under the
+          # push-to-main trigger that branch exists; under workflow_dispatch on
+          # a feature branch it does not, so every job would die at setup with
+          # "src refspec main does not match any". Force a local `main` at the
+          # current commit and set push.default=current so bare pushes resolve,
+          # making the suite runnable from any dispatched ref.
+          git checkout -B main
+          git config push.default current
 
       - name: Create and switch to release branch
         run: |
@@ -489,6 +567,19 @@ jobs:
       - name: Setup fake git remote for testing
         uses: ./.github/workflows/test-helpers/setup-fake-remote
 
+      - name: Normalize local branch to main (dispatch-testability)
+        shell: bash
+        run: |
+          # The suite hard-codes `git push origin main`, and the release action
+          # itself does a bare `git push`. Both need a local `main`. Under the
+          # push-to-main trigger that branch exists; under workflow_dispatch on
+          # a feature branch it does not, so every job would die at setup with
+          # "src refspec main does not match any". Force a local `main` at the
+          # current commit and set push.default=current so bare pushes resolve,
+          # making the suite runnable from any dispatched ref.
+          git checkout -B main
+          git config push.default current
+
       - name: Create test commit
         shell: bash
         run: |
@@ -549,6 +640,19 @@ jobs:
       - name: Setup fake git remote for testing
         uses: ./.github/workflows/test-helpers/setup-fake-remote
 
+      - name: Normalize local branch to main (dispatch-testability)
+        shell: bash
+        run: |
+          # The suite hard-codes `git push origin main`, and the release action
+          # itself does a bare `git push`. Both need a local `main`. Under the
+          # push-to-main trigger that branch exists; under workflow_dispatch on
+          # a feature branch it does not, so every job would die at setup with
+          # "src refspec main does not match any". Force a local `main` at the
+          # current commit and set push.default=current so bare pushes resolve,
+          # making the suite runnable from any dispatched ref.
+          git checkout -B main
+          git config push.default current
+
       - name: Create test commit
         run: |
           git config user.name "Test Bot"
@@ -608,6 +712,19 @@ jobs:
           git tag -l | xargs -r git tag -d
       - name: Setup fake git remote for testing
         uses: ./.github/workflows/test-helpers/setup-fake-remote
+
+      - name: Normalize local branch to main (dispatch-testability)
+        shell: bash
+        run: |
+          # The suite hard-codes `git push origin main`, and the release action
+          # itself does a bare `git push`. Both need a local `main`. Under the
+          # push-to-main trigger that branch exists; under workflow_dispatch on
+          # a feature branch it does not, so every job would die at setup with
+          # "src refspec main does not match any". Force a local `main` at the
+          # current commit and set push.default=current so bare pushes resolve,
+          # making the suite runnable from any dispatched ref.
+          git checkout -B main
+          git config push.default current
 
       - name: Create test commit (git already configured by fake remote helper)
         run: |
@@ -673,6 +790,19 @@ jobs:
 
       - name: Setup fake git remote for testing
         uses: ./.github/workflows/test-helpers/setup-fake-remote
+
+      - name: Normalize local branch to main (dispatch-testability)
+        shell: bash
+        run: |
+          # The suite hard-codes `git push origin main`, and the release action
+          # itself does a bare `git push`. Both need a local `main`. Under the
+          # push-to-main trigger that branch exists; under workflow_dispatch on
+          # a feature branch it does not, so every job would die at setup with
+          # "src refspec main does not match any". Force a local `main` at the
+          # current commit and set push.default=current so bare pushes resolve,
+          # making the suite runnable from any dispatched ref.
+          git checkout -B main
+          git config push.default current
 
       - name: Create test commits
         run: |
@@ -799,6 +929,19 @@ jobs:
       - name: Setup fake git remote for testing
         uses: ./.github/workflows/test-helpers/setup-fake-remote
 
+      - name: Normalize local branch to main (dispatch-testability)
+        shell: bash
+        run: |
+          # The suite hard-codes `git push origin main`, and the release action
+          # itself does a bare `git push`. Both need a local `main`. Under the
+          # push-to-main trigger that branch exists; under workflow_dispatch on
+          # a feature branch it does not, so every job would die at setup with
+          # "src refspec main does not match any". Force a local `main` at the
+          # current commit and set push.default=current so bare pushes resolve,
+          # making the suite runnable from any dispatched ref.
+          git checkout -B main
+          git config push.default current
+
       - name: Create multiple test commits for changelog
         run: |
           git config user.name "Test Bot"
@@ -894,6 +1037,19 @@ jobs:
 
       - name: Setup fake git remote for testing
         uses: ./.github/workflows/test-helpers/setup-fake-remote
+
+      - name: Normalize local branch to main (dispatch-testability)
+        shell: bash
+        run: |
+          # The suite hard-codes `git push origin main`, and the release action
+          # itself does a bare `git push`. Both need a local `main`. Under the
+          # push-to-main trigger that branch exists; under workflow_dispatch on
+          # a feature branch it does not, so every job would die at setup with
+          # "src refspec main does not match any". Force a local `main` at the
+          # current commit and set push.default=current so bare pushes resolve,
+          # making the suite runnable from any dispatched ref.
+          git checkout -B main
+          git config push.default current
 
       - name: Set up Python environment
         uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1
@@ -1056,6 +1212,19 @@ jobs:
       - name: Setup fake git remote for testing
         uses: ./.github/workflows/test-helpers/setup-fake-remote
 
+      - name: Normalize local branch to main (dispatch-testability)
+        shell: bash
+        run: |
+          # The suite hard-codes `git push origin main`, and the release action
+          # itself does a bare `git push`. Both need a local `main`. Under the
+          # push-to-main trigger that branch exists; under workflow_dispatch on
+          # a feature branch it does not, so every job would die at setup with
+          # "src refspec main does not match any". Force a local `main` at the
+          # current commit and set push.default=current so bare pushes resolve,
+          # making the suite runnable from any dispatched ref.
+          git checkout -B main
+          git config push.default current
+
       - name: Set up Python environment
         uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1
         with:
@@ -1199,6 +1368,19 @@ jobs:
       - name: Setup fake git remote for testing
         uses: ./.github/workflows/test-helpers/setup-fake-remote
 
+      - name: Normalize local branch to main (dispatch-testability)
+        shell: bash
+        run: |
+          # The suite hard-codes `git push origin main`, and the release action
+          # itself does a bare `git push`. Both need a local `main`. Under the
+          # push-to-main trigger that branch exists; under workflow_dispatch on
+          # a feature branch it does not, so every job would die at setup with
+          # "src refspec main does not match any". Force a local `main` at the
+          # current commit and set push.default=current so bare pushes resolve,
+          # making the suite runnable from any dispatched ref.
+          git checkout -B main
+          git config push.default current
+
       - name: Set up Python environment
         uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1
         with:
@@ -1281,6 +1463,19 @@ jobs:
 
       - name: Setup fake git remote for testing
         uses: ./.github/workflows/test-helpers/setup-fake-remote
+
+      - name: Normalize local branch to main (dispatch-testability)
+        shell: bash
+        run: |
+          # The suite hard-codes `git push origin main`, and the release action
+          # itself does a bare `git push`. Both need a local `main`. Under the
+          # push-to-main trigger that branch exists; under workflow_dispatch on
+          # a feature branch it does not, so every job would die at setup with
+          # "src refspec main does not match any". Force a local `main` at the
+          # current commit and set push.default=current so bare pushes resolve,
+          # making the suite runnable from any dispatched ref.
+          git checkout -B main
+          git config push.default current
 
       - name: Set up Python environment
         uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1
@@ -1379,6 +1574,19 @@ jobs:
 
       - name: Setup fake git remote for testing
         uses: ./.github/workflows/test-helpers/setup-fake-remote
+
+      - name: Normalize local branch to main (dispatch-testability)
+        shell: bash
+        run: |
+          # The suite hard-codes `git push origin main`, and the release action
+          # itself does a bare `git push`. Both need a local `main`. Under the
+          # push-to-main trigger that branch exists; under workflow_dispatch on
+          # a feature branch it does not, so every job would die at setup with
+          # "src refspec main does not match any". Force a local `main` at the
+          # current commit and set push.default=current so bare pushes resolve,
+          # making the suite runnable from any dispatched ref.
+          git checkout -B main
+          git config push.default current
 
       - name: Create initial commits with NO tag
         run: |
@@ -1513,6 +1721,19 @@ jobs:
 
       - name: Setup fake git remote for testing
         uses: ./.github/workflows/test-helpers/setup-fake-remote
+
+      - name: Normalize local branch to main (dispatch-testability)
+        shell: bash
+        run: |
+          # The suite hard-codes `git push origin main`, and the release action
+          # itself does a bare `git push`. Both need a local `main`. Under the
+          # push-to-main trigger that branch exists; under workflow_dispatch on
+          # a feature branch it does not, so every job would die at setup with
+          # "src refspec main does not match any". Force a local `main` at the
+          # current commit and set push.default=current so bare pushes resolve,
+          # making the suite runnable from any dispatched ref.
+          git checkout -B main
+          git config push.default current
 
       - name: Snapshot the pre-release lockfile
         run: |
@@ -1650,6 +1871,19 @@ jobs:
 
       - name: Setup fake git remote for testing
         uses: ./.github/workflows/test-helpers/setup-fake-remote
+
+      - name: Normalize local branch to main (dispatch-testability)
+        shell: bash
+        run: |
+          # The suite hard-codes `git push origin main`, and the release action
+          # itself does a bare `git push`. Both need a local `main`. Under the
+          # push-to-main trigger that branch exists; under workflow_dispatch on
+          # a feature branch it does not, so every job would die at setup with
+          # "src refspec main does not match any". Force a local `main` at the
+          # current commit and set push.default=current so bare pushes resolve,
+          # making the suite runnable from any dispatched ref.
+          git checkout -B main
+          git config push.default current
 
       - name: Create initial commits with a prior tag
         run: |
