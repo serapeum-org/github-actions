@@ -66,6 +66,9 @@ runs:
       run: |
         echo "::group::Upgrading pip"
         python -m pip install --upgrade pip
+        pip_version=$(pip --version | awk '{print $2}')
+        echo "pip upgraded to $pip_version"
+        echo "Note: installing PEP 735 dependency groups (install-groups 'groups: ...') requires pip >= 25.1."
         echo "::endgroup::"
 
     - name: Install dependencies
@@ -166,16 +169,20 @@ runs:
                 dep_groups_cmd="$dep_groups_cmd --group $group"
               done
               
-              # Check if pip supports --group (PEP 735)
-              if pip install --help | grep -q "\-\-group"; then
+              # Dependency groups (pip install --group) are a PEP 735 feature
+              # that requires pip >= 25.1. Validate support before installing so
+              # a missing feature fails the job loudly instead of silently
+              # skipping the requested groups.
+              pip_version=$(pip --version | awk '{print $2}')
+              if pip install --help | grep -q -- "--group"; then
                 echo "Installing dependency groups: $dep_groups_cmd"
                 eval "$dep_groups_cmd"
               else
                 groups_list=$(IFS=,; echo "${dependency_groups[*]}")
-                pip_version=$(pip --version | awk '{print $2}')
-                echo "::warning::pip version $pip_version does not support --group flag (PEP 735). Dependency groups will be ignored: $groups_list"
-                echo "::warning::Please upgrade pip to version >= 24.2 or consider using the uv action instead."
-                echo "::warning::Suggested workaround: Specify version: '24.2' or version: 'latest' in the action inputs."
+                echo "::error::pip $pip_version does not support the --group flag (PEP 735 dependency groups)."
+                echo "::error::Dependency groups were explicitly requested ($groups_list) but cannot be installed, so this step is failing instead of silently skipping them."
+                echo "::error::Upgrade to pip >= 25.1 (which ships the --group option), or use the uv action (serapeum-org/github-actions/actions/python-setup/uv) which has native PEP 735 support."
+                exit 1
               fi
             fi
           else
