@@ -91,9 +91,10 @@ jobs:
           increment: ${{ matrix.increment }}
           prerelease-type: 'none'
           package-manager: ${{ matrix.package-manager }}
-          # 'latest' is inert for pip and, for uv, forwarded to the setup action's
-          # version input (harmlessly ignored until uv/v1 ships the input). Exercises
-          # the new package-manager-version wiring end-to-end in the release path.
+          # Smoke test that the release action accepts package-manager-version and
+          # still completes. Forwarding is INERT until uv/v1 ships the version
+          # input (the pinned sub-action drops it with an unexpected-input
+          # warning), so this does not yet prove the version takes effect.
           package-manager-version: 'latest'
           python-version: '3.12'
           install-groups: 'groups: dev docs'

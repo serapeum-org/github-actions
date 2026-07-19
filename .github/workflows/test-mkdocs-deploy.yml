@@ -908,11 +908,11 @@ jobs:
             echo "groups=groups: docs" >> $GITHUB_OUTPUT
           fi
 
-      # uv installs 'latest'; pixi is pinned to v0.65.0 to stay reproducible
-      # against the committed pixi.lock fixtures. This exercises version
-      # forwarding through the parent. Until uv/v1 and pixi/v1 are re-released
-      # with the version input, the value is forwarded to the pinned sub-actions
-      # and harmlessly ignored (unexpected-input warning).
+      # Smoke test: the parent accepts package-manager-version and the deploy
+      # still succeeds. Forwarding is INERT until uv/v1 and pixi/v1 re-release
+      # with the version input (the pinned sub-actions currently drop it with an
+      # unexpected-input warning), so this does not yet prove the version takes
+      # effect. uv uses 'latest'; pixi is pinned to v0.65.0 for when it goes live.
       - name: Deploy with an explicit package-manager-version
         uses: ./actions/mkdocs-deploy
         with:
