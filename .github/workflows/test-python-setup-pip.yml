@@ -578,3 +578,49 @@ jobs:
           python -c "import boto3; print('[OK] AWS extra installed with cache')"
           echo "[OK] Cache validation passed with groups and extras"
 
+  test-pip-groups-unsupported-pip:
+    name: Test pip action - Groups requested but pip too old for --group (negative)
+    # Python 3.8's newest pip (24.3.1) predates PEP 735 `pip install --group`
+    # (added in pip 25.1), so this deterministically exercises the fail-loud path.
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python 3.8 (precondition environment)
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.8'
+
+      - name: Precondition - confirm pip on Python 3.8 lacks --group
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          python --version
+          pip --version
+          if pip install --help | grep -q -- "--group"; then
+            echo "::error::Precondition failed: pip on Python 3.8 unexpectedly supports --group; this negative test is no longer valid"
+            exit 1
+          fi
+          echo "[OK] Precondition met: pip on Python 3.8 does not support --group"
+
+      - name: Copy test fixture files
+        run: cp tests/data/pip/test-pip-single-group/pyproject.toml .
+
+      - name: Action must FAIL when groups are requested but pip lacks --group
+        id: groups-unsupported
+        continue-on-error: true
+        uses: ./actions/python-setup/pip
+        with:
+          python-version: '3.8'
+          install-groups: 'groups: dev'
+
+      - name: Verify the action failed instead of silently skipping the group
+        shell: bash
+        run: |
+          if [ "${{ steps.groups-unsupported.outcome }}" != "failure" ]; then
+            echo "::error::Expected the pip action to fail (exit 1) when dependency groups are requested but pip < 25.1 lacks --group"
+            exit 1
+          fi
+          echo "[OK] Action correctly failed instead of silently skipping the requested dependency group"
+
