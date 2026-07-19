@@ -612,11 +612,17 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ver="$(gh api 'repos/astral-sh/uv/releases?per_page=20' \
-                  --jq 'map(select(.prerelease == false and .draft == false)) | .[1].tag_name' \
-                | sed 's/^v//')"
+          ver=""
+          for attempt in 1 2 3; do
+            ver="$(gh api 'repos/astral-sh/uv/releases?per_page=20' \
+                    --jq 'map(select(.prerelease == false and .draft == false)) | .[1].tag_name' \
+                    2>/dev/null | sed 's/^v//')"
+            if [ -n "$ver" ] && [ "$ver" != "null" ]; then break; fi
+            echo "gh api attempt $attempt returned no version; retrying in 5s..."
+            sleep 5
+          done
           if [ -z "$ver" ] || [ "$ver" = "null" ]; then
-            echo "::error::Could not resolve the previous uv release from GitHub"
+            echo "::error::Could not resolve the previous uv release from GitHub after retries"
             exit 1
           fi
           echo "Pinning uv version (previous release, != latest): $ver"
