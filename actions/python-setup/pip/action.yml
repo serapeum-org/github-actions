@@ -68,7 +68,9 @@ runs:
         python -m pip install --upgrade pip
         pip_version=$(pip --version | awk '{print $2}')
         echo "pip upgraded to $pip_version"
-        echo "Note: installing PEP 735 dependency groups (install-groups 'groups: ...') requires pip >= 25.1."
+        if [[ "${{ inputs.install-groups }}" == *"groups:"* ]]; then
+          echo "Note: installing PEP 735 dependency groups requires pip >= 25.1."
+        fi
         echo "::endgroup::"
 
     - name: Install dependencies
