@@ -908,16 +908,17 @@ jobs:
             echo "groups=groups: docs" >> $GITHUB_OUTPUT
           fi
 
-      # 'latest' is valid for both the uv and pixi setup actions and is always
-      # lock-compatible, so this stays green once uv/v1 and pixi/v1 are
-      # re-released with the version input. Until then the value is forwarded to
-      # the pinned sub-actions and harmlessly ignored (unexpected-input warning).
+      # uv installs 'latest'; pixi is pinned to v0.65.0 to stay reproducible
+      # against the committed pixi.lock fixtures. This exercises version
+      # forwarding through the parent. Until uv/v1 and pixi/v1 are re-released
+      # with the version input, the value is forwarded to the pinned sub-actions
+      # and harmlessly ignored (unexpected-input warning).
       - name: Deploy with an explicit package-manager-version
         uses: ./actions/mkdocs-deploy
         with:
           trigger: 'pull_request'
           package-manager: ${{ matrix.package-manager }}
-          package-manager-version: 'latest'
+          package-manager-version: ${{ matrix.package-manager == 'pixi' && 'v0.65.0' || 'latest' }}
           install-groups: ${{ steps.set-groups.outputs.groups }}
           deploy-token: ${{ secrets.GITHUB_TOKEN }}
 
