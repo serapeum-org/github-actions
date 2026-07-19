@@ -1,7 +1,17 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "test-pip-single-group"
 version = "0.1.0"
 dependencies = ["requests"]
+
+# Build a metadata-only package: disables setuptools flat-layout auto-discovery
+# so `pip install .` never scans the ambient repo tree (deterministic on any
+# checkout, and portable across the jobs that reuse this fixture).
+[tool.setuptools]
+py-modules = []
 
 [dependency-groups]
 dev = ["pytest", "black", "ruff"]
