@@ -40,12 +40,13 @@ inputs:
   version:
     description: >
       Version of uv to install (passed to astral-sh/setup-uv as version).
-      Leave empty to resolve the version from pyproject.toml/uv.toml, falling
-      back to "latest".
-      Examples: "0.5.0", "latest", "" (empty to auto-resolve).
-      Default is "" (auto-resolve).
+      Use a value like "0.5.0" to pin, or "latest" for the newest release.
+      Set to "" to resolve the version from pyproject.toml/uv.toml (falling back
+      to latest).
+      Examples: "latest", "0.5.0", "" (auto-resolve).
+      Default is "latest".
     required: false
-    default: ''
+    default: 'latest'
 
 runs:
   using: 'composite'

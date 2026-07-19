@@ -40,10 +40,10 @@ inputs:
   version:
     description: >
       Version of pixi to install (passed to prefix-dev/setup-pixi as pixi-version).
-      Use a release tag such as "v0.65.0", or "latest" for the newest release.
-      Default is "v0.65.0".
+      Use a release tag such as "v0.65.0" to pin, or "latest" for the newest release.
+      Default is "latest".
     required: false
-    default: 'v0.65.0'
+    default: 'latest'
 
 runs:
   using: 'composite'
