@@ -189,23 +189,28 @@ runs:
 
     - name: Configure Git
       shell: bash
+      env:
+        GIT_ACTOR: ${{ github.actor }}
       run: |
         echo "::group::Configuring Git"
-        git config --global user.name '${{ github.actor }}'
-        git config --global user.email '${{ github.actor }}@users.noreply.github.com'
+        git config --global user.name "$GIT_ACTOR"
+        git config --global user.email "${GIT_ACTOR}@users.noreply.github.com"
         echo "::endgroup::"
 
     - name: Set release tag environment variable
       if: ${{ inputs.trigger == 'release' }}
       shell: bash
+      env:
+        INPUT_RELEASE_TAG: ${{ inputs.release-tag }}
+        EVENT_RELEASE_TAG: ${{ github.event.release.tag_name }}
       run: |
         echo "::group::Setting release tag"
-        if [ -n "${{ inputs.release-tag }}" ]; then
-          export RELEASE_TAG_VERSION="${{ inputs.release-tag }}"
+        if [ -n "$INPUT_RELEASE_TAG" ]; then
+          RELEASE_TAG_VERSION="$INPUT_RELEASE_TAG"
         else
-          export RELEASE_TAG_VERSION="${{ github.event.release.tag_name }}"
+          RELEASE_TAG_VERSION="$EVENT_RELEASE_TAG"
         fi
-        echo "RELEASE_TAG_VERSION=${RELEASE_TAG_VERSION}" >> $GITHUB_ENV
+        echo "RELEASE_TAG_VERSION=${RELEASE_TAG_VERSION}" >> "$GITHUB_ENV"
         echo "Release tag: ${RELEASE_TAG_VERSION}"
         echo "::endgroup::"
 
@@ -247,13 +252,14 @@ runs:
       env:
         ACTIONS_DEPLOY_TOKEN: ${{ inputs.deploy-token }}
         PACKAGE_MANAGER: ${{ inputs.package-manager }}
+        MIKE_ALIAS: ${{ inputs.mike-alias }}
       run: |
         echo "::group::Deploying release documentation"
         if [ "$PACKAGE_MANAGER" = "pip" ]; then
-          mike deploy --push --update-aliases ${RELEASE_TAG_VERSION} ${{ inputs.mike-alias }}
-          mike set-default --push ${{ inputs.mike-alias }}
+          mike deploy --push --update-aliases "${RELEASE_TAG_VERSION}" "$MIKE_ALIAS"
+          mike set-default --push "$MIKE_ALIAS"
         else
-          $PACKAGE_MANAGER run mike deploy --push --update-aliases ${RELEASE_TAG_VERSION} ${{ inputs.mike-alias }}
-          $PACKAGE_MANAGER run mike set-default --push ${{ inputs.mike-alias }}
+          $PACKAGE_MANAGER run mike deploy --push --update-aliases "${RELEASE_TAG_VERSION}" "$MIKE_ALIAS"
+          $PACKAGE_MANAGER run mike set-default --push "$MIKE_ALIAS"
         fi
         echo "::endgroup::"
