@@ -2279,9 +2279,9 @@ produce unexpectedly large sdist archives.</p>
 <ol>
 <li><strong>Display configuration</strong> — Logs inputs for debugging (credentials are never printed)</li>
 <li><strong>Set up Python environment</strong> — Delegates to the appropriate <code>python-setup</code> action:</li>
-<li><code>pip</code> → <code>actions/python-setup/pip@pip/v1</code></li>
-<li><code>uv</code> → <code>actions/python-setup/uv@uv/v1</code></li>
-<li><code>pixi</code> → <code>actions/python-setup/pixi@pixi/v1</code></li>
+<li><code>pip</code> → <code>actions/python-setup/pip@pip/v1.1.0</code></li>
+<li><code>uv</code> → <code>actions/python-setup/uv@uv/v1.2.0</code></li>
+<li><code>pixi</code> → <code>actions/python-setup/pixi@pixi/v1.2.0</code></li>
 <li><strong>Install build tools</strong> (pip only) — <code>pip install build twine</code></li>
 <li><strong>Build package</strong> — Produces <code>dist/*.whl</code> and <code>dist/*.tar.gz</code></li>
 <li><strong>Publish to PyPI</strong> — Uploads all artifacts in <code>dist/</code> via twine (skipped when <code>skip-publish='true'</code>)</li>
