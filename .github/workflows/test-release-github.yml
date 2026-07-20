@@ -1117,7 +1117,15 @@ jobs:
           echo "=== Running recovery path ==="
 
           # Read changelog_file from commitizen config (same as action does)
-          CHANGELOG_FILE=$(grep -A 20 "^\[tool\.commitizen\]" pyproject.toml | grep "^changelog_file" | head -1 | sed 's/.*=\s*"\(.*\)"/\1/' || true)
+          CHANGELOG_FILE=$(awk -v q="'" '
+            /^[[:space:]]*\[tool\.commitizen\][[:space:]]*(#.*)?$/ { inblock = 1; next }
+            inblock && /^[[:space:]]*\[/ { exit }
+            inblock && /^[[:space:]]*changelog_file[[:space:]]*=/ {
+              if (match($0, /"[^"]*"/)) { print substr($0, RSTART + 1, RLENGTH - 2); exit }
+              s = $0; a = index(s, q)
+              if (a > 0) { rest = substr(s, a + 1); b = index(rest, q); if (b > 0) { print substr(rest, 1, b - 1); exit } }
+            }
+          ' pyproject.toml || true)
           if [ -z "$CHANGELOG_FILE" ]; then
             CHANGELOG_FILE="CHANGELOG.md"
           fi
@@ -1287,7 +1295,15 @@ jobs:
           uv run cz bump --yes --increment minor
 
           # Read changelog file path
-          CHANGELOG_FILE=$(grep -A 20 "^\[tool\.commitizen\]" pyproject.toml | grep "^changelog_file" | head -1 | sed 's/.*=\s*"\(.*\)"/\1/' || true)
+          CHANGELOG_FILE=$(awk -v q="'" '
+            /^[[:space:]]*\[tool\.commitizen\][[:space:]]*(#.*)?$/ { inblock = 1; next }
+            inblock && /^[[:space:]]*\[/ { exit }
+            inblock && /^[[:space:]]*changelog_file[[:space:]]*=/ {
+              if (match($0, /"[^"]*"/)) { print substr($0, RSTART + 1, RLENGTH - 2); exit }
+              s = $0; a = index(s, q)
+              if (a > 0) { rest = substr(s, a + 1); b = index(rest, q); if (b > 0) { print substr(rest, 1, b - 1); exit } }
+            }
+          ' pyproject.toml || true)
           if [ -z "$CHANGELOG_FILE" ]; then
             CHANGELOG_FILE="CHANGELOG.md"
           fi
@@ -1414,7 +1430,15 @@ jobs:
 
       - name: Verify release notes extraction from custom path
         run: |
-          CHANGELOG_FILE=$(grep -A 20 "^\[tool\.commitizen\]" pyproject.toml | grep "^changelog_file" | head -1 | sed 's/.*=\s*"\(.*\)"/\1/' || true)
+          CHANGELOG_FILE=$(awk -v q="'" '
+            /^[[:space:]]*\[tool\.commitizen\][[:space:]]*(#.*)?$/ { inblock = 1; next }
+            inblock && /^[[:space:]]*\[/ { exit }
+            inblock && /^[[:space:]]*changelog_file[[:space:]]*=/ {
+              if (match($0, /"[^"]*"/)) { print substr($0, RSTART + 1, RLENGTH - 2); exit }
+              s = $0; a = index(s, q)
+              if (a > 0) { rest = substr(s, a + 1); b = index(rest, q); if (b > 0) { print substr(rest, 1, b - 1); exit } }
+            }
+          ' pyproject.toml || true)
           if [ -z "$CHANGELOG_FILE" ]; then
             CHANGELOG_FILE="CHANGELOG.md"
           fi
