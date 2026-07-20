@@ -42,6 +42,9 @@ BACKOFF="${MIKE_RETRY_BACKOFF:-3}"
 case "$MAX_ATTEMPTS" in
   ''|*[!0-9]*) echo "::warning::MIKE_MAX_ATTEMPTS='${MAX_ATTEMPTS}' is not a positive integer; using 5"; MAX_ATTEMPTS=5 ;;
 esac
+# Force base 10 so a leading-zero value (e.g. 010, 08) isn't parsed as octal in
+# the arithmetic contexts below.
+MAX_ATTEMPTS=$((10#$MAX_ATTEMPTS))
 if [ "$MAX_ATTEMPTS" -lt 1 ]; then
   echo "::warning::MIKE_MAX_ATTEMPTS must be >= 1; using 5"
   MAX_ATTEMPTS=5
@@ -49,6 +52,7 @@ fi
 case "$BACKOFF" in
   ''|*[!0-9]*) echo "::warning::MIKE_RETRY_BACKOFF='${BACKOFF}' is not a non-negative integer; using 3"; BACKOFF=3 ;;
 esac
+BACKOFF=$((10#$BACKOFF))
 
 if [ "$#" -eq 0 ]; then
   echo "::error::mike_push.sh requires a mike subcommand (e.g. deploy --push develop)"
