@@ -22,6 +22,8 @@
 #   MIKE_REMOTE        git remote to push to (default: origin).
 #   MIKE_BRANCH        docs branch mike manages (default: gh-pages).
 #   MIKE_MAX_ATTEMPTS  number of attempts before giving up (default: 5).
+#   MIKE_RETRY_BACKOFF base seconds for the linear backoff between attempts
+#                      (default: 3; the nth retry sleeps n * this).
 #
 # Args: the mike subcommand and its flags, e.g.
 #   mike_push.sh deploy --push develop
@@ -32,6 +34,7 @@ PACKAGE_MANAGER="${PACKAGE_MANAGER:-pip}"
 REMOTE="${MIKE_REMOTE:-origin}"
 BRANCH="${MIKE_BRANCH:-gh-pages}"
 MAX_ATTEMPTS="${MIKE_MAX_ATTEMPTS:-5}"
+BACKOFF="${MIKE_RETRY_BACKOFF:-3}"
 
 if [ "$#" -eq 0 ]; then
   echo "::error::mike_push.sh requires a mike subcommand (e.g. deploy --push develop)"
@@ -97,8 +100,10 @@ while [ "$attempt" -le "$MAX_ATTEMPTS" ]; do
     exit 1
   fi
   rm -f "$out"
-  echo "::warning::mike $* lost a gh-pages push race (attempt ${attempt}/${MAX_ATTEMPTS}); refetching ${REMOTE}/${BRANCH} and retrying"
-  sleep "$(( attempt * 3 ))"
+  if [ "$attempt" -lt "$MAX_ATTEMPTS" ]; then
+    echo "::warning::mike $* lost a gh-pages push race (attempt ${attempt}/${MAX_ATTEMPTS}); refetching ${REMOTE}/${BRANCH} and retrying"
+    sleep "$(( attempt * BACKOFF ))"
+  fi
   attempt=$(( attempt + 1 ))
 done
 
