@@ -243,15 +243,19 @@ runs:
           # Read changelog_file from the [tool.commitizen] section, section-aware:
           # scan from the header to the next "[...]" table so the key is found no
           # matter how far below the header it sits (e.g. after a long version_files
-          # array). match() grabs the first double-quoted value, which also drops
-          # any inline "# comment". Empty result falls back to CHANGELOG.md below.
-          CHANGELOG_FILE=$(awk '
-            /^[[:space:]]*\[tool\.commitizen\][[:space:]]*$/ { inblock = 1; next }
+          # array). Tolerates a trailing comment on the header and accepts either a
+          # double- or single-quoted value; an inline "# comment" after the value is
+          # dropped. Empty result falls back to CHANGELOG.md below. `q` carries a
+          # literal single quote so the awk program needs no embedded single quote.
+          CHANGELOG_FILE=$(awk -v q="'" '
+            /^[[:space:]]*\[tool\.commitizen\][[:space:]]*(#.*)?$/ { inblock = 1; next }
             inblock && /^[[:space:]]*\[/ { exit }
-            inblock && /^[[:space:]]*changelog_file[[:space:]]*=/ && match($0, /"[^"]*"/) {
-              print substr($0, RSTART + 1, RLENGTH - 2); exit
+            inblock && /^[[:space:]]*changelog_file[[:space:]]*=/ {
+              if (match($0, /"[^"]*"/)) { print substr($0, RSTART + 1, RLENGTH - 2); exit }
+              s = $0; a = index(s, q)
+              if (a > 0) { rest = substr(s, a + 1); b = index(rest, q); if (b > 0) { print substr(rest, 1, b - 1); exit } }
             }
-          ' pyproject.toml 2>/dev/null || true)
+          ' pyproject.toml || true)
         fi
 
         # Default to CHANGELOG.md if not found
@@ -317,15 +321,19 @@ runs:
           # Read changelog_file from the [tool.commitizen] section, section-aware:
           # scan from the header to the next "[...]" table so the key is found no
           # matter how far below the header it sits (e.g. after a long version_files
-          # array). match() grabs the first double-quoted value, which also drops
-          # any inline "# comment". Empty result falls back to CHANGELOG.md below.
-          CHANGELOG_FILE=$(awk '
-            /^[[:space:]]*\[tool\.commitizen\][[:space:]]*$/ { inblock = 1; next }
+          # array). Tolerates a trailing comment on the header and accepts either a
+          # double- or single-quoted value; an inline "# comment" after the value is
+          # dropped. Empty result falls back to CHANGELOG.md below. `q` carries a
+          # literal single quote so the awk program needs no embedded single quote.
+          CHANGELOG_FILE=$(awk -v q="'" '
+            /^[[:space:]]*\[tool\.commitizen\][[:space:]]*(#.*)?$/ { inblock = 1; next }
             inblock && /^[[:space:]]*\[/ { exit }
-            inblock && /^[[:space:]]*changelog_file[[:space:]]*=/ && match($0, /"[^"]*"/) {
-              print substr($0, RSTART + 1, RLENGTH - 2); exit
+            inblock && /^[[:space:]]*changelog_file[[:space:]]*=/ {
+              if (match($0, /"[^"]*"/)) { print substr($0, RSTART + 1, RLENGTH - 2); exit }
+              s = $0; a = index(s, q)
+              if (a > 0) { rest = substr(s, a + 1); b = index(rest, q); if (b > 0) { print substr(rest, 1, b - 1); exit } }
             }
-          ' pyproject.toml 2>/dev/null || true)
+          ' pyproject.toml || true)
         fi
         if [ -z "$CHANGELOG_FILE" ]; then
           CHANGELOG_FILE="CHANGELOG.md"
