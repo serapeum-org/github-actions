@@ -589,7 +589,10 @@ jobs:
           python -m pip install --upgrade pip
           python --version
           pip --version
-          if pip install --help | grep -q -- "--group"; then
+          # Capture help text before grepping (matches the action) so pipefail
+          # cannot mask a --group match via a SIGPIPE-141 pipeline failure.
+          group_help="$(pip install --help)"
+          if grep -q -- "--group" <<<"$group_help"; then
             echo "::error::Precondition failed: pip on Python 3.8 unexpectedly supports --group; this negative test is no longer valid"
             exit 1
           fi
