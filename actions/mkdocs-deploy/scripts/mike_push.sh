@@ -99,9 +99,10 @@ sync_local_branch() {
 # of the log (docs content, a plugin line) from flipping an unrelated failure
 # into a retried "race"; the reason stops a generic push failure (auth, 403,
 # hook) — which carries the anchor but no non-ff reason — from being retried to
-# exhaustion. mike relays git's stderr, so on a real non-fast-forward both are
-# present (verified by the retry unit tests, incl. auth-style and build-token
-# cases that must fail fast).
+# exhaustion. This relies on mike forwarding git's push stderr verbatim (true
+# for mike 2.x); the unit tests exercise this matcher against representative and
+# captured-real git rejection text, but not mike's actual relay, so a future
+# mike that buffers or reformats git output could make it false-negative.
 is_push_race() {
   grep -qiE '! \[rejected\]|error: failed to push' "$1" \
     && grep -qiE 'fetch first|non-fast-forward|updates were rejected' "$1"

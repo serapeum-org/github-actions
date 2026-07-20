@@ -1092,5 +1092,30 @@ jobs:
             echo "FAIL case5 (build-token, no push anchor): exit=$r calls=$(cat /tmp/mc)"; fail=1
           else echo "OK case5: non-ff token without a push anchor failed fast (1 mike call)"; fi
 
+          # Case 6: is_push_race must match REAL git non-fast-forward output, not
+          # only the hand-written strings above — guards the pattern against
+          # drifting from git's actual wording. Produce a genuine rejection by
+          # pushing a stale ref, replay it from the stub, and assert the helper
+          # treats it as a race (retries) rather than failing fast.
+          real="$(mktemp -d)"
+          git init -q --bare "$real/remote.git"
+          git clone -q "$real/remote.git" "$real/a"
+          ( cd "$real/a"; git config user.email a@e.com; git config user.name a
+            git checkout -q -b gh-pages; echo one > f; git add f
+            git -c commit.gpgsign=false commit -q -m one; git push -q origin gh-pages )
+          git clone -q --branch gh-pages "$real/remote.git" "$real/b"
+          ( cd "$real/a"; echo two > f; git add f
+            git -c commit.gpgsign=false commit -q -m two; git push -q origin gh-pages )
+          ( cd "$real/b"; echo three > g; git add g; git -c commit.gpgsign=false commit -q -m three
+            LC_MESSAGES=C git push origin gh-pages ) > "$real/reject.txt" 2>&1 || true
+          echo "--- real git rejection captured ---"; cat "$real/reject.txt"
+          printf '%s\n' '#!/usr/bin/env bash' "cat '$real/reject.txt' >&2; exit 1" > bin/mike
+          chmod +x bin/mike; rm -f /tmp/mc
+          if PATH="$PWD/bin:$PATH" PACKAGE_MANAGER=pip MIKE_MAX_ATTEMPTS=2 MIKE_RETRY_BACKOFF=0 \
+               bash "$SCRIPT" deploy --push develop > case.log 2>&1; then r=0; else r=$?; fi
+          if ! grep -q "lost a gh-pages push race" case.log; then
+            echo "FAIL case6: is_push_race did not match REAL git non-fast-forward output"; fail=1
+          else echo "OK case6: is_push_race matched real git non-fast-forward output"; fi
+
           exit $fail
 
