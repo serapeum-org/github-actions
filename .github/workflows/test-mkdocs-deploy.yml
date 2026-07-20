@@ -4,8 +4,7 @@ on:
   push:
 
 permissions:
-  contents: write
-  pages: write
+  contents: read
 
 jobs:
   test-pull-request-trigger:

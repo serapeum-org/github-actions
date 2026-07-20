@@ -239,7 +239,7 @@ jobs:
 
       # Generate a fresh lock so verify-lock='true' always sees an up-to-date file.
       - name: Generate fresh uv lock
-        uses: astral-sh/setup-uv@v7
+        uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
         with:
           enable-cache: false
 
@@ -419,7 +419,7 @@ jobs:
       # Since we patched the version, the committed lock is now stale — regenerate.
       - name: Regenerate uv lock after version patch (uv only)
         if: matrix.package-manager == 'uv'
-        uses: astral-sh/setup-uv@v7
+        uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
         with:
           enable-cache: false
 
