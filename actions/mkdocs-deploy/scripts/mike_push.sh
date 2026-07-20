@@ -36,6 +36,20 @@ BRANCH="${MIKE_BRANCH:-gh-pages}"
 MAX_ATTEMPTS="${MIKE_MAX_ATTEMPTS:-5}"
 BACKOFF="${MIKE_RETRY_BACKOFF:-3}"
 
+# Guard non-integer overrides: a non-numeric MAX_ATTEMPTS makes the loop guard
+# error out so mike never runs, and a non-numeric BACKOFF aborts the arithmetic
+# under `set -u`. Coerce a bad value back to the default with a clear warning.
+case "$MAX_ATTEMPTS" in
+  ''|*[!0-9]*) echo "::warning::MIKE_MAX_ATTEMPTS='${MAX_ATTEMPTS}' is not a positive integer; using 5"; MAX_ATTEMPTS=5 ;;
+esac
+if [ "$MAX_ATTEMPTS" -lt 1 ]; then
+  echo "::warning::MIKE_MAX_ATTEMPTS must be >= 1; using 5"
+  MAX_ATTEMPTS=5
+fi
+case "$BACKOFF" in
+  ''|*[!0-9]*) echo "::warning::MIKE_RETRY_BACKOFF='${BACKOFF}' is not a non-negative integer; using 3"; BACKOFF=3 ;;
+esac
+
 if [ "$#" -eq 0 ]; then
   echo "::error::mike_push.sh requires a mike subcommand (e.g. deploy --push develop)"
   exit 2
@@ -90,7 +104,10 @@ attempt=1
 while [ "$attempt" -le "$MAX_ATTEMPTS" ]; do
   sync_local_branch
   out="$(mktemp)"
-  if "${MIKE[@]}" "$@" 2>&1 | tee "$out"; then
+  # Force a C locale (keeping UTF-8) so git's push-rejection text stays English
+  # and is_push_race matches it even on a non-English runner. C.UTF-8 preserves
+  # UTF-8 handling for the mkdocs build, unlike a bare LC_ALL=C.
+  if LC_ALL=C.UTF-8 "${MIKE[@]}" "$@" 2>&1 | tee "$out"; then
     rm -f "$out"
     exit 0
   fi
