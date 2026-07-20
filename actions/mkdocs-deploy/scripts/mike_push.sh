@@ -56,8 +56,15 @@ sync_local_branch() {
 
 # Only a non-fast-forward push rejection is worth retrying; a bad version,
 # missing dependency, or config error will never self-heal, so fail fast on it.
+# Match git's stable push-rejection signatures (and mike's own "failed to push
+# branch" wrapper) rather than loose tokens like a bare "[rejected]" or "failed
+# to push", so an unrelated build failure whose log happens to contain such a
+# word is not misread as a race. mike surfaces git's stderr in its error, so on
+# a real non-fast-forward these lines are present in the captured output; this
+# does assume mike keeps relaying git's rejection text (covered by the retry
+# unit test).
 is_push_race() {
-  grep -qiE 'fetch first|non-fast-forward|\[rejected\]|failed to push|updates were rejected' "$1"
+  grep -qiE 'fetch first|non-fast-forward|updates were rejected|failed to push some refs|failed to push branch' "$1"
 }
 
 attempt=1
