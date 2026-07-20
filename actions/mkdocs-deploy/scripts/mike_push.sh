@@ -73,17 +73,17 @@ sync_local_branch() {
   fi
 }
 
-# Only a non-fast-forward push rejection is worth retrying; a bad version,
-# missing dependency, or config error will never self-heal, so fail fast on it.
-# Match git's stable push-rejection signatures (and mike's own "failed to push
-# branch" wrapper) rather than loose tokens like a bare "[rejected]" or "failed
-# to push", so an unrelated build failure whose log happens to contain such a
-# word is not misread as a race. mike surfaces git's stderr in its error, so on
-# a real non-fast-forward these lines are present in the captured output; this
-# does assume mike keeps relaying git's rejection text (covered by the retry
-# unit test).
+# Only a non-fast-forward push rejection is worth retrying; auth/permission
+# failures, a protected branch, a rejected server hook, a bad version, or a
+# missing dependency never self-heal, so fail fast on them. Match ONLY the
+# non-fast-forward-specific signatures git emits — deliberately NOT the generic
+# "failed to push some refs", which git prints on every failed push (auth, 403,
+# hook rejection), so an unrelated failure is not retried to exhaustion and
+# misreported as a race. mike relays git's stderr, so on a real non-fast-forward
+# these lines are present in the captured output (verified by the retry unit
+# test, which includes an auth-style failure that must fail fast).
 is_push_race() {
-  grep -qiE 'fetch first|non-fast-forward|updates were rejected|failed to push some refs|failed to push branch' "$1"
+  grep -qiE 'fetch first|non-fast-forward|updates were rejected' "$1"
 }
 
 attempt=1
