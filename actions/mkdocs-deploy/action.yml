@@ -210,6 +210,11 @@ runs:
         else
           RELEASE_TAG_VERSION="$EVENT_RELEASE_TAG"
         fi
+        if [ -z "$RELEASE_TAG_VERSION" ]; then
+          echo "::error::trigger is 'release' but no release tag could be resolved."
+          echo "::error::Provide the 'release-tag' input, or run on a release event so github.event.release.tag_name is set."
+          exit 1
+        fi
         echo "RELEASE_TAG_VERSION=${RELEASE_TAG_VERSION}" >> "$GITHUB_ENV"
         echo "Release tag: ${RELEASE_TAG_VERSION}"
         echo "::endgroup::"

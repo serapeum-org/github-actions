@@ -368,7 +368,13 @@ jobs:
           release-tag: 'v4.5.6'
           deploy-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Test without explicit release tag (simulated)
+      # Negative test: a release trigger with no explicit release-tag and no real
+      # release event (github.event.release.tag_name is empty) cannot resolve a
+      # version, so the action must fail fast with a clear error rather than
+      # deploy a bogus version.
+      - name: Test release trigger without a resolvable tag fails fast
+        id: no-tag
+        continue-on-error: true
         env:
           GITHUB_EVENT_NAME: release
         uses: ./actions/mkdocs-deploy
@@ -376,6 +382,14 @@ jobs:
           trigger: 'release'
           package-manager: 'uv'
           deploy-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify the unresolvable-tag deploy failed
+        run: |
+          if [ "${{ steps.no-tag.outcome }}" != "failure" ]; then
+            echo "::error::Expected the release deploy to fail when no release tag can be resolved"
+            exit 1
+          fi
+          echo "[OK] Release trigger correctly fails fast when no tag is resolvable"
 
   test-default-install-groups:
     name: Test Default install-groups Value
