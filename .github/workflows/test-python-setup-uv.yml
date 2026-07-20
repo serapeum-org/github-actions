@@ -636,6 +636,13 @@ jobs:
           version = "0.1.0"
           requires-python = ">=3.12"
           dependencies = ["requests"]
+
+          [build-system]
+          requires = ["setuptools>=61"]
+          build-backend = "setuptools.build_meta"
+
+          [tool.setuptools]
+          py-modules = []
           EOF
           pip install "uv==${{ steps.pin.outputs.uv_version }}"
           uv lock
