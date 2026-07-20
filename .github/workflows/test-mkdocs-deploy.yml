@@ -1078,5 +1078,19 @@ jobs:
             echo "FAIL case4 (first deploy): exit=$r"; fail=1
           else echo "OK case4: first-deploy path handled (no remote gh-pages)"; fi
 
+          # Case 5: a non-race failure whose log merely mentions "non-fast-forward"
+          # (as build output would) but has no git push-rejection anchor must fail
+          # fast, not be retried (regression guard for is_push_race's scoping).
+          printf '%s\n' '#!/usr/bin/env bash' \
+            'c=$(cat /tmp/mc 2>/dev/null || echo 0); c=$((c+1)); echo $c > /tmp/mc' \
+            'echo "INFO: a docs page mentions non-fast-forward merges"' \
+            'echo "error: mkdocs build failed" >&2' \
+            'exit 1' > bin/mike
+          chmod +x bin/mike
+          r=$(run_case); cat case.log
+          if [ "$r" = "0" ] || ! grep -q "non-retryable error" case.log || [ "$(cat /tmp/mc)" != "1" ]; then
+            echo "FAIL case5 (build-token, no push anchor): exit=$r calls=$(cat /tmp/mc)"; fail=1
+          else echo "OK case5: non-ff token without a push anchor failed fast (1 mike call)"; fi
+
           exit $fail
 

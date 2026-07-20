@@ -93,15 +93,18 @@ sync_local_branch() {
 
 # Only a non-fast-forward push rejection is worth retrying; auth/permission
 # failures, a protected branch, a rejected server hook, a bad version, or a
-# missing dependency never self-heal, so fail fast on them. Match ONLY the
-# non-fast-forward-specific signatures git emits — deliberately NOT the generic
-# "failed to push some refs", which git prints on every failed push (auth, 403,
-# hook rejection), so an unrelated failure is not retried to exhaustion and
-# misreported as a race. mike relays git's stderr, so on a real non-fast-forward
-# these lines are present in the captured output (verified by the retry unit
-# test, which includes an auth-style failure that must fail fast).
+# missing dependency never self-heal, so fail fast on them. Require BOTH a git
+# push-rejection anchor AND the non-fast-forward reason in the captured output.
+# The anchor stops a non-ff phrase that only appears in the mkdocs build portion
+# of the log (docs content, a plugin line) from flipping an unrelated failure
+# into a retried "race"; the reason stops a generic push failure (auth, 403,
+# hook) — which carries the anchor but no non-ff reason — from being retried to
+# exhaustion. mike relays git's stderr, so on a real non-fast-forward both are
+# present (verified by the retry unit tests, incl. auth-style and build-token
+# cases that must fail fast).
 is_push_race() {
-  grep -qiE 'fetch first|non-fast-forward|updates were rejected' "$1"
+  grep -qiE '! \[rejected\]|error: failed to push' "$1" \
+    && grep -qiE 'fetch first|non-fast-forward|updates were rejected' "$1"
 }
 
 attempt=1
