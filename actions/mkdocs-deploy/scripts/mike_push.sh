@@ -104,10 +104,12 @@ attempt=1
 while [ "$attempt" -le "$MAX_ATTEMPTS" ]; do
   sync_local_branch
   out="$(mktemp)"
-  # Force a C locale (keeping UTF-8) so git's push-rejection text stays English
-  # and is_push_race matches it even on a non-English runner. C.UTF-8 preserves
-  # UTF-8 handling for the mkdocs build, unlike a bare LC_ALL=C.
-  if LC_ALL=C.UTF-8 "${MIKE[@]}" "$@" 2>&1 | tee "$out"; then
+  # Force the C locale so git's push-rejection text stays English (LC_ALL wins
+  # over any inherited locale) and is_push_race matches it on any runner. C is
+  # available everywhere, unlike C.UTF-8 which glibc has but macOS runners lack;
+  # Python 3.7+ still enables UTF-8 mode under a C locale (PEP 540), so mike's
+  # mkdocs build handles UTF-8 content fine.
+  if LC_ALL=C "${MIKE[@]}" "$@" 2>&1 | tee "$out"; then
     rm -f "$out"
     exit 0
   fi
