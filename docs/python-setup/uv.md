@@ -178,7 +178,7 @@ Ensures reproducible builds by validating `uv.lock` matches `pyproject.toml`:
 
 ### 4. Dependency Caching
 
-The action uses `astral-sh/setup-uv@v4` with:
+The action uses `astral-sh/setup-uv@v8.3.2` with:
 ```yaml
 enable-cache: true
 cache-dependency-glob: uv.lock
