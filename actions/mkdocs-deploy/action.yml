@@ -242,6 +242,6 @@ runs:
       run: |
         echo "::group::Deploying release documentation"
         SCRIPT="${{ github.action_path }}/scripts/mike_push.sh"
-        bash "$SCRIPT" deploy --push --update-aliases "${RELEASE_TAG_VERSION}" "${{ inputs.mike-alias }}"
-        bash "$SCRIPT" set-default --push "${{ inputs.mike-alias }}"
+        bash "$SCRIPT" deploy --push --update-aliases ${RELEASE_TAG_VERSION} ${{ inputs.mike-alias }}
+        bash "$SCRIPT" set-default --push ${{ inputs.mike-alias }}
         echo "::endgroup::"

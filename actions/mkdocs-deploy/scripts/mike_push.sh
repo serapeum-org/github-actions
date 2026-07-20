@@ -54,16 +54,30 @@ sync_local_branch() {
   fi
 }
 
+# Only a non-fast-forward push rejection is worth retrying; a bad version,
+# missing dependency, or config error will never self-heal, so fail fast on it.
+is_push_race() {
+  grep -qiE 'fetch first|non-fast-forward|\[rejected\]|failed to push|updates were rejected' "$1"
+}
+
 attempt=1
 while [ "$attempt" -le "$MAX_ATTEMPTS" ]; do
   sync_local_branch
-  if "${MIKE[@]}" "$@"; then
+  out="$(mktemp)"
+  if "${MIKE[@]}" "$@" 2>&1 | tee "$out"; then
+    rm -f "$out"
     exit 0
   fi
-  echo "::warning::mike $* was rejected (attempt ${attempt}/${MAX_ATTEMPTS}); refetching ${REMOTE}/${BRANCH} and retrying"
+  if ! is_push_race "$out"; then
+    rm -f "$out"
+    echo "::error::mike $* failed with a non-retryable error (see log above)"
+    exit 1
+  fi
+  rm -f "$out"
+  echo "::warning::mike $* lost a gh-pages push race (attempt ${attempt}/${MAX_ATTEMPTS}); refetching ${REMOTE}/${BRANCH} and retrying"
   sleep "$(( attempt * 3 ))"
   attempt=$(( attempt + 1 ))
 done
 
-echo "::error::mike $* failed after ${MAX_ATTEMPTS} attempts (gh-pages push kept getting rejected)"
+echo "::error::mike $* still rejected after ${MAX_ATTEMPTS} attempts (gh-pages kept advancing under us)"
 exit 1
