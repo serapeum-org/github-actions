@@ -176,7 +176,11 @@ runs:
               # a missing feature fails the job loudly instead of silently
               # skipping the requested groups.
               pip_version=$(pip --version | awk '{print $2}')
-              if pip install --help | grep -q -- "--group"; then
+              # Capture the help text before grepping so pipefail cannot surface a
+              # SIGPIPE (141) from grep -q closing the pipe early now that the
+              # unsupported branch is fatal.
+              group_help="$(pip install --help)"
+              if grep -q -- "--group" <<<"$group_help"; then
                 echo "Installing dependency groups: $dep_groups_cmd"
                 eval "$dep_groups_cmd"
               else
