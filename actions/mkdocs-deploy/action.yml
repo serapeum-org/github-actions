@@ -217,7 +217,8 @@ runs:
         PACKAGE_MANAGER: ${{ inputs.package-manager }}
       run: |
         echo "::group::Deploying pull request documentation"
-        bash "${{ github.action_path }}/scripts/mike_push.sh" deploy --push develop
+        SCRIPT="${{ github.action_path }}/scripts/mike_push.sh"
+        bash "$SCRIPT" deploy --push develop
         echo "::endgroup::"
 
     - name: Deploy to GitHub Pages (Main)
