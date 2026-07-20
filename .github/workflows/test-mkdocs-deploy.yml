@@ -926,3 +926,64 @@ jobs:
         run: |
           echo "package-manager-version test completed for ${{ matrix.package-manager }}"
 
+  test-mike-push-race-recovery:
+    name: Test mike deploy recovers from a concurrent gh-pages push
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
+
+      - name: Copy notebook-free fixture (uv)
+        run: |
+          cp tests/data/mkdocs-deploy/test-pull-request-pip-uv/pyproject.toml .
+          cp tests/data/mkdocs-deploy/test-pull-request-pip-uv/uv.lock .
+          cp tests/data/mkdocs-deploy/test-pull-request-pip-uv/mkdocs.yml .
+          cp -r tests/data/mkdocs-deploy/test-pull-request-pip-uv/docs .
+
+      - name: Advance the remote gh-pages out-of-band (simulate a concurrent push)
+        run: |
+          # Push a commit to the fake remote's gh-pages from a separate clone, so
+          # this workspace's local/tracking gh-pages ref is now stale. mike never
+          # fetches, so without the fetch-reset-retry fix its fast-forward-only
+          # push would be rejected non-fast-forward and the deploy would fail.
+          adv="$(mktemp -d)"
+          git clone --branch gh-pages file:///tmp/fake-remote.git "$adv/repo"
+          cd "$adv/repo"
+          git config user.email "concurrent@example.com"
+          git config user.name "Concurrent Pusher"
+          echo "landed on gh-pages while a deploy was in flight" > OUT_OF_BAND.txt
+          git add OUT_OF_BAND.txt
+          git commit -m "concurrent gh-pages push"
+          git push origin gh-pages
+
+      - name: Deploy (must recover from the stale local tip)
+        uses: ./actions/mkdocs-deploy
+        with:
+          trigger: 'pull_request'
+          package-manager: 'uv'
+          install-groups: 'groups: docs'
+          deploy-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Assert the deploy recovered and preserved the concurrent push
+        run: |
+          check="$(mktemp -d)"
+          git clone --branch gh-pages file:///tmp/fake-remote.git "$check/repo"
+          cd "$check/repo"
+          echo "=== gh-pages history ==="
+          git log --oneline
+          # 1) The deploy built ON TOP of the concurrent push (merged, not clobbered).
+          if ! git log --oneline | grep -q "concurrent gh-pages push"; then
+            echo "FAIL: the concurrent gh-pages push was lost (deploy did not build on the current tip)"
+            exit 1
+          fi
+          # 2) mike actually published the develop version.
+          if ! git show HEAD:versions.json | grep -q "develop"; then
+            echo "FAIL: develop version missing from versions.json"
+            exit 1
+          fi
+          echo "OK: deploy recovered from a stale local gh-pages and preserved the concurrent push"
+

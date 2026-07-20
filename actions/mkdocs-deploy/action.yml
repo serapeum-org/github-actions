@@ -217,11 +217,7 @@ runs:
         PACKAGE_MANAGER: ${{ inputs.package-manager }}
       run: |
         echo "::group::Deploying pull request documentation"
-        if [ "$PACKAGE_MANAGER" = "pip" ]; then
-          mike deploy --push develop
-        else
-          $PACKAGE_MANAGER run mike deploy --push develop
-        fi
+        bash "${{ github.action_path }}/scripts/mike_push.sh" deploy --push develop
         echo "::endgroup::"
 
     - name: Deploy to GitHub Pages (Main)
@@ -232,13 +228,9 @@ runs:
         PACKAGE_MANAGER: ${{ inputs.package-manager }}
       run: |
         echo "::group::Deploying main branch documentation"
-        if [ "$PACKAGE_MANAGER" = "pip" ]; then
-          mike deploy --push main
-          mike set-default --push main
-        else
-          $PACKAGE_MANAGER run mike deploy --push main
-          $PACKAGE_MANAGER run mike set-default --push main
-        fi
+        SCRIPT="${{ github.action_path }}/scripts/mike_push.sh"
+        bash "$SCRIPT" deploy --push main
+        bash "$SCRIPT" set-default --push main
         echo "::endgroup::"
 
     - name: Deploy to GitHub Pages (Release)
@@ -249,11 +241,7 @@ runs:
         PACKAGE_MANAGER: ${{ inputs.package-manager }}
       run: |
         echo "::group::Deploying release documentation"
-        if [ "$PACKAGE_MANAGER" = "pip" ]; then
-          mike deploy --push --update-aliases ${RELEASE_TAG_VERSION} ${{ inputs.mike-alias }}
-          mike set-default --push ${{ inputs.mike-alias }}
-        else
-          $PACKAGE_MANAGER run mike deploy --push --update-aliases ${RELEASE_TAG_VERSION} ${{ inputs.mike-alias }}
-          $PACKAGE_MANAGER run mike set-default --push ${{ inputs.mike-alias }}
-        fi
+        SCRIPT="${{ github.action_path }}/scripts/mike_push.sh"
+        bash "$SCRIPT" deploy --push --update-aliases "${RELEASE_TAG_VERSION}" "${{ inputs.mike-alias }}"
+        bash "$SCRIPT" set-default --push "${{ inputs.mike-alias }}"
         echo "::endgroup::"

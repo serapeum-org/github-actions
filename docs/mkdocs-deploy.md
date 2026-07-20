@@ -261,6 +261,20 @@ outputs stripped. A `pre-commit` hook such as
    - **release**: `mike deploy --push --update-aliases <tag> latest`
 5. For non-pip managers, commands are prefixed with `<manager> run`
 
+Every `mike ... --push` runs through a fetch-reset-retry wrapper
+(`scripts/mike_push.sh`): before each attempt it fetches the current
+`gh-pages` tip and hard-resets the local branch to it, so a deploy that loses a
+push race (a concurrent deploy, or an out-of-band `gh-pages` push such as a
+history squash) refetches and retries instead of failing with
+`! [rejected] gh-pages -> gh-pages (fetch first)`. mike merges `versions.json`
+from the tip it builds on, so retries are idempotent and concurrently-added
+versions are preserved. A single, uncontended deploy still publishes exactly
+one new `gh-pages` commit.
+
+> A per-ref `concurrency:` group in your caller workflow is still worth adding
+> as complementary serialization — it prevents this workflow's own runs from
+> racing, while the retry above also covers out-of-band pushes it can't see.
+
 ## Prerequisites
 
 - `mkdocs` and `mike` in your project dependencies
