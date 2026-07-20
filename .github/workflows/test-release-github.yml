@@ -104,10 +104,10 @@ jobs:
           increment: ${{ matrix.increment }}
           prerelease-type: 'none'
           package-manager: ${{ matrix.package-manager }}
-          # Smoke test that the release action accepts package-manager-version and
-          # still completes. Forwarding is INERT until uv/v1 ships the version
-          # input (the pinned sub-action drops it with an unexpected-input
-          # warning), so this does not yet prove the version takes effect.
+          # Smoke test: the release action accepts package-manager-version and
+          # forwards it to the pinned uv setup action (which declares the version
+          # input), then still completes. This is a smoke check -- it does not
+          # assert the exact tool version is installed.
           package-manager-version: 'latest'
           python-version: '3.12'
           install-groups: 'groups: dev docs'

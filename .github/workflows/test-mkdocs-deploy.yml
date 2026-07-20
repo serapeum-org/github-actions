@@ -908,11 +908,11 @@ jobs:
             echo "groups=groups: docs" >> $GITHUB_OUTPUT
           fi
 
-      # Smoke test: the parent accepts package-manager-version and the deploy
-      # still succeeds. Forwarding is INERT until uv/v1 and pixi/v1 re-release
-      # with the version input (the pinned sub-actions currently drop it with an
-      # unexpected-input warning), so this does not yet prove the version takes
-      # effect. uv uses 'latest'; pixi is pinned to v0.65.0 for when it goes live.
+      # Smoke test: the parent accepts package-manager-version and forwards it to
+      # the pinned uv/pixi setup actions (which declare the version input), then
+      # the deploy still succeeds. This is a smoke check -- it does not assert the
+      # exact tool version is installed. uv uses 'latest'; pixi is pinned to
+      # v0.65.0 so its committed lock stays readable.
       - name: Deploy with an explicit package-manager-version
         uses: ./actions/mkdocs-deploy
         with:
