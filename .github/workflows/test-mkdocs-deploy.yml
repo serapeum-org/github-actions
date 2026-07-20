@@ -987,3 +987,68 @@ jobs:
           fi
           echo "OK: deploy recovered from a stale local gh-pages and preserved the concurrent push"
 
+  test-mike-push-retry-unit:
+    name: Test mike_push.sh retry loop (stubbed mike)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Exercise the retry loop with a stubbed mike
+        run: |
+          SCRIPT="$PWD/actions/mkdocs-deploy/scripts/mike_push.sh"
+          work="$(mktemp -d)"
+          git init -q --bare "$work/remote.git"
+          git init -q "$work/repo"
+          cd "$work/repo"
+          git config user.email t@e.com
+          git config user.name t
+          git checkout -q --orphan gh-pages
+          echo seed > README.md
+          git add README.md
+          git -c commit.gpgsign=false commit -q -m seed
+          git remote add origin "$work/remote.git"
+          git push -q origin gh-pages
+          git checkout -q -b main
+          mkdir -p bin
+          fail=0
+
+          # Runs the helper with a fast, bounded retry and reports its exit code.
+          run_case() {
+            rm -f /tmp/mc
+            if PATH="$PWD/bin:$PATH" PACKAGE_MANAGER=pip MIKE_MAX_ATTEMPTS=3 MIKE_RETRY_BACKOFF=0 \
+                 bash "$SCRIPT" deploy --push develop > case.log 2>&1; then echo 0; else echo $?; fi
+          }
+
+          # Case 1: a non-fast-forward rejection then success -> retries, exit 0, 2 calls.
+          printf '%s\n' '#!/usr/bin/env bash' \
+            'c=$(cat /tmp/mc 2>/dev/null || echo 0); c=$((c+1)); echo $c > /tmp/mc' \
+            'if [ "$c" -lt 2 ]; then echo " ! [rejected]    gh-pages -> gh-pages (fetch first)" >&2; echo "error: failed to push some refs to origin" >&2; exit 1; fi' \
+            'echo "mike: deployed"; exit 0' > bin/mike
+          chmod +x bin/mike
+          r=$(run_case); cat case.log
+          if [ "$r" != "0" ] || ! grep -q "lost a gh-pages push race" case.log || [ "$(cat /tmp/mc)" != "2" ]; then
+            echo "FAIL case1 (retry-then-success): exit=$r calls=$(cat /tmp/mc)"; fail=1
+          else echo "OK case1: retried a genuine rejection and succeeded (2 mike calls)"; fi
+
+          # Case 2: a non-push error -> fail fast on the first attempt.
+          printf '%s\n' '#!/usr/bin/env bash' \
+            'c=$(cat /tmp/mc 2>/dev/null || echo 0); c=$((c+1)); echo $c > /tmp/mc' \
+            'echo "error: some non-push failure" >&2; exit 1' > bin/mike
+          chmod +x bin/mike
+          r=$(run_case); cat case.log
+          if [ "$r" = "0" ] || ! grep -q "non-retryable error" case.log || [ "$(cat /tmp/mc)" != "1" ]; then
+            echo "FAIL case2 (fail-fast): exit=$r calls=$(cat /tmp/mc)"; fail=1
+          else echo "OK case2: non-push error failed fast (1 mike call)"; fi
+
+          # Case 3: persistent rejection -> exhausts MIKE_MAX_ATTEMPTS, exit 1, 3 calls.
+          printf '%s\n' '#!/usr/bin/env bash' \
+            'c=$(cat /tmp/mc 2>/dev/null || echo 0); c=$((c+1)); echo $c > /tmp/mc' \
+            'echo "error: failed to push some refs (fetch first)" >&2; exit 1' > bin/mike
+          chmod +x bin/mike
+          r=$(run_case); cat case.log
+          if [ "$r" = "0" ] || ! grep -q "still rejected after 3 attempts" case.log || [ "$(cat /tmp/mc)" != "3" ]; then
+            echo "FAIL case3 (give-up): exit=$r calls=$(cat /tmp/mc)"; fail=1
+          else echo "OK case3: persistent rejection gave up after 3 attempts (3 mike calls)"; fi
+
+          exit $fail
+
