@@ -263,7 +263,7 @@ outputs stripped. A `pre-commit` hook such as
 
 Every `mike ... --push` runs through a fetch-reset-retry wrapper
 (`scripts/mike_push.sh`): before each attempt it fetches the current
-`gh-pages` tip and hard-resets the local branch to it, so a deploy that loses a
+`gh-pages` tip and repoints the local branch ref to it, so a deploy that loses a
 push race (a concurrent deploy, or an out-of-band `gh-pages` push such as a
 history squash) refetches and retries instead of failing with
 `! [rejected] gh-pages -> gh-pages (fetch first)`. mike merges `versions.json`

@@ -9,12 +9,12 @@
 # out-of-band push such as a history squash), the push is rejected
 # (`! [rejected] gh-pages -> gh-pages (fetch first)`) and the job dies.
 #
-# Before each attempt we fetch the real remote tip and hard-reset the local
-# branch to it, so mike rebuilds on the current tip. mike merges versions.json
-# from the tip it builds on, so concurrently-added versions are preserved and a
-# retry is idempotent. The hard reset each attempt also discards any commit a
-# failed prior attempt left on the local ref, avoiding mike's GitBranchDiverged
-# pre-flight abort.
+# Before each attempt we fetch the real remote tip and repoint the local branch
+# ref (git branch -f) at it, so mike rebuilds on the current tip. mike merges
+# versions.json from the tip it builds on, so concurrently-added versions are
+# preserved and a retry is idempotent. Repointing the ref each attempt also
+# discards any commit a failed prior attempt left on the local branch, avoiding
+# mike's GitBranchDiverged pre-flight abort.
 #
 # Env:
 #   PACKAGE_MANAGER    pip | uv | pixi. "pip" runs mike directly; others prefix
