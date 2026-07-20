@@ -45,12 +45,28 @@ else
 fi
 
 # Point the local docs branch at the current remote tip so mike rebuilds on it.
-# A missing remote branch (first-ever deploy) is fine: mike creates it fresh.
+# Distinguish the three cases explicitly instead of treating any git failure as
+# "first deploy": remote branch absent (fine — mike creates it), remote
+# unreachable (surface it, don't hide auth/network errors), and a reset that
+# could not be applied (warn — a stale local ref would make every retry fail).
 sync_local_branch() {
-  if git fetch "$REMOTE" "$BRANCH" 2>/dev/null; then
-    git branch -f "$BRANCH" FETCH_HEAD 2>/dev/null || true
-  else
-    echo "note: $REMOTE/$BRANCH not found yet (first deploy?); mike will create it"
+  local ls_rc
+  git ls-remote --exit-code "$REMOTE" "refs/heads/$BRANCH" >/dev/null 2>&1
+  ls_rc=$?
+  if [ "$ls_rc" -eq 2 ]; then
+    echo "note: $REMOTE/$BRANCH does not exist yet (first deploy); mike will create it"
+    return 0
+  fi
+  if [ "$ls_rc" -ne 0 ]; then
+    echo "::warning::could not reach $REMOTE to check $BRANCH (git ls-remote exit $ls_rc); building on the local ref"
+    return 0
+  fi
+  if ! git fetch "$REMOTE" "$BRANCH"; then
+    echo "::warning::git fetch of $REMOTE/$BRANCH failed; building on the local ref"
+    return 0
+  fi
+  if ! git branch -f "$BRANCH" FETCH_HEAD; then
+    echo "::warning::could not repoint local $BRANCH to the fetched tip (is it checked out?); mike may build on a stale ref"
   fi
 }
 
