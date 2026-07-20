@@ -257,7 +257,7 @@ outputs stripped. A `pre-commit` hook such as
 3. Configures git with the workflow actor's identity
 4. Runs the appropriate `mike` command based on trigger:
    - **pull_request**: `mike deploy --push develop`
-   - **main**: `mike deploy --push --update-aliases main latest && mike set-default --push latest`
+   - **main**: `mike deploy --push main && mike set-default --push main`
    - **release**: `mike deploy --push --update-aliases <tag> latest`
 5. For non-pip managers, commands are prefixed with `<manager> run`
 
