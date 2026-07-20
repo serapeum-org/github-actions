@@ -220,6 +220,10 @@ version: 'latest'
 **Note**: Pass the tag exactly as published by pixi, including the leading `v` (e.g. `'v0.65.0'`). The pinned
 version must be able to read your committed `pixi.lock` format.
 
+**Breaking change (`pixi/v1`)**: Earlier releases of this action always installed a pinned pixi `v0.65.0`. It now
+defaults to `version: 'latest'`, so existing `pixi/v1` consumers that do not set `version` will start getting the
+newest pixi resolved against their committed `pixi.lock`. To keep the previous behavior, pin `version: 'v0.65.0'`.
+
 ## Features
 
 ### 1. Automatic Lock File Validation

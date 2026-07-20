@@ -113,6 +113,10 @@ Specifies dependency groups from `[dependency-groups]` and/or optional dependenc
 
 If `install-groups` is empty and `pyproject.toml` exists, runs `pip install .` (installs only core dependencies).
 
+**Breaking change (`pip/v1`)**: Requesting dependency groups (`groups: ...`) on pip older than 25.1 now fails the
+job (`exit 1`) instead of emitting a warning and installing only core + extras. Upgrade the runner's pip to
+>= 25.1, or use the `uv` action, which has native PEP 735 support.
+
 ## Features
 
 ### 1. Cache Validation

@@ -114,6 +114,10 @@ version: 'latest'
 
 **Note**: Use the version number without a leading `v` (e.g. `'0.5.0'`), matching setup-uv's own format.
 
+**Breaking change (`uv/v1`)**: Earlier releases passed no version to `setup-uv`, so a `required-version` pin in
+`pyproject.toml`/`uv.toml` was honored. This action now defaults to `version: 'latest'`, which overrides that pin.
+To restore the previous auto-resolve behavior, set `version: ''`.
+
 ## Features
 
 ### 1. Automatic Virtual Environment Activation
