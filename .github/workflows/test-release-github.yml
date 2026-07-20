@@ -104,6 +104,11 @@ jobs:
           increment: ${{ matrix.increment }}
           prerelease-type: 'none'
           package-manager: ${{ matrix.package-manager }}
+          # Smoke test that the release action accepts package-manager-version and
+          # still completes. Forwarding is INERT until uv/v1 ships the version
+          # input (the pinned sub-action drops it with an unexpected-input
+          # warning), so this does not yet prove the version takes effect.
+          package-manager-version: 'latest'
           python-version: '3.12'
           install-groups: 'groups: dev docs'
           skip-github-release: 'true'

@@ -37,6 +37,13 @@ inputs:
       Default is "true".
     required: false
     default: 'true'
+  version:
+    description: >
+      Version of pixi to install (passed to prefix-dev/setup-pixi as pixi-version).
+      Use a release tag such as "v0.65.0" to pin, or "latest" for the newest release.
+      Default is "latest".
+    required: false
+    default: 'latest'
 
 runs:
   using: 'composite'
@@ -55,11 +62,11 @@ runs:
 
     - name: Setup pixi (with cache)
       if: inputs.cache == 'true'
-      uses: prefix-dev/setup-pixi@a0af7a228712d6121d37aba47adf55c1332c9c2e # v0.9.4
+      uses: prefix-dev/setup-pixi@a09b6247153796b190642a2b53fac4241043cf6f # v0.10.0
       with:
         environments: ${{ inputs.environments }}
         activate-environment: ${{ inputs.activate-environment }}
-        pixi-version: v0.65.0
+        pixi-version: ${{ inputs.version }}
         cache: true
         cache-key: pixi-${{ hashFiles('pixi.lock') }}
         cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
@@ -68,11 +75,11 @@ runs:
 
     - name: Setup pixi (without cache)
       if: inputs.cache != 'true'
-      uses: prefix-dev/setup-pixi@a0af7a228712d6121d37aba47adf55c1332c9c2e # v0.9.4
+      uses: prefix-dev/setup-pixi@a09b6247153796b190642a2b53fac4241043cf6f # v0.10.0
       with:
         environments: ${{ inputs.environments }}
         activate-environment: ${{ inputs.activate-environment }}
-        pixi-version: v0.65.0
+        pixi-version: ${{ inputs.version }}
         cache: false
         locked: ${{ inputs.verify-lock == 'true' }}
         frozen: ${{ inputs.verify-lock != 'true' }}

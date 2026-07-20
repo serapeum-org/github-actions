@@ -62,6 +62,7 @@ steps:
 | `python-version` | Python version to install | No | `'3.12'` | Any valid Python version (e.g., `'3.10'`, `'3.11'`, `'3.12'`) |
 | `install-groups` | Dependency groups to install | No | `''` (core only) | Space or comma-separated list (e.g., `'dev'`, `'dev test'`, `'dev,test,docs'`) |
 | `verify-lock` | Verify lock file is up to date | No | `'true'` | `'true'`, `'false'` |
+| `version` | Version of uv to install | No | `'latest'` | Version number (e.g., `'0.5.0'`), `'latest'`, or `''` |
 
 ### Input Details
 
@@ -95,6 +96,27 @@ Controls whether to verify the `uv.lock` file is up to date before installation.
 **When `'true'` (default)**: Runs `uv lock --check` and fails if lock file is outdated.
 
 **When `'false'`: Skips lock file verification.
+
+#### `version`
+Selects the uv release installed by `astral-sh/setup-uv` (forwarded as its `version` input).
+
+**Default (`'latest'`)**: Installs the newest uv release. Set to `''` to instead resolve the version from `pyproject.toml`/`uv.toml` (falling back to latest).
+
+**When specified**: Pins uv to the given release, or installs the newest with `'latest'`:
+
+```yaml
+# Pin a specific uv version (reproducible)
+version: '0.5.0'
+
+# Always use the newest uv release
+version: 'latest'
+```
+
+**Note**: Use the version number without a leading `v` (e.g. `'0.5.0'`), matching setup-uv's own format.
+
+**Breaking change (`uv/v1`)**: Earlier releases passed no version to `setup-uv`, so a `required-version` pin in
+`pyproject.toml`/`uv.toml` was honored. This action now defaults to `version: 'latest'`, which overrides that pin.
+To restore the previous auto-resolve behavior, set `version: ''`.
 
 ## Features
 
@@ -160,7 +182,7 @@ Ensures reproducible builds by validating `uv.lock` matches `pyproject.toml`:
 
 ### 4. Dependency Caching
 
-The action uses `astral-sh/setup-uv@v4` with:
+The action uses `astral-sh/setup-uv@v8.3.2` with:
 ```yaml
 enable-cache: true
 cache-dependency-glob: uv.lock

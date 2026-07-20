@@ -108,10 +108,14 @@ Specifies dependency groups from `[dependency-groups]` and/or optional dependenc
 
 **Behavior**:
 - Optional dependencies (extras) use `pip install .[extra1,extra2]`
-- Dependency groups use `pip install --dependency-groups group1,group2` (requires pip with PEP 735 support)
-- If pip doesn't support `--dependency-groups`, a warning is shown and only extras are installed
+- Dependency groups use `pip install . --group group1 --group group2` (requires pip >= 25.1 for PEP 735 support)
+- If pip doesn't support `--group`, the action fails with an error instead of silently skipping the requested groups
 
 If `install-groups` is empty and `pyproject.toml` exists, runs `pip install .` (installs only core dependencies).
+
+**Breaking change (`pip/v1`)**: Requesting dependency groups (`groups: ...`) on pip older than 25.1 now fails the
+job (`exit 1`) instead of emitting a warning and installing only core + extras. Upgrade the runner's pip to
+>= 25.1, or use the `uv` action, which has native PEP 735 support.
 
 ## Features
 
@@ -335,19 +339,15 @@ jobs:
         run: |
           python -c "import requests; print('[OK] Core dependencies installed')"
           python -c "import boto3; print('[OK] AWS extra installed')"
-          # Dev group depends on pip version
-          if python -c "import httpx" 2>/dev/null; then
-            echo "[OK] Dev group installed (pip supports --dependency-groups)"
-          else
-            echo "[OK] Dev group not installed (pip version limitation)"
-          fi
+          # Requested dev group is guaranteed installed (the action fails otherwise)
+          python -c "import httpx; print('[OK] Dev group installed')"
 ```
 
 **What Happens**:
 - Core dependencies: `requests` (always installed)
 - Optional dependencies (extras): `boto3`, `s3fs` (always works with pip)
-- Dependency groups: `httpx`, `pytest` (requires pip with PEP 735 support)
-- Shows warning if pip doesn't support `--dependency-groups`
+- Dependency groups: `httpx`, `pytest` (requires pip >= 25.1 for PEP 735 support)
+- Fails with an error if pip doesn't support `--group`
 
 ### Scenario 8: Poetry/Pipenv Projects
 
@@ -651,13 +651,13 @@ Total: 20-30s
 2. **Dependency Groups** (`[dependency-groups]`):
    - Part of PEP 735 standard (**newer, limited support**)
    - Development-only, **not published** with package
-   - Installed using `pip install --dependency-groups group` (requires recent pip)
+   - Installed using `pip install . --group <name>` (requires pip >= 25.1)
    - Use prefix `groups:` in this action
-   - **May show warning** if pip version doesn't support PEP 735
+   - **The action fails** if pip version doesn't support PEP 735 (`--group`)
 
 **Recommendation**: Use optional dependencies (extras) for maximum compatibility. Use dependency groups only if you need PEP 735 features.
 
-**Note**: If your pip version doesn't support `--dependency-groups`, the action will show a warning and suggest using the uv action instead, which has full PEP 735 support.
+**Note**: If your pip version doesn't support the `--group` flag (pip < 25.1), the action fails with an error pointing you at pip >= 25.1 or the uv action, which has full PEP 735 support. It will not silently skip the requested groups.
 
 ### Understanding Optional Dependencies (Extras)
 
@@ -699,13 +699,13 @@ docs = ["mkdocs>=1.5", "mkdocstrings>=0.24"]
 | `''` (empty) | `pip install .` | Core dependencies only |
 | `'extras: dev'` | `pip install .[dev]` | Core + dev extras |
 | `'extras: dev test'` | `pip install .[dev,test]` | Core + dev + test extras |
-| `'groups: lint'` | `pip install .` then `pip install --dependency-groups lint` (if supported) | Core + lint group |
-| `'groups: lint build, extras: dev'` | `pip install .[dev]` then `pip install --dependency-groups lint,build` | Core + dev extras + lint/build groups |
-| `'extras: aws viz, groups: dev'` | `pip install .[aws,viz]` then `pip install --dependency-groups dev` | Core + AWS/viz extras + dev group |
+| `'groups: lint'` | `pip install .` then `pip install . --group lint` | Core + lint group |
+| `'groups: lint build, extras: dev'` | `pip install .[dev]` then `pip install . --group lint --group build` | Core + dev extras + lint/build groups |
+| `'extras: aws viz, groups: dev'` | `pip install .[aws,viz]` then `pip install . --group dev` | Core + AWS/viz extras + dev group |
 
-### PEP 735 Support and Warnings
+### PEP 735 Support and Errors
 
-**When pip supports `--dependency-groups`:**
+**When pip supports `--group` (pip >= 25.1):**
 ```
 === Installation Summary ===
 ✓ Dependency groups will be installed: dev test
@@ -714,16 +714,17 @@ docs = ["mkdocs>=1.5", "mkdocstrings>=0.24"]
 ==========================
 
 Installing package with optional dependencies: pip install .[aws]
-Installing dependency groups: pip install --dependency-groups dev,test
+Installing dependency groups: pip install . --group dev --group test
 ```
 
-**When pip doesn't support `--dependency-groups`:**
+**When pip doesn't support `--group` (pip < 25.1):**
 ```
-Warning: pip version does not support --dependency-groups flag (PEP 735). Dependency groups will be ignored: dev test
-Warning: Please use a newer version of pip or consider using the uv action instead.
+Error: pip 24.0 does not support the --group flag (PEP 735 dependency groups).
+Error: Dependency groups were explicitly requested (dev,test) but cannot be installed, so this step is failing instead of silently skipping them.
+Error: Upgrade to pip >= 25.1 (which ships the --group option), or use the uv action which has native PEP 735 support.
 ```
 
-The action will still install core dependencies and extras successfully, but dependency groups will be skipped.
+Because the requested groups cannot be honored, the action **fails the job** rather than silently skipping them. Core dependencies and extras are installed before this check, but the step exits non-zero so the missing groups cannot go unnoticed.
 
 ### Common Patterns
 
@@ -796,7 +797,7 @@ jobs:
 
 ### Migrating from Dependency Groups to Extras
 
-If you encounter warnings about unsupported `--dependency-groups`, consider:
+If your pip is older than 25.1 and the action fails on unsupported `--group`, consider:
 
 **Option 1: Use optional dependencies (extras) instead**
 ```toml
@@ -1023,11 +1024,10 @@ jobs:
 ### Expected Test Behaviors
 
 **PEP 735 Support Detection:**
-Tests verify that when pip doesn't support `--dependency-groups`:
-- Warning is shown
-- Core dependencies still install
-- Optional dependencies (extras) still work
-- Workflow doesn't fail
+Tests verify that when dependency groups are requested (on pip >= 25.1, as used by CI runners):
+- The requested groups are installed and asserted present
+- Core dependencies and optional dependencies (extras) install
+- If pip lacked `--group`, the action would fail the job rather than skip the groups
 
 **Cache Validation:**
 Tests verify that:

@@ -593,3 +593,73 @@ jobs:
           python -c "import pytest; print('[OK] Test group installed')"
           python -c "import boto3; print('[OK] AWS extra installed')"
           python -c "import matplotlib; print('[OK] Viz extra installed')"
+
+  test-uv-custom-version:
+    name: Test uv action - Custom uv version input
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      # Pin to the PREVIOUS published uv release (one below latest), resolved at
+      # runtime so the test never goes stale. It must differ from what the action
+      # installs by default ('latest'); otherwise the assertion would pass even if
+      # the version input were silently dropped. The lock is generated with the
+      # same pinned uv, guaranteeing --frozen / uv lock --check compatibility.
+      - name: Resolve the previous (non-latest) uv release to pin
+        id: pin
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ver=""
+          for attempt in 1 2 3; do
+            ver="$(gh api 'repos/astral-sh/uv/releases?per_page=20' \
+                    --jq 'map(select(.prerelease == false and .draft == false)) | .[1].tag_name' \
+                    2>/dev/null | sed 's/^v//')"
+            if [ -n "$ver" ] && [ "$ver" != "null" ]; then break; fi
+            echo "gh api attempt $attempt returned no version; retrying in 5s..."
+            sleep 5
+          done
+          if [ -z "$ver" ] || [ "$ver" = "null" ]; then
+            echo "::error::Could not resolve the previous uv release from GitHub after retries"
+            exit 1
+          fi
+          echo "Pinning uv version (previous release, != latest): $ver"
+          echo "uv_version=$ver" >> "$GITHUB_OUTPUT"
+
+      - name: Create test project and lock with the pinned uv
+        run: |
+          cat > pyproject.toml << 'EOF'
+          [project]
+          name = "test-uv-version"
+          version = "0.1.0"
+          requires-python = ">=3.12"
+          dependencies = ["requests"]
+
+          [build-system]
+          requires = ["setuptools>=61"]
+          build-backend = "setuptools.build_meta"
+
+          [tool.setuptools]
+          py-modules = []
+          EOF
+          pip install "uv==${{ steps.pin.outputs.uv_version }}"
+          uv lock
+
+      - name: Test uv action pinned to a specific version
+        uses: ./actions/python-setup/uv
+        with:
+          version: ${{ steps.pin.outputs.uv_version }}
+
+      - name: Verify the requested uv version was installed
+        shell: bash
+        run: |
+          installed="$(uv --version | awk '{print $2}')"
+          expected="${{ steps.pin.outputs.uv_version }}"
+          echo "Installed uv: $installed (expected $expected)"
+          if [ "$installed" != "$expected" ]; then
+            echo "::error::version input not honored: expected uv $expected, got $installed"
+            exit 1
+          fi
+          echo "[OK] version input honored: uv $installed installed"

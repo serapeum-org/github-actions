@@ -19,6 +19,7 @@ jobs:
         id: setup
         uses: ./actions/python-setup/pixi
         with:
+          version: 'v0.65.0'
           cache: "false"
 
       - name: Verify installation
@@ -47,6 +48,7 @@ jobs:
       - name: Test pixi action with defaults (should use default environment)
         uses: ./actions/python-setup/pixi
         with:
+          version: 'v0.65.0'
           cache: "false"
 
       - name: Verify default environment installation
@@ -72,6 +74,7 @@ jobs:
       - name: Test pixi setup with multiple environments
         uses: ./actions/python-setup/pixi
         with:
+          version: 'v0.65.0'
           environments: "py311 py312"
           activate-environment: "py311"
           cache: "false"
@@ -104,6 +107,7 @@ jobs:
       - name: Test pixi setup with dev environment activation
         uses: ./actions/python-setup/pixi
         with:
+          version: 'v0.65.0'
           environments: "prod dev"
           activate-environment: "dev"
           cache: "false"
@@ -131,6 +135,7 @@ jobs:
       - name: Test with valid lock file (should pass)
         uses: ./actions/python-setup/pixi
         with:
+          version: 'v0.65.0'
           cache: "false"
 
   test-pixi-lock-verification-outdated:
@@ -157,6 +162,7 @@ jobs:
         continue-on-error: true
         uses: ./actions/python-setup/pixi
         with:
+          version: 'v0.65.0'
           cache: "false"
 
       - name: Verify lock verification failed
@@ -179,6 +185,7 @@ jobs:
       - name: Test with verify-lock disabled
         uses: ./actions/python-setup/pixi
         with:
+          version: 'v0.65.0'
           verify-lock: "false"
           cache: "false"
 
@@ -197,6 +204,7 @@ jobs:
         continue-on-error: true
         uses: ./actions/python-setup/pixi
         with:
+          version: 'v0.65.0'
           verify-lock: "true"
           cache: "false"
 
@@ -226,6 +234,7 @@ jobs:
         id: populate-cache
         uses: ./actions/python-setup/pixi
         with:
+          version: 'v0.65.0'
           cache: "true"
 
       - name: Verify packages are installed
@@ -248,6 +257,7 @@ jobs:
         id: second-run
         uses: ./actions/python-setup/pixi
         with:
+          version: 'v0.65.0'
           cache: "true"
 
       - name: Verify packages are available from cache
@@ -282,6 +292,7 @@ jobs:
         continue-on-error: true
         uses: ./actions/python-setup/pixi
         with:
+          version: 'v0.65.0'
           cache: "true"
 
       - name: Verify validation failed
@@ -313,6 +324,7 @@ jobs:
       - name: Test pixi setup
         uses: ./actions/python-setup/pixi
         with:
+          version: 'v0.65.0'
           environments: ${{ matrix.environment }}
           activate-environment: ${{ matrix.environment }}
           cache: "false"
@@ -355,6 +367,7 @@ jobs:
         continue-on-error: true
         uses: ./actions/python-setup/pixi
         with:
+          version: 'v0.65.0'
           verify-lock: "false"
           cache: "false"
 
@@ -374,6 +387,7 @@ jobs:
         continue-on-error: true
         uses: ./actions/python-setup/pixi
         with:
+          version: 'v0.65.0'
           activate-environment: "nonexistent"
           verify-lock: "false"
           cache: "false"
@@ -398,6 +412,7 @@ jobs:
       - name: Test complex project setup
         uses: ./actions/python-setup/pixi
         with:
+          version: 'v0.65.0'
           environments: "default ml prod"
           activate-environment: "ml"
           cache: "false"
@@ -413,3 +428,34 @@ jobs:
           echo "Environment info:"
           pixi info
           pixi list -e ml
+
+  test-pixi-custom-version:
+    name: Test pixi action - Custom pixi version input
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Copy test fixture files
+        run: |
+          cp tests/data/pixi/test-pixi-basic/pyproject.toml .
+          cp tests/data/pixi/test-pixi-basic/pixi.lock .
+
+      - name: Setup pixi with an explicit version
+        uses: ./actions/python-setup/pixi
+        with:
+          version: 'v0.65.0'
+          cache: 'false'
+
+      - name: Verify the requested pixi version was installed
+        shell: bash
+        run: |
+          installed="$(pixi --version | awk '{print $2}')"
+          echo "Installed pixi: $installed"
+          # The version input must be honored: if it were not wired through,
+          # setup-pixi would fall back to its default (latest), which is newer
+          # than the pinned 0.65.0, so this assertion would fail.
+          if [ "$installed" != "0.65.0" ]; then
+            echo "::error::Expected pixi 0.65.0 from the version input, got $installed"
+            exit 1
+          fi
+          echo "[OK] version input honored: pixi 0.65.0 installed"

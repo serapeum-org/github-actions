@@ -253,12 +253,12 @@ jobs:
           # Verify optional dependencies are installed
           python -c "import boto3; print('[OK] AWS extra installed')"
           python -c "import matplotlib; print('[OK] Viz extra installed')"
-          # Verify dependency groups are NOT installed (no -group support in older pip)
+          # Only extras were requested, so the dev dependency group (httpx) must NOT be installed
           if python -c "import httpx" 2>/dev/null; then
-            echo "[OK] httpx found - dependency groups may be supported"
-          else
-            echo "::error::Dev group not installed - pip version does not support --group"
+            echo "::error::httpx present but no dependency group was requested (extras-only install must not pull groups)"
+            exit 1
           fi
+          echo "[OK] Dependency groups correctly not installed for extras-only request"
 
   test-pip-mixed-groups-and-extras:
     name: Test pip action - Mixed groups and extras
@@ -282,13 +282,8 @@ jobs:
           # Verify all requested dependencies are installed
           python -c "import requests; print('[OK] Core dependencies installed')"
           python -c "import boto3; print('[OK] AWS extra installed')"
-          # Dev group installation depends on pip version support for --group
-          if python -c "import httpx" 2>/dev/null; then
-            echo "[OK] Dev group installed (pip supports --group)"
-          else
-            echo "::error::Dev group not installed - pip version does not support --group"
-            exit 1
-          fi
+          # Requested dev group must be installed; the action fails loudly otherwise
+          python -c "import httpx; print('[OK] Dev group installed')"
 
   test-pip-dependency-groups-only:
     name: Test pip action - Dependency groups only
@@ -311,13 +306,8 @@ jobs:
           pip list
           # Verify core dependencies are installed
           python -c "import requests; print('[OK] Core dependencies installed')"
-          # Dependency group installation depends on pip version
-          if python -c "import httpx; import pytest" 2>/dev/null; then
-            echo "[OK] Dependency groups installed (pip supports PEP 735)"
-          else
-            echo "[OK] Dependency groups not installed (pip version does not support PEP 735 --dependency-groups)"
-            echo "[INFO] This is expected for older pip versions. Consider using uv action for dependency groups support."
-          fi
+          # Requested groups (dev, test) must be installed; the action fails loudly otherwise
+          python -c "import httpx; import pytest; print('[OK] Dependency groups (dev, test) installed')"
 
   test-pip-groups-docs-only:
     name: Test pip action - Single dependency group (docs)
@@ -334,18 +324,13 @@ jobs:
         with:
           install-groups: 'groups: docs'
 
-      - name: Verify installation and expected warning
+      - name: Verify docs group installed
         shell: bash
         run: |
           pip list
           python -c "import requests; print('[OK] Core dependencies installed')"
-          # This test verifies the warning behavior when pip doesn't support --dependency-groups
-          if python -c "import mkdocs" 2>/dev/null; then
-            echo "[OK] Docs group installed (pip supports PEP 735)"
-          else
-            echo "[OK] Docs group not installed - this is expected with current pip version"
-            echo "[INFO] The warning message 'pip version does not support --dependency-groups' is expected"
-          fi
+          # Requested docs group must be installed; the action fails loudly otherwise
+          python -c "import mkdocs; print('[OK] Docs group installed')"
 
   test-pip-all-combinations:
     name: Test pip action - All combinations (groups + extras)
@@ -372,12 +357,8 @@ jobs:
           python -c "import boto3; print('[OK] AWS extra installed')"
           python -c "from azure.storage.blob import BlobServiceClient; print('[OK] Azure extra installed')"
           python -c "from google.cloud import storage; print('[OK] GCP extra installed')"
-          # Verify dependency groups (if supported)
-          if python -c "import httpx; import pytest; import mkdocs" 2>/dev/null; then
-            echo "[OK] All dependency groups installed (pip supports PEP 735)"
-          else
-            echo "[OK] Dependency groups not installed (pip doesn't support PEP 735)"
-          fi
+          # Requested groups (dev, test, docs) must be installed; the action fails loudly otherwise
+          python -c "import httpx; import pytest; import mkdocs; print('[OK] All dependency groups installed')"
 
   test-pip-single-extra:
     name: Test pip action - Single extra only
@@ -421,11 +402,8 @@ jobs:
         run: |
           pip list
           python -c "import requests; print('[OK] Core dependencies installed')"
-          if python -c "import pytest; import black; import ruff" 2>/dev/null; then
-            echo "[OK] Dev group installed (pip supports PEP 735)"
-          else
-            echo "[OK] Dev group not installed (pip doesn't support PEP 735)"
-          fi
+          # Requested dev group must be installed; the action fails loudly otherwise
+          python -c "import pytest; import black; import ruff; print('[OK] Dev group installed')"
 
   test-pip-only-core-dependencies:
     name: Test pip action - Only core dependencies (no groups/extras)
@@ -469,11 +447,8 @@ jobs:
           python -c "import requests; print('[OK] Core dependencies installed')"
           python -c "import pytest; print('[OK] Dev extra installed')"
           python -c "import pytest_cov; print('[OK] Test extra installed')"
-          if python -c "import ruff; import black" 2>/dev/null; then
-            echo "[OK] Groups installed with whitespace handling (pip supports PEP 735)"
-          else
-            echo "[OK] Groups not installed (pip doesn't support PEP 735)"
-          fi
+          # Requested groups (lint, format) must be installed; the action fails loudly otherwise
+          python -c "import ruff; import black; print('[OK] Groups (lint, format) installed with whitespace handling')"
 
   test-pip-empty-groups-value:
     name: Test pip action - Empty groups value
@@ -567,12 +542,8 @@ jobs:
           pip list
           python -c "import requests; print('[OK] Core dependencies installed')"
           python -c "import boto3; print('[OK] AWS extra installed')"
-          if python -c "import httpx" 2>/dev/null; then
-            echo "[OK] Dev group installed (pip supports PEP 735)"
-          else
-            echo "::error::Dev group not installed - pip doesn't support PEP 735"
-            exit 1
-          fi
+          # Requested dev group must be installed; the action fails loudly otherwise
+          python -c "import httpx; print('[OK] Dev group installed')"
 
   test-pip-cache-with-groups:
     name: Test pip action - Cache with groups and extras
@@ -597,4 +568,63 @@ jobs:
           python -c "import requests; print('[OK] Core dependencies installed')"
           python -c "import boto3; print('[OK] AWS extra installed with cache')"
           echo "[OK] Cache validation passed with groups and extras"
+
+  test-pip-groups-unsupported-pip:
+    name: Test pip action - Groups requested but pip too old for --group (negative)
+    # Python 3.8's newest pip (24.3.1) predates PEP 735 `pip install --group`
+    # (added in pip 25.1), so this deterministically exercises the fail-loud path.
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python 3.8 (precondition environment)
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.8'
+
+      - name: Precondition - confirm pip on Python 3.8 lacks --group
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          python --version
+          pip --version
+          # Capture help text before grepping (matches the action) so pipefail
+          # cannot mask a --group match via a SIGPIPE-141 pipeline failure.
+          group_help="$(pip install --help)"
+          if grep -q -- "--group" <<<"$group_help"; then
+            echo "::error::Precondition failed: pip on Python 3.8 unexpectedly supports --group; this negative test is no longer valid"
+            exit 1
+          fi
+          echo "[OK] Precondition met: pip on Python 3.8 does not support --group"
+
+      - name: Copy test fixture files
+        run: cp tests/data/pip/test-pip-single-group/pyproject.toml .
+
+      - name: Precondition - core install (no groups) succeeds on this pip
+        shell: bash
+        run: |
+          # Prove the fixture installs cleanly on 3.8's pip, so the only thing
+          # left to fail in the action below is the --group step -- this
+          # attributes the expected failure to the missing --group support
+          # rather than to an unrelated build/install error.
+          python -m pip install .
+          echo "[OK] Core install works on pip $(pip --version | awk '{print $2}')"
+
+      - name: Action must FAIL when groups are requested but pip lacks --group
+        id: groups-unsupported
+        continue-on-error: true
+        uses: ./actions/python-setup/pip
+        with:
+          python-version: '3.8'
+          install-groups: 'groups: dev'
+
+      - name: Verify the action failed instead of silently skipping the group
+        shell: bash
+        run: |
+          if [ "${{ steps.groups-unsupported.outcome }}" != "failure" ]; then
+            echo "::error::Expected the pip action to fail (exit 1) when dependency groups are requested but pip < 25.1 lacks --group"
+            exit 1
+          fi
+          echo "[OK] Action correctly failed instead of silently skipping the requested dependency group"
 
