@@ -247,9 +247,11 @@ runs:
           bash "$SCRIPT" deploy --push --update-aliases "$RELEASE_TAG_VERSION" "$MIKE_ALIAS"
         else
           # No resolvable release tag (e.g. a simulated/dispatch release): deploy
-          # the alias as the version. The old unquoted form collapsed to the same
-          # result (--update-aliases with only a version operand is a no-op).
-          bash "$SCRIPT" deploy --push "$MIKE_ALIAS"
+          # the alias name as the version, keeping --update-aliases so mike may
+          # reassign a pre-existing alias of that name instead of erroring
+          # ("version 'latest' already exists"). Matches the prior unquoted form
+          # `mike deploy --push --update-aliases <alias>`.
+          bash "$SCRIPT" deploy --push --update-aliases "$MIKE_ALIAS"
         fi
         bash "$SCRIPT" set-default --push "$MIKE_ALIAS"
         echo "::endgroup::"
