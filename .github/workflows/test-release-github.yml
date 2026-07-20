@@ -1963,3 +1963,116 @@ jobs:
             fi
           done
           echo "[OK] pip: no lockfile created; fold step correctly skipped"
+
+  # Regression test: changelog_file must be found no matter how far below the
+  # [tool.commitizen] header it sits. The old detection used a fixed
+  # `grep -A 20` window, so a config with a long version_files array or comment
+  # block before changelog_file (as in the earthlens uv workspace) fell through
+  # to the CHANGELOG.md default and failed with "Changelog file not found".
+  # This fixture places changelog_file ~30 lines below the header on purpose.
+  test-release-changelog-far-from-header:
+    name: Test release - changelog_file far below the commitizen header
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Copy test fixture
+        run: |
+          cp tests/data/release-github/test-basic-uv/pyproject.toml .
+          cp tests/data/release-github/test-basic-uv/uv.lock .
+
+      - name: Rewrite commitizen config so changelog_file is far below the header
+        run: |
+          # test-basic-uv keeps [tool.commitizen] as the last section, so drop it
+          # and append a version that pushes changelog_file well past 20 lines
+          # below the header (reproducing the earthlens layout).
+          sed -i '/^\[tool\.commitizen\]/,$d' pyproject.toml
+          {
+            echo '[tool.commitizen]'
+            echo 'name = "cz_conventional_commits"'
+            echo 'version = "0.1.0"'
+            echo 'tag_format = "$version"'
+            echo 'update_changelog_on_bump = true'
+            echo 'version_files = ['
+            echo '    "pyproject.toml:version"'
+            echo ']'
+            for i in $(seq 1 25); do
+              echo "# padding line $i pushing changelog_file past the old grep -A 20 window"
+            done
+            echo 'changelog_file = "docs/change-log.md"'
+          } >> pyproject.toml
+
+          mkdir -p docs
+          echo "# Changelog" > docs/change-log.md
+
+          HEADER=$(grep -n '^\[tool\.commitizen\]' pyproject.toml | tail -1 | cut -d: -f1)
+          CLINE=$(grep -n '^changelog_file' pyproject.toml | tail -1 | cut -d: -f1)
+          echo "header at line $HEADER, changelog_file at line $CLINE (delta $((CLINE - HEADER)))"
+          if [ $((CLINE - HEADER)) -le 20 ]; then
+            echo "::error::test setup invalid: changelog_file is not far enough below the header"
+            exit 1
+          fi
+          echo "[OK] changelog_file sits $((CLINE - HEADER)) lines below the header (> 20)"
+
+      - name: Clean up repository tags
+        run: git tag -l | xargs -r git tag -d
+
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
+
+      - name: Normalize local branch to main (dispatch-testability)
+        shell: bash
+        run: |
+          git checkout -B main
+          git config push.default current
+
+      - name: Create initial commit with a prior tag
+        run: |
+          git config user.name "Test Bot"
+          git config user.email "test@example.com"
+
+          git add pyproject.toml uv.lock docs/change-log.md
+          git commit -m "chore: initial commit"
+          git tag 0.1.0
+          git push origin main
+          git push origin 0.1.0
+
+          echo "feature" > feature.py
+          git add feature.py
+          git commit -m "feat: trigger a minor bump"
+          git push origin main
+
+      - name: Run release action
+        uses: ./actions/release/github
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          increment: 'minor'
+          prerelease-type: 'none'
+          package-manager: 'uv'
+          python-version: '3.12'
+          install-groups: 'groups: dev docs'
+          skip-github-release: 'true'
+
+      - name: Verify the release used the custom changelog, not the CHANGELOG.md default
+        run: |
+          # The action must have found docs/change-log.md. If detection had fallen
+          # back to CHANGELOG.md the validate step would have failed the job, and no
+          # CHANGELOG.md should exist.
+          if [ -f CHANGELOG.md ]; then
+            echo "::error::CHANGELOG.md exists — detection fell back to the default"
+            exit 1
+          fi
+          if ! git rev-parse 0.2.0 >/dev/null 2>&1; then
+            echo "::error::tag 0.2.0 was not created"
+            git tag -l
+            exit 1
+          fi
+          if ! grep -q "0.2.0" docs/change-log.md; then
+            echo "::error::docs/change-log.md was not updated with the 0.2.0 entry"
+            cat docs/change-log.md
+            exit 1
+          fi
+          echo "[OK] release found changelog_file far below the header; docs/change-log.md updated"

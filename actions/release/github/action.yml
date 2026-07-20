@@ -240,7 +240,18 @@ runs:
 
         CHANGELOG_FILE=""
         if [ -f "pyproject.toml" ]; then
-          CHANGELOG_FILE=$(grep -A 20 "^\[tool\.commitizen\]" pyproject.toml | grep "^changelog_file" | head -1 | sed 's/.*=\s*"\(.*\)"/\1/' || true)
+          # Read changelog_file from the [tool.commitizen] section, section-aware:
+          # scan from the header to the next "[...]" table so the key is found no
+          # matter how far below the header it sits (e.g. after a long version_files
+          # array). match() grabs the first double-quoted value, which also drops
+          # any inline "# comment". Empty result falls back to CHANGELOG.md below.
+          CHANGELOG_FILE=$(awk '
+            /^[[:space:]]*\[tool\.commitizen\][[:space:]]*$/ { inblock = 1; next }
+            inblock && /^[[:space:]]*\[/ { exit }
+            inblock && /^[[:space:]]*changelog_file[[:space:]]*=/ && match($0, /"[^"]*"/) {
+              print substr($0, RSTART + 1, RLENGTH - 2); exit
+            }
+          ' pyproject.toml 2>/dev/null || true)
         fi
 
         # Default to CHANGELOG.md if not found
@@ -303,7 +314,18 @@ runs:
         # Read changelog_file from commitizen config (needed for recovery path)
         CHANGELOG_FILE=""
         if [ -f "pyproject.toml" ]; then
-          CHANGELOG_FILE=$(grep -A 20 "^\[tool\.commitizen\]" pyproject.toml | grep "^changelog_file" | head -1 | sed 's/.*=\s*"\(.*\)"/\1/' || true)
+          # Read changelog_file from the [tool.commitizen] section, section-aware:
+          # scan from the header to the next "[...]" table so the key is found no
+          # matter how far below the header it sits (e.g. after a long version_files
+          # array). match() grabs the first double-quoted value, which also drops
+          # any inline "# comment". Empty result falls back to CHANGELOG.md below.
+          CHANGELOG_FILE=$(awk '
+            /^[[:space:]]*\[tool\.commitizen\][[:space:]]*$/ { inblock = 1; next }
+            inblock && /^[[:space:]]*\[/ { exit }
+            inblock && /^[[:space:]]*changelog_file[[:space:]]*=/ && match($0, /"[^"]*"/) {
+              print substr($0, RSTART + 1, RLENGTH - 2); exit
+            }
+          ' pyproject.toml 2>/dev/null || true)
         fi
         if [ -z "$CHANGELOG_FILE" ]; then
           CHANGELOG_FILE="CHANGELOG.md"
