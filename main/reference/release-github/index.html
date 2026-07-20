@@ -1300,10 +1300,11 @@
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="nt">prerelease-type</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;none&#39;</span>
 <a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="nt">draft</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;false&#39;</span>
 <a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;uv&#39;</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.12&#39;</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="nt">install-groups</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;groups:</span><span class="nv"> </span><span class="s">docs</span><span class="nv"> </span><span class="s">dev&#39;</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">    </span><span class="nt">config-file</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&#39;</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">    </span><span class="nt">skip-github-release</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;false&#39;</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="nt">package-manager-version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;latest&#39;</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.12&#39;</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">    </span><span class="nt">install-groups</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;groups:</span><span class="nv"> </span><span class="s">docs</span><span class="nv"> </span><span class="s">dev&#39;</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">    </span><span class="nt">config-file</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&#39;</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">    </span><span class="nt">skip-github-release</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;false&#39;</span>
 </code></pre></div>
 <h2 id="inputs">Inputs<a class="headerlink" href="#inputs" title="Permanent link">&para;</a></h2>
 <table>
@@ -1345,6 +1346,12 @@
 <td>Package manager to use for setting up Python environment before release</td>
 <td style="text-align: center;">No</td>
 <td><code>uv</code></td>
+</tr>
+<tr>
+<td><code>package-manager-version</code></td>
+<td>Version of the package manager (uv or pixi) to install, forwarded to the selected python-setup action's <code>version</code> input</td>
+<td style="text-align: center;">No</td>
+<td><code>latest</code></td>
 </tr>
 <tr>
 <td><code>python-version</code></td>

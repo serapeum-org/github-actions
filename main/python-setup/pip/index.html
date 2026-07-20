@@ -1137,10 +1137,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#pep-735-support-and-warnings" class="md-nav__link">
+  <a href="#pep-735-support-and-errors" class="md-nav__link">
     <span class="md-ellipsis">
       
-        PEP 735 Support and Warnings
+        PEP 735 Support and Errors
       
     </span>
   </a>
@@ -2601,10 +2601,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#pep-735-support-and-warnings" class="md-nav__link">
+  <a href="#pep-735-support-and-errors" class="md-nav__link">
     <span class="md-ellipsis">
       
-        PEP 735 Support and Warnings
+        PEP 735 Support and Errors
       
     </span>
   </a>
@@ -3108,9 +3108,14 @@
 - Legacy format (still works): <code>'dev test'</code> (interpreted as extras for backward compatibility)</p>
 <p><strong>Behavior</strong>:
 - Optional dependencies (extras) use <code>pip install .[extra1,extra2]</code>
-- Dependency groups use <code>pip install --dependency-groups group1,group2</code> (requires pip with PEP 735 support)
-- If pip doesn't support <code>--dependency-groups</code>, a warning is shown and only extras are installed</p>
+- Dependency groups use <code>pip install . --group group1 --group group2</code> (requires pip &gt;= 25.1 for PEP 735 support)
+- If pip doesn't support <code>--group</code>, the action fails with an error instead of silently skipping the requested groups</p>
 <p>If <code>install-groups</code> is empty and <code>pyproject.toml</code> exists, runs <code>pip install .</code> (installs only core dependencies).</p>
+<p><strong>Breaking change (<code>pip/v1</code>)</strong>: Requesting dependency groups (<code>groups: ...</code>) on pip older than 25.1 now fails the
+job (<code>exit 1</code>) instead of emitting a warning and installing only core + extras. Upgrade the runner's pip to</p>
+<blockquote>
+<p>= 25.1, or use the <code>uv</code> action, which has native PEP 735 support.</p>
+</blockquote>
 <h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
 <h3 id="1-cache-validation">1. Cache Validation<a class="headerlink" href="#1-cache-validation" title="Permanent link">&para;</a></h3>
 <p>The action validates cache requirements <strong>before</strong> running <code>actions/setup-python@v6</code>:</p>
@@ -3301,18 +3306,14 @@
 <a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
 <a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a><span class="w">          </span><span class="no">python -c &quot;import requests; print(&#39;[OK] Core dependencies installed&#39;)&quot;</span>
 <a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a><span class="w">          </span><span class="no">python -c &quot;import boto3; print(&#39;[OK] AWS extra installed&#39;)&quot;</span>
-<a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a><span class="w">          </span><span class="no"># Dev group depends on pip version</span>
-<a id="__codelineno-15-17" name="__codelineno-15-17" href="#__codelineno-15-17"></a><span class="w">          </span><span class="no">if python -c &quot;import httpx&quot; 2&gt;/dev/null; then</span>
-<a id="__codelineno-15-18" name="__codelineno-15-18" href="#__codelineno-15-18"></a><span class="w">            </span><span class="no">echo &quot;[OK] Dev group installed (pip supports --dependency-groups)&quot;</span>
-<a id="__codelineno-15-19" name="__codelineno-15-19" href="#__codelineno-15-19"></a><span class="w">          </span><span class="no">else</span>
-<a id="__codelineno-15-20" name="__codelineno-15-20" href="#__codelineno-15-20"></a><span class="w">            </span><span class="no">echo &quot;[OK] Dev group not installed (pip version limitation)&quot;</span>
-<a id="__codelineno-15-21" name="__codelineno-15-21" href="#__codelineno-15-21"></a><span class="w">          </span><span class="no">fi</span>
+<a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a><span class="w">          </span><span class="no"># Requested dev group is guaranteed installed (the action fails otherwise)</span>
+<a id="__codelineno-15-17" name="__codelineno-15-17" href="#__codelineno-15-17"></a><span class="w">          </span><span class="no">python -c &quot;import httpx; print(&#39;[OK] Dev group installed&#39;)&quot;</span>
 </code></pre></div></p>
 <p><strong>What Happens</strong>:
 - Core dependencies: <code>requests</code> (always installed)
 - Optional dependencies (extras): <code>boto3</code>, <code>s3fs</code> (always works with pip)
-- Dependency groups: <code>httpx</code>, <code>pytest</code> (requires pip with PEP 735 support)
-- Shows warning if pip doesn't support <code>--dependency-groups</code></p>
+- Dependency groups: <code>httpx</code>, <code>pytest</code> (requires pip &gt;= 25.1 for PEP 735 support)
+- Fails with an error if pip doesn't support <code>--group</code></p>
 <h3 id="scenario-8-poetrypipenv-projects">Scenario 8: Poetry/Pipenv Projects<a class="headerlink" href="#scenario-8-poetrypipenv-projects" title="Permanent link">&para;</a></h3>
 <p><strong>Use Case</strong>: Using alternative package managers with their specific lock files.</p>
 <p><strong>With Poetry:</strong>
@@ -3564,12 +3565,12 @@
 </li>
 <li>Part of PEP 735 standard (<strong>newer, limited support</strong>)</li>
 <li>Development-only, <strong>not published</strong> with package</li>
-<li>Installed using <code>pip install --dependency-groups group</code> (requires recent pip)</li>
+<li>Installed using <code>pip install . --group &lt;name&gt;</code> (requires pip &gt;= 25.1)</li>
 <li>Use prefix <code>groups:</code> in this action</li>
-<li><strong>May show warning</strong> if pip version doesn't support PEP 735</li>
+<li><strong>The action fails</strong> if pip version doesn't support PEP 735 (<code>--group</code>)</li>
 </ol>
 <p><strong>Recommendation</strong>: Use optional dependencies (extras) for maximum compatibility. Use dependency groups only if you need PEP 735 features.</p>
-<p><strong>Note</strong>: If your pip version doesn't support <code>--dependency-groups</code>, the action will show a warning and suggest using the uv action instead, which has full PEP 735 support.</p>
+<p><strong>Note</strong>: If your pip version doesn't support the <code>--group</code> flag (pip &lt; 25.1), the action fails with an error pointing you at pip &gt;= 25.1 or the uv action, which has full PEP 735 support. It will not silently skip the requested groups.</p>
 <h3 id="understanding-optional-dependencies-extras">Understanding Optional Dependencies (Extras)<a class="headerlink" href="#understanding-optional-dependencies-extras" title="Permanent link">&para;</a></h3>
 <p><code>pyproject.toml</code> supports optional dependency groups using extras:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="k">[project]</span>
@@ -3622,23 +3623,23 @@
 </tr>
 <tr>
 <td><code>'groups: lint'</code></td>
-<td><code>pip install .</code> then <code>pip install --dependency-groups lint</code> (if supported)</td>
+<td><code>pip install .</code> then <code>pip install . --group lint</code></td>
 <td>Core + lint group</td>
 </tr>
 <tr>
 <td><code>'groups: lint build, extras: dev'</code></td>
-<td><code>pip install .[dev]</code> then <code>pip install --dependency-groups lint,build</code></td>
+<td><code>pip install .[dev]</code> then <code>pip install . --group lint --group build</code></td>
 <td>Core + dev extras + lint/build groups</td>
 </tr>
 <tr>
 <td><code>'extras: aws viz, groups: dev'</code></td>
-<td><code>pip install .[aws,viz]</code> then <code>pip install --dependency-groups dev</code></td>
+<td><code>pip install .[aws,viz]</code> then <code>pip install . --group dev</code></td>
 <td>Core + AWS/viz extras + dev group</td>
 </tr>
 </tbody>
 </table>
-<h3 id="pep-735-support-and-warnings">PEP 735 Support and Warnings<a class="headerlink" href="#pep-735-support-and-warnings" title="Permanent link">&para;</a></h3>
-<p><strong>When pip supports <code>--dependency-groups</code>:</strong>
+<h3 id="pep-735-support-and-errors">PEP 735 Support and Errors<a class="headerlink" href="#pep-735-support-and-errors" title="Permanent link">&para;</a></h3>
+<p><strong>When pip supports <code>--group</code> (pip &gt;= 25.1):</strong>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>=== Installation Summary ===
 <a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>✓ Dependency groups will be installed: dev test
 <a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>✓ Optional dependencies (extras) will be installed: aws
@@ -3646,13 +3647,14 @@
 <a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a>==========================
 <a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a>
 <a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a>Installing package with optional dependencies: pip install .[aws]
-<a id="__codelineno-31-8" name="__codelineno-31-8" href="#__codelineno-31-8"></a>Installing dependency groups: pip install --dependency-groups dev,test
+<a id="__codelineno-31-8" name="__codelineno-31-8" href="#__codelineno-31-8"></a>Installing dependency groups: pip install . --group dev --group test
 </code></pre></div></p>
-<p><strong>When pip doesn't support <code>--dependency-groups</code>:</strong>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>Warning: pip version does not support --dependency-groups flag (PEP 735). Dependency groups will be ignored: dev test
-<a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>Warning: Please use a newer version of pip or consider using the uv action instead.
+<p><strong>When pip doesn't support <code>--group</code> (pip &lt; 25.1):</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>Error: pip 24.0 does not support the --group flag (PEP 735 dependency groups).
+<a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>Error: Dependency groups were explicitly requested (dev,test) but cannot be installed, so this step is failing instead of silently skipping them.
+<a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>Error: Upgrade to pip &gt;= 25.1 (which ships the --group option), or use the uv action which has native PEP 735 support.
 </code></pre></div></p>
-<p>The action will still install core dependencies and extras successfully, but dependency groups will be skipped.</p>
+<p>Because the requested groups cannot be honored, the action <strong>fails the job</strong> rather than silently skipping them. Core dependencies and extras are installed before this check, but the step exits non-zero so the missing groups cannot go unnoticed.</p>
 <h3 id="common-patterns">Common Patterns<a class="headerlink" href="#common-patterns" title="Permanent link">&para;</a></h3>
 <p><strong>Test Workflow (using extras for compatibility)</strong>:
 <div class="highlight"><pre><span></span><code><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="nt">jobs</span><span class="p">:</span>
@@ -3712,7 +3714,7 @@
 <a id="__codelineno-37-8" name="__codelineno-37-8" href="#__codelineno-37-8"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python app.py</span>
 </code></pre></div></p>
 <h3 id="migrating-from-dependency-groups-to-extras">Migrating from Dependency Groups to Extras<a class="headerlink" href="#migrating-from-dependency-groups-to-extras" title="Permanent link">&para;</a></h3>
-<p>If you encounter warnings about unsupported <code>--dependency-groups</code>, consider:</p>
+<p>If your pip is older than 25.1 and the action fails on unsupported <code>--group</code>, consider:</p>
 <p><strong>Option 1: Use optional dependencies (extras) instead</strong>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a><span class="c1"># Before (dependency groups - limited support)</span>
 <a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a><span class="k">[dependency-groups]</span>
@@ -4038,11 +4040,10 @@
 </code></pre></div></p>
 <h3 id="expected-test-behaviors">Expected Test Behaviors<a class="headerlink" href="#expected-test-behaviors" title="Permanent link">&para;</a></h3>
 <p><strong>PEP 735 Support Detection:</strong>
-Tests verify that when pip doesn't support <code>--dependency-groups</code>:
-- Warning is shown
-- Core dependencies still install
-- Optional dependencies (extras) still work
-- Workflow doesn't fail</p>
+Tests verify that when dependency groups are requested (on pip &gt;= 25.1, as used by CI runners):
+- The requested groups are installed and asserted present
+- Core dependencies and optional dependencies (extras) install
+- If pip lacked <code>--group</code>, the action would fail the job rather than skip the groups</p>
 <p><strong>Cache Validation:</strong>
 Tests verify that:
 - Cache enabled without dependency files → fails with clear error
