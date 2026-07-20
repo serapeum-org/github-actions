@@ -2010,10 +2010,15 @@ jobs:
 
       - name: Rewrite commitizen config so changelog_file is far below the header
         run: |
-          # test-basic-uv keeps [tool.commitizen] as the last section, so drop it
-          # and append a version that pushes changelog_file well past 20 lines
-          # below the header (reproducing the earthlens layout).
-          sed -i '/^\[tool\.commitizen\]/,$d' pyproject.toml
+          # Remove ONLY the existing [tool.commitizen] section (header + body up to
+          # the next table) so this does not depend on it being the last section of
+          # the shared fixture. Then append a version that pushes changelog_file well
+          # past 20 lines below the header (reproducing the earthlens layout).
+          awk '
+            /^\[tool\.commitizen\]/ { skip = 1; next }
+            skip && /^\[/ { skip = 0 }
+            !skip { print }
+          ' pyproject.toml > pyproject.toml.tmp && mv pyproject.toml.tmp pyproject.toml
           {
             echo '[tool.commitizen]'
             echo 'name = "cz_conventional_commits"'
