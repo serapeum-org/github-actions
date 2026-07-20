@@ -72,7 +72,7 @@ jobs:
 | `prerelease-type` | Prerelease type: `none`, `alpha`, `beta`, `rc` | No | `none` |
 | `draft` | Create as draft release (`true`/`false`) | No | `false` |
 | `package-manager` | Package manager: `pip`, `uv`, `pixi` | No | `uv` |
-| `package-manager-version` | Version of the `uv`/`pixi` package manager (forwarded to its `version` input); ignored for `pip`. Inert until the pinned `uv`/`pixi` setup actions are re-released with the `version` input. | No | `latest` |
+| `package-manager-version` | Version of the `uv`/`pixi` package manager (forwarded to its `version` input); ignored for `pip`. | No | `latest` |
 | `python-version` | Python version to install | No | `3.12` |
 | `install-groups` | Dependency groups to install (see below) | No | `groups: docs dev` |
 | `config-file` | Path to a per-package `pyproject.toml` (monorepo use) | No | `''` (root) |

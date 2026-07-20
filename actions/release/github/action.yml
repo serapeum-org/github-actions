@@ -181,14 +181,14 @@ runs:
 
     - name: Set up Python environment (pip)
       if: ${{ inputs.package-manager == 'pip' }}
-      uses: serapeum-org/github-actions/actions/python-setup/pip@pip/v1
+      uses: serapeum-org/github-actions/actions/python-setup/pip@pip/v1.1.0
       with:
         python-version: ${{ inputs.python-version }}
         install-groups: ${{ inputs.install-groups }}
 
     - name: Set up Python environment (uv)
       if: ${{ inputs.package-manager == 'uv' }}
-      uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1
+      uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1.2.0
       with:
         python-version: ${{ inputs.python-version }}
         install-groups: ${{ inputs.install-groups }}
@@ -196,7 +196,7 @@ runs:
 
     - name: Set up Python environment (pixi)
       if: ${{ inputs.package-manager == 'pixi' }}
-      uses: serapeum-org/github-actions/actions/python-setup/pixi@pixi/v1
+      uses: serapeum-org/github-actions/actions/python-setup/pixi@pixi/v1.2.0
       with:
         environments: ${{ inputs.install-groups }}
         activate-environment: ${{ inputs.install-groups }}

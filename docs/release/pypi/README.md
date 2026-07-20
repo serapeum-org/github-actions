@@ -201,9 +201,9 @@ include = [
 
 1. **Display configuration** — Logs inputs for debugging (credentials are never printed)
 2. **Set up Python environment** — Delegates to the appropriate `python-setup` action:
-   - `pip` → `actions/python-setup/pip@pip/v1`
-   - `uv` → `actions/python-setup/uv@uv/v1`
-   - `pixi` → `actions/python-setup/pixi@pixi/v1`
+   - `pip` → `actions/python-setup/pip@pip/v1.1.0`
+   - `uv` → `actions/python-setup/uv@uv/v1.2.0`
+   - `pixi` → `actions/python-setup/pixi@pixi/v1.2.0`
 3. **Install build tools** (pip only) — `pip install build twine`
 4. **Build package** — Produces `dist/*.whl` and `dist/*.tar.gz`
 5. **Publish to PyPI** — Uploads all artifacts in `dist/` via twine (skipped when `skip-publish='true'`)
