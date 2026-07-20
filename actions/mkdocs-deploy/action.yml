@@ -239,9 +239,16 @@ runs:
       env:
         ACTIONS_DEPLOY_TOKEN: ${{ inputs.deploy-token }}
         PACKAGE_MANAGER: ${{ inputs.package-manager }}
+        MIKE_ALIAS: ${{ inputs.mike-alias }}
       run: |
         echo "::group::Deploying release documentation"
         SCRIPT="${{ github.action_path }}/scripts/mike_push.sh"
-        bash "$SCRIPT" deploy --push --update-aliases ${RELEASE_TAG_VERSION} ${{ inputs.mike-alias }}
-        bash "$SCRIPT" set-default --push ${{ inputs.mike-alias }}
+        if [ -n "$RELEASE_TAG_VERSION" ]; then
+          bash "$SCRIPT" deploy --push --update-aliases "$RELEASE_TAG_VERSION" "$MIKE_ALIAS"
+        else
+          # No resolvable release tag (e.g. a simulated/dispatch release):
+          # deploy the alias as the version, matching the prior behaviour.
+          bash "$SCRIPT" deploy --push "$MIKE_ALIAS"
+        fi
+        bash "$SCRIPT" set-default --push "$MIKE_ALIAS"
         echo "::endgroup::"
