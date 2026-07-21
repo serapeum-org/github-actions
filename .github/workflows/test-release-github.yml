@@ -5,6 +5,10 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# contents: read is sufficient ONLY because every job below invokes
+# ./actions/release/github with skip-github-release: 'true' (the GitHub Releases
+# API is never called) and all pushes target the local fake remote. A job that
+# creates a real GitHub release would need contents: write.
 permissions:
   contents: read
 
