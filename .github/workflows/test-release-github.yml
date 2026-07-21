@@ -1121,9 +1121,14 @@ jobs:
             /^[[:space:]]*\[tool\.commitizen\][[:space:]]*(#.*)?$/ { inblock = 1; next }
             inblock && /^[[:space:]]*\[/ { exit }
             inblock && /^[[:space:]]*changelog_file[[:space:]]*=/ {
-              if (match($0, /"[^"]*"/)) { print substr($0, RSTART + 1, RLENGTH - 2); exit }
-              s = $0; a = index(s, q)
-              if (a > 0) { rest = substr(s, a + 1); b = index(rest, q); if (b > 0) { print substr(rest, 1, b - 1); exit } }
+              rhs = $0
+              sub(/^[^=]*=[[:space:]]*/, "", rhs)   # rhs now starts at the value
+              qc = substr(rhs, 1, 1)                 # opening quote char of the value
+              if (qc == "\"" || qc == q) {           # anchor to the value quote, not any quote in a comment
+                rest = substr(rhs, 2); p = index(rest, qc)
+                if (p > 0) { print substr(rest, 1, p - 1); exit }
+              }
+              exit
             }
           ' pyproject.toml || true)
           if [ -z "$CHANGELOG_FILE" ]; then
@@ -1299,9 +1304,14 @@ jobs:
             /^[[:space:]]*\[tool\.commitizen\][[:space:]]*(#.*)?$/ { inblock = 1; next }
             inblock && /^[[:space:]]*\[/ { exit }
             inblock && /^[[:space:]]*changelog_file[[:space:]]*=/ {
-              if (match($0, /"[^"]*"/)) { print substr($0, RSTART + 1, RLENGTH - 2); exit }
-              s = $0; a = index(s, q)
-              if (a > 0) { rest = substr(s, a + 1); b = index(rest, q); if (b > 0) { print substr(rest, 1, b - 1); exit } }
+              rhs = $0
+              sub(/^[^=]*=[[:space:]]*/, "", rhs)   # rhs now starts at the value
+              qc = substr(rhs, 1, 1)                 # opening quote char of the value
+              if (qc == "\"" || qc == q) {           # anchor to the value quote, not any quote in a comment
+                rest = substr(rhs, 2); p = index(rest, qc)
+                if (p > 0) { print substr(rest, 1, p - 1); exit }
+              }
+              exit
             }
           ' pyproject.toml || true)
           if [ -z "$CHANGELOG_FILE" ]; then
@@ -1434,9 +1444,14 @@ jobs:
             /^[[:space:]]*\[tool\.commitizen\][[:space:]]*(#.*)?$/ { inblock = 1; next }
             inblock && /^[[:space:]]*\[/ { exit }
             inblock && /^[[:space:]]*changelog_file[[:space:]]*=/ {
-              if (match($0, /"[^"]*"/)) { print substr($0, RSTART + 1, RLENGTH - 2); exit }
-              s = $0; a = index(s, q)
-              if (a > 0) { rest = substr(s, a + 1); b = index(rest, q); if (b > 0) { print substr(rest, 1, b - 1); exit } }
+              rhs = $0
+              sub(/^[^=]*=[[:space:]]*/, "", rhs)   # rhs now starts at the value
+              qc = substr(rhs, 1, 1)                 # opening quote char of the value
+              if (qc == "\"" || qc == q) {           # anchor to the value quote, not any quote in a comment
+                rest = substr(rhs, 2); p = index(rest, qc)
+                if (p > 0) { print substr(rest, 1, p - 1); exit }
+              }
+              exit
             }
           ' pyproject.toml || true)
           if [ -z "$CHANGELOG_FILE" ]; then

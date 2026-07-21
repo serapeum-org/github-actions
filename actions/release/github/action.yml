@@ -243,17 +243,25 @@ runs:
           # Read changelog_file from the [tool.commitizen] section, section-aware:
           # scan from the header to the next "[...]" table so the key is found no
           # matter how far below the header it sits (e.g. after a long version_files
-          # array). Tolerates a trailing comment on the header and accepts either a
-          # double- or single-quoted value; an inline "# comment" after the value is
-          # dropped. Empty result falls back to CHANGELOG.md below. `q` carries a
-          # literal single quote so the awk program needs no embedded single quote.
+          # array). Tolerates a trailing comment on the header and accepts a double-
+          # or single-quoted value, anchoring extraction to the value's own opening
+          # quote so an inline "# comment" (even one containing quotes) is ignored.
+          # Empty result falls back to CHANGELOG.md below. `q` carries a literal
+          # single quote so the awk program needs no embedded single quote. Assumes
+          # the ordinary commitizen layout: scalar keys, no multi-line string or
+          # nested-array key that starts a line with "[" ahead of changelog_file.
           CHANGELOG_FILE=$(awk -v q="'" '
             /^[[:space:]]*\[tool\.commitizen\][[:space:]]*(#.*)?$/ { inblock = 1; next }
             inblock && /^[[:space:]]*\[/ { exit }
             inblock && /^[[:space:]]*changelog_file[[:space:]]*=/ {
-              if (match($0, /"[^"]*"/)) { print substr($0, RSTART + 1, RLENGTH - 2); exit }
-              s = $0; a = index(s, q)
-              if (a > 0) { rest = substr(s, a + 1); b = index(rest, q); if (b > 0) { print substr(rest, 1, b - 1); exit } }
+              rhs = $0
+              sub(/^[^=]*=[[:space:]]*/, "", rhs)   # rhs now starts at the value
+              qc = substr(rhs, 1, 1)                 # opening quote char of the value
+              if (qc == "\"" || qc == q) {           # anchor to the value quote, not any quote in a comment
+                rest = substr(rhs, 2); p = index(rest, qc)
+                if (p > 0) { print substr(rest, 1, p - 1); exit }
+              }
+              exit
             }
           ' pyproject.toml || true)
         fi
@@ -321,17 +329,25 @@ runs:
           # Read changelog_file from the [tool.commitizen] section, section-aware:
           # scan from the header to the next "[...]" table so the key is found no
           # matter how far below the header it sits (e.g. after a long version_files
-          # array). Tolerates a trailing comment on the header and accepts either a
-          # double- or single-quoted value; an inline "# comment" after the value is
-          # dropped. Empty result falls back to CHANGELOG.md below. `q` carries a
-          # literal single quote so the awk program needs no embedded single quote.
+          # array). Tolerates a trailing comment on the header and accepts a double-
+          # or single-quoted value, anchoring extraction to the value's own opening
+          # quote so an inline "# comment" (even one containing quotes) is ignored.
+          # Empty result falls back to CHANGELOG.md below. `q` carries a literal
+          # single quote so the awk program needs no embedded single quote. Assumes
+          # the ordinary commitizen layout: scalar keys, no multi-line string or
+          # nested-array key that starts a line with "[" ahead of changelog_file.
           CHANGELOG_FILE=$(awk -v q="'" '
             /^[[:space:]]*\[tool\.commitizen\][[:space:]]*(#.*)?$/ { inblock = 1; next }
             inblock && /^[[:space:]]*\[/ { exit }
             inblock && /^[[:space:]]*changelog_file[[:space:]]*=/ {
-              if (match($0, /"[^"]*"/)) { print substr($0, RSTART + 1, RLENGTH - 2); exit }
-              s = $0; a = index(s, q)
-              if (a > 0) { rest = substr(s, a + 1); b = index(rest, q); if (b > 0) { print substr(rest, 1, b - 1); exit } }
+              rhs = $0
+              sub(/^[^=]*=[[:space:]]*/, "", rhs)   # rhs now starts at the value
+              qc = substr(rhs, 1, 1)                 # opening quote char of the value
+              if (qc == "\"" || qc == q) {           # anchor to the value quote, not any quote in a comment
+                rest = substr(rhs, 2); p = index(rest, qc)
+                if (p > 0) { print substr(rest, 1, p - 1); exit }
+              }
+              exit
             }
           ' pyproject.toml || true)
         fi
