@@ -227,11 +227,8 @@ runs:
         PACKAGE_MANAGER: ${{ inputs.package-manager }}
       run: |
         echo "::group::Deploying pull request documentation"
-        if [ "$PACKAGE_MANAGER" = "pip" ]; then
-          mike deploy --push develop
-        else
-          $PACKAGE_MANAGER run mike deploy --push develop
-        fi
+        SCRIPT="${{ github.action_path }}/scripts/mike_push.sh"
+        bash "$SCRIPT" deploy --push develop
         echo "::endgroup::"
 
     - name: Deploy to GitHub Pages (Main)
@@ -242,13 +239,9 @@ runs:
         PACKAGE_MANAGER: ${{ inputs.package-manager }}
       run: |
         echo "::group::Deploying main branch documentation"
-        if [ "$PACKAGE_MANAGER" = "pip" ]; then
-          mike deploy --push main
-          mike set-default --push main
-        else
-          $PACKAGE_MANAGER run mike deploy --push main
-          $PACKAGE_MANAGER run mike set-default --push main
-        fi
+        SCRIPT="${{ github.action_path }}/scripts/mike_push.sh"
+        bash "$SCRIPT" deploy --push main
+        bash "$SCRIPT" set-default --push main
         echo "::endgroup::"
 
     - name: Deploy to GitHub Pages (Release)
@@ -260,11 +253,11 @@ runs:
         MIKE_ALIAS: ${{ inputs.mike-alias }}
       run: |
         echo "::group::Deploying release documentation"
-        if [ "$PACKAGE_MANAGER" = "pip" ]; then
-          mike deploy --push --update-aliases "${RELEASE_TAG_VERSION}" "$MIKE_ALIAS"
-          mike set-default --push "$MIKE_ALIAS"
-        else
-          $PACKAGE_MANAGER run mike deploy --push --update-aliases "${RELEASE_TAG_VERSION}" "$MIKE_ALIAS"
-          $PACKAGE_MANAGER run mike set-default --push "$MIKE_ALIAS"
-        fi
+        # A resolvable release tag is guaranteed here: the "Set release tag" step
+        # fails fast (exit 1) when neither release-tag nor github.event.release.tag_name
+        # is set, so this deploy always has a real version. mike_push.sh handles the
+        # package-manager dispatch and retries the push on a concurrent gh-pages update.
+        SCRIPT="${{ github.action_path }}/scripts/mike_push.sh"
+        bash "$SCRIPT" deploy --push --update-aliases "$RELEASE_TAG_VERSION" "$MIKE_ALIAS"
+        bash "$SCRIPT" set-default --push "$MIKE_ALIAS"
         echo "::endgroup::"

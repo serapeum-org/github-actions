@@ -950,3 +950,196 @@ jobs:
         run: |
           echo "package-manager-version test completed for ${{ matrix.package-manager }}"
 
+  test-mike-push-race-recovery:
+    name: Test mike deploy recovers from a concurrent gh-pages push
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
+
+      - name: Copy notebook-free fixture (uv)
+        run: |
+          cp tests/data/mkdocs-deploy/test-pull-request-pip-uv/pyproject.toml .
+          cp tests/data/mkdocs-deploy/test-pull-request-pip-uv/uv.lock .
+          cp tests/data/mkdocs-deploy/test-pull-request-pip-uv/mkdocs.yml .
+          cp -r tests/data/mkdocs-deploy/test-pull-request-pip-uv/docs .
+
+      - name: Advance the remote gh-pages out-of-band (simulate a concurrent push)
+        run: |
+          # Push a commit to the fake remote's gh-pages from a separate clone, so
+          # this workspace's local/tracking gh-pages ref is now stale. mike never
+          # fetches, so without the fetch-reset-retry fix its fast-forward-only
+          # push would be rejected non-fast-forward and the deploy would fail.
+          adv="$(mktemp -d)"
+          git clone --branch gh-pages file:///tmp/fake-remote.git "$adv/repo"
+          cd "$adv/repo"
+          git config user.email "concurrent@example.com"
+          git config user.name "Concurrent Pusher"
+          echo "landed on gh-pages while a deploy was in flight" > OUT_OF_BAND.txt
+          git add OUT_OF_BAND.txt
+          git commit -m "concurrent gh-pages push"
+          git push origin gh-pages
+
+      - name: Deploy (must recover from the stale local tip)
+        uses: ./actions/mkdocs-deploy
+        with:
+          trigger: 'pull_request'
+          package-manager: 'uv'
+          install-groups: 'groups: docs'
+          deploy-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Assert the deploy recovered and preserved the concurrent push
+        run: |
+          check="$(mktemp -d)"
+          git clone --branch gh-pages file:///tmp/fake-remote.git "$check/repo"
+          cd "$check/repo"
+          echo "=== gh-pages history ==="
+          git log --oneline
+          # 1) The deploy built ON TOP of the concurrent push (merged, not clobbered).
+          if ! git log --oneline | grep -q "concurrent gh-pages push"; then
+            echo "FAIL: the concurrent gh-pages push was lost (deploy did not build on the current tip)"
+            exit 1
+          fi
+          # 2) mike actually published the develop version.
+          if ! git show HEAD:versions.json | grep -q "develop"; then
+            echo "FAIL: develop version missing from versions.json"
+            exit 1
+          fi
+          echo "OK: deploy recovered from a stale local gh-pages and preserved the concurrent push"
+
+  test-mike-push-retry-unit:
+    name: Test mike_push.sh retry loop (stubbed mike)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Exercise the retry loop with a stubbed mike
+        run: |
+          SCRIPT="$PWD/actions/mkdocs-deploy/scripts/mike_push.sh"
+          work="$(mktemp -d)"
+          git init -q --bare "$work/remote.git"
+          git init -q "$work/repo"
+          cd "$work/repo"
+          git config user.email t@e.com
+          git config user.name t
+          git checkout -q --orphan gh-pages
+          echo seed > README.md
+          git add README.md
+          git -c commit.gpgsign=false commit -q -m seed
+          git remote add origin "$work/remote.git"
+          git push -q origin gh-pages
+          git checkout -q -b main
+          mkdir -p bin
+          fail=0
+
+          # Runs the helper with a fast, bounded retry and reports its exit code.
+          run_case() {
+            rm -f /tmp/mc
+            if PATH="$PWD/bin:$PATH" PACKAGE_MANAGER=pip MIKE_MAX_ATTEMPTS=3 MIKE_RETRY_BACKOFF=0 \
+                 bash "$SCRIPT" deploy --push develop > case.log 2>&1; then echo 0; else echo $?; fi
+          }
+
+          # Case 1: a non-fast-forward rejection then success -> retries, exit 0, 2 calls.
+          printf '%s\n' '#!/usr/bin/env bash' \
+            'c=$(cat /tmp/mc 2>/dev/null || echo 0); c=$((c+1)); echo $c > /tmp/mc' \
+            'if [ "$c" -lt 2 ]; then echo " ! [rejected]    gh-pages -> gh-pages (fetch first)" >&2; echo "error: failed to push some refs to origin" >&2; exit 1; fi' \
+            'echo "mike: deployed"; exit 0' > bin/mike
+          chmod +x bin/mike
+          r=$(run_case); cat case.log
+          if [ "$r" != "0" ] || ! grep -q "lost a gh-pages push race" case.log || [ "$(cat /tmp/mc)" != "2" ]; then
+            echo "FAIL case1 (retry-then-success): exit=$r calls=$(cat /tmp/mc)"; fail=1
+          else echo "OK case1: retried a genuine rejection and succeeded (2 mike calls)"; fi
+
+          # Case 2: a non-push error -> fail fast on the first attempt.
+          printf '%s\n' '#!/usr/bin/env bash' \
+            'c=$(cat /tmp/mc 2>/dev/null || echo 0); c=$((c+1)); echo $c > /tmp/mc' \
+            'echo "error: some non-push failure" >&2; exit 1' > bin/mike
+          chmod +x bin/mike
+          r=$(run_case); cat case.log
+          if [ "$r" = "0" ] || ! grep -q "non-retryable error" case.log || [ "$(cat /tmp/mc)" != "1" ]; then
+            echo "FAIL case2 (fail-fast): exit=$r calls=$(cat /tmp/mc)"; fail=1
+          else echo "OK case2: non-push error failed fast (1 mike call)"; fi
+
+          # Case 2b: an auth/permission push failure — git's generic "failed to
+          # push some refs" with NO non-fast-forward marker — must fail fast, not
+          # be misread as a race and retried (regression guard for is_push_race).
+          printf '%s\n' '#!/usr/bin/env bash' \
+            'c=$(cat /tmp/mc 2>/dev/null || echo 0); c=$((c+1)); echo $c > /tmp/mc' \
+            'echo "remote: Permission to org/repo.git denied." >&2' \
+            'echo "fatal: unable to access: The requested URL returned error: 403" >&2' \
+            'echo "error: failed to push some refs to origin" >&2' \
+            'exit 1' > bin/mike
+          chmod +x bin/mike
+          r=$(run_case); cat case.log
+          if [ "$r" = "0" ] || ! grep -q "non-retryable error" case.log || [ "$(cat /tmp/mc)" != "1" ]; then
+            echo "FAIL case2b (auth failure fails fast): exit=$r calls=$(cat /tmp/mc)"; fail=1
+          else echo "OK case2b: auth failure failed fast without retry (1 mike call)"; fi
+
+          # Case 3: persistent rejection -> exhausts MIKE_MAX_ATTEMPTS, exit 1, 3 calls.
+          printf '%s\n' '#!/usr/bin/env bash' \
+            'c=$(cat /tmp/mc 2>/dev/null || echo 0); c=$((c+1)); echo $c > /tmp/mc' \
+            'echo "error: failed to push some refs (fetch first)" >&2; exit 1' > bin/mike
+          chmod +x bin/mike
+          r=$(run_case); cat case.log
+          if [ "$r" = "0" ] || ! grep -q "still rejected after 3 attempts" case.log || [ "$(cat /tmp/mc)" != "3" ]; then
+            echo "FAIL case3 (give-up): exit=$r calls=$(cat /tmp/mc)"; fail=1
+          else echo "OK case3: persistent rejection gave up after 3 attempts (3 mike calls)"; fi
+
+          # Case 4: first-ever deploy -> no gh-pages on the remote, so
+          # sync_local_branch takes the ls_rc==2 branch (note + continue) and the
+          # stubbed deploy still succeeds.
+          git init -q --bare "$work/empty.git"
+          printf '%s\n' '#!/usr/bin/env bash' 'echo "mike: created gh-pages"; exit 0' > bin/mike
+          chmod +x bin/mike; rm -f /tmp/mc
+          if PATH="$PWD/bin:$PATH" PACKAGE_MANAGER=pip MIKE_REMOTE="$work/empty.git" MIKE_MAX_ATTEMPTS=2 MIKE_RETRY_BACKOFF=0 \
+               bash "$SCRIPT" deploy --push develop > case.log 2>&1; then r=0; else r=$?; fi
+          cat case.log
+          if [ "$r" != "0" ] || ! grep -q "does not exist yet (first deploy)" case.log; then
+            echo "FAIL case4 (first deploy): exit=$r"; fail=1
+          else echo "OK case4: first-deploy path handled (no remote gh-pages)"; fi
+
+          # Case 5: a non-race failure whose log merely mentions "non-fast-forward"
+          # (as build output would) but has no git push-rejection anchor must fail
+          # fast, not be retried (regression guard for is_push_race's scoping).
+          printf '%s\n' '#!/usr/bin/env bash' \
+            'c=$(cat /tmp/mc 2>/dev/null || echo 0); c=$((c+1)); echo $c > /tmp/mc' \
+            'echo "INFO: a docs page mentions non-fast-forward merges"' \
+            'echo "error: mkdocs build failed" >&2' \
+            'exit 1' > bin/mike
+          chmod +x bin/mike
+          r=$(run_case); cat case.log
+          if [ "$r" = "0" ] || ! grep -q "non-retryable error" case.log || [ "$(cat /tmp/mc)" != "1" ]; then
+            echo "FAIL case5 (build-token, no push anchor): exit=$r calls=$(cat /tmp/mc)"; fail=1
+          else echo "OK case5: non-ff token without a push anchor failed fast (1 mike call)"; fi
+
+          # Case 6: is_push_race must match REAL git non-fast-forward output, not
+          # only the hand-written strings above — guards the pattern against
+          # drifting from git's actual wording. Produce a genuine rejection by
+          # pushing a stale ref, replay it from the stub, and assert the helper
+          # treats it as a race (retries) rather than failing fast.
+          real="$(mktemp -d)"
+          git init -q --bare "$real/remote.git"
+          git clone -q "$real/remote.git" "$real/a"
+          ( cd "$real/a"; git config user.email a@e.com; git config user.name a
+            git checkout -q -b gh-pages; echo one > f; git add f
+            git -c commit.gpgsign=false commit -q -m one; git push -q origin gh-pages )
+          git clone -q --branch gh-pages "$real/remote.git" "$real/b"
+          ( cd "$real/a"; echo two > f; git add f
+            git -c commit.gpgsign=false commit -q -m two; git push -q origin gh-pages )
+          ( cd "$real/b"; echo three > g; git add g; git -c commit.gpgsign=false commit -q -m three
+            LC_MESSAGES=C git push origin gh-pages ) > "$real/reject.txt" 2>&1 || true
+          echo "--- real git rejection captured ---"; cat "$real/reject.txt"
+          printf '%s\n' '#!/usr/bin/env bash' "cat '$real/reject.txt' >&2; exit 1" > bin/mike
+          chmod +x bin/mike; rm -f /tmp/mc
+          if PATH="$PWD/bin:$PATH" PACKAGE_MANAGER=pip MIKE_MAX_ATTEMPTS=2 MIKE_RETRY_BACKOFF=0 \
+               bash "$SCRIPT" deploy --push develop > case.log 2>&1; then r=0; else r=$?; fi
+          if ! grep -q "lost a gh-pages push race" case.log; then
+            echo "FAIL case6: is_push_race did not match REAL git non-fast-forward output"; fail=1
+          else echo "OK case6: is_push_race matched real git non-fast-forward output"; fi
+
+          exit $fail
+
