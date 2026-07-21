@@ -450,6 +450,7 @@ runs:
       shell: bash
       env:
         PACKAGE_MANAGER: ${{ inputs.package-manager }}
+        NEW_VERSION: ${{ steps.bump_version.outputs.NEW_VERSION }}
       run: |
         echo "::group::Folding refreshed lockfile into the version-bump commit"
 
@@ -457,8 +458,6 @@ runs:
         # action's WORK_DIR is a sub-package. Always operate at the repo root.
         REPO_ROOT=$(git rev-parse --show-toplevel)
         cd "$REPO_ROOT"
-
-        NEW_VERSION="${{ steps.bump_version.outputs.NEW_VERSION }}"
 
         # Safety gate: only fold when HEAD is the commit the new tag points to.
         # If the bump step's recovery path ran (cz bump --files-only, which does
@@ -519,6 +518,8 @@ runs:
 
     - name: Push changes and tags
       shell: bash
+      env:
+        NEW_VERSION: ${{ steps.bump_version.outputs.NEW_VERSION }}
       run: |
         echo "::group::Pushing changes and tags to repository"
 
@@ -541,19 +542,20 @@ runs:
         echo "=== Git Push Summary ==="
         echo "✓ Version bump committed and pushed"
         echo "✓ Git tag created and pushed"
-        echo "  Tag: ${{ steps.bump_version.outputs.NEW_VERSION }}"
+        echo "  Tag: $NEW_VERSION"
         echo "======================="
         echo "::endgroup::"
 
     - name: Create GitHub Release
       shell: bash
       env:
+        NEW_VERSION: ${{ steps.bump_version.outputs.NEW_VERSION }}
         DRAFT: ${{ inputs.draft }}
       run: |
         echo "::group::Creating GitHub Release"
         echo "Release details:"
-        echo "  Version: ${{ steps.bump_version.outputs.NEW_VERSION }}"
-        echo "  Tag: ${{ steps.bump_version.outputs.NEW_VERSION }}"
+        echo "  Version: $NEW_VERSION"
+        echo "  Tag: $NEW_VERSION"
         if [ "$DRAFT" = "true" ]; then
           echo "  Type: Draft release"
         else
@@ -561,7 +563,7 @@ runs:
         fi
 
         # Check if this is a prerelease
-        VERSION="${{ steps.bump_version.outputs.NEW_VERSION }}"
+        VERSION="$NEW_VERSION"
         if [[ "$VERSION" == *"-"* ]] || [[ "$VERSION" == *"alpha"* ]] || [[ "$VERSION" == *"beta"* ]] || [[ "$VERSION" == *"rc"* ]]; then
           echo "  Prerelease: Yes"
         else
@@ -572,11 +574,13 @@ runs:
     - name: Extract release notes from changelog
       id: release_notes
       shell: bash
+      env:
+        NEW_VERSION: ${{ steps.bump_version.outputs.NEW_VERSION }}
+        CHANGELOG_FILE: ${{ steps.bump_version.outputs.CHANGELOG_FILE }}
+        WORK_DIR: ${{ steps.bump_version.outputs.WORK_DIR }}
       run: |
         echo "::group::Extracting release notes from changelog"
-        VERSION="${{ steps.bump_version.outputs.NEW_VERSION }}"
-        CHANGELOG_FILE="${{ steps.bump_version.outputs.CHANGELOG_FILE }}"
-        WORK_DIR="${{ steps.bump_version.outputs.WORK_DIR }}"
+        VERSION="$NEW_VERSION"
         cd "$WORK_DIR"
 
         echo "Extracting notes for version $VERSION from $CHANGELOG_FILE"
@@ -623,6 +627,9 @@ runs:
         INCREMENT: ${{ inputs.increment }}
         PRERELEASE_TYPE: ${{ inputs.prerelease-type }}
         DRAFT: ${{ inputs.draft }}
+        NEW_VERSION: ${{ steps.bump_version.outputs.NEW_VERSION }}
+        SERVER_URL: ${{ github.server_url }}
+        REPOSITORY: ${{ github.repository }}
       run: |
         echo "::group::Release Summary"
         echo ""
@@ -630,7 +637,7 @@ runs:
         echo "        GitHub Release Created"
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         echo ""
-        echo "✓ Version: ${{ steps.bump_version.outputs.NEW_VERSION }}"
+        echo "✓ Version: $NEW_VERSION"
         echo "✓ Increment: $INCREMENT"
         if [ "$PRERELEASE_TYPE" != "none" ]; then
           echo "✓ Prerelease: $PRERELEASE_TYPE"
@@ -641,7 +648,7 @@ runs:
           echo "✓ Status: Published"
         fi
         echo ""
-        echo "View release: ${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ steps.bump_version.outputs.NEW_VERSION }}"
+        echo "View release: ${SERVER_URL}/${REPOSITORY}/releases/tag/${NEW_VERSION}"
         echo ""
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         echo "::endgroup::"
