@@ -93,8 +93,10 @@ inputs:
 
       Note: When using pixi, specify only one environment name as it's used for both
       environments and activate-environment parameters.
-    required: false
-    default: 'groups: docs dev'
+
+      Required: there is no default, so every caller must pass this explicitly
+      (pip/uv: a "groups:"/"extras:" string; pixi: a single environment name).
+    required: true
   config-file:
     description: |
       Path to a commitizen configuration file (pyproject.toml).
