@@ -257,9 +257,23 @@ outputs stripped. A `pre-commit` hook such as
 3. Configures git with the workflow actor's identity
 4. Runs the appropriate `mike` command based on trigger:
    - **pull_request**: `mike deploy --push develop`
-   - **main**: `mike deploy --push --update-aliases main latest && mike set-default --push latest`
+   - **main**: `mike deploy --push main && mike set-default --push main`
    - **release**: `mike deploy --push --update-aliases <tag> latest`
 5. For non-pip managers, commands are prefixed with `<manager> run`
+
+Every `mike ... --push` runs through a fetch-reset-retry wrapper
+(`scripts/mike_push.sh`): before each attempt it fetches the current
+`gh-pages` tip and repoints the local branch ref to it, so a deploy that loses a
+push race (a concurrent deploy, or an out-of-band `gh-pages` push such as a
+history squash) refetches and retries instead of failing with
+`! [rejected] gh-pages -> gh-pages (fetch first)`. mike merges `versions.json`
+from the tip it builds on, so retries are idempotent and concurrently-added
+versions are preserved. A single, uncontended deploy still publishes exactly
+one new `gh-pages` commit.
+
+> A per-ref `concurrency:` group in your caller workflow is still worth adding
+> as complementary serialization — it prevents this workflow's own runs from
+> racing, while the retry above also covers out-of-band pushes it can't see.
 
 ## Prerequisites
 
