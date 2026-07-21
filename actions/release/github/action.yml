@@ -151,27 +151,35 @@ runs:
 
     - name: Display release configuration
       shell: bash
+      env:
+        PACKAGE_MANAGER: ${{ inputs.package-manager }}
+        PACKAGE_MANAGER_VERSION: ${{ inputs.package-manager-version }}
+        PYTHON_VERSION: ${{ inputs.python-version }}
+        INCREMENT: ${{ inputs.increment }}
+        PRERELEASE_TYPE: ${{ inputs.prerelease-type }}
+        DRAFT: ${{ inputs.draft }}
+        INSTALL_GROUPS: ${{ inputs.install-groups }}
       run: |
         echo "::group::Release Configuration"
         echo "=== GitHub Release Action Configuration ==="
-        echo "✓ Package manager: ${{ inputs.package-manager }}"
-        if [ "${{ inputs.package-manager }}" != "pip" ]; then
-          echo "✓ Package manager version: ${{ inputs.package-manager-version }}"
+        echo "✓ Package manager: $PACKAGE_MANAGER"
+        if [ "$PACKAGE_MANAGER" != "pip" ]; then
+          echo "✓ Package manager version: $PACKAGE_MANAGER_VERSION"
         fi
-        echo "✓ Python version: ${{ inputs.python-version }}"
-        echo "✓ Version increment: ${{ inputs.increment }}"
-        if [ "${{ inputs.prerelease-type }}" != "none" ]; then
-          echo "✓ Prerelease type: ${{ inputs.prerelease-type }}"
+        echo "✓ Python version: $PYTHON_VERSION"
+        echo "✓ Version increment: $INCREMENT"
+        if [ "$PRERELEASE_TYPE" != "none" ]; then
+          echo "✓ Prerelease type: $PRERELEASE_TYPE"
         else
           echo "✗ Prerelease type: none (standard release)"
         fi
-        if [ "${{ inputs.draft }}" = "true" ]; then
+        if [ "$DRAFT" = "true" ]; then
           echo "✓ Draft release: Yes"
         else
           echo "✗ Draft release: No (will be published)"
         fi
-        if [ -n "${{ inputs.install-groups }}" ]; then
-          echo "✓ Install groups: ${{ inputs.install-groups }}"
+        if [ -n "$INSTALL_GROUPS" ]; then
+          echo "✓ Install groups: $INSTALL_GROUPS"
         else
           echo "✗ Install groups: none (core dependencies only)"
         fi
@@ -216,21 +224,14 @@ runs:
 
     - name: Validate changelog file
       shell: bash
+      env:
+        CONFIG_FILE: ${{ inputs.config-file }}
       run: |
         echo "::group::Validating changelog file"
 
-        # Build commitizen command based on package manager
-        if [ "${{ inputs.package-manager }}" = "pip" ]; then
-          CZ_CMD="cz"
-        elif [ "${{ inputs.package-manager }}" = "pixi" ]; then
-          CZ_CMD="pixi run -e ${{ inputs.install-groups }} cz"
-        else
-          CZ_CMD="${{ inputs.package-manager }} run cz"
-        fi
-
         # Determine and enter working directory
-        if [ -n "${{ inputs.config-file }}" ]; then
-          WORK_DIR=$(dirname "${{ inputs.config-file }}")
+        if [ -n "$CONFIG_FILE" ]; then
+          WORK_DIR=$(dirname "$CONFIG_FILE")
         else
           WORK_DIR="."
         fi
@@ -274,28 +275,30 @@ runs:
     - name: Generate changelog and bump version with commitizen
       id: bump_version
       shell: bash
+      env:
+        PACKAGE_MANAGER: ${{ inputs.package-manager }}
+        INSTALL_GROUPS: ${{ inputs.install-groups }}
+        CONFIG_FILE: ${{ inputs.config-file }}
+        INCREMENT: ${{ inputs.increment }}
+        PRERELEASE_TYPE: ${{ inputs.prerelease-type }}
       run: |
         echo "::group::Preparing commitizen command"
 
-        # Build commitizen command based on package manager
-        if [ "${{ inputs.package-manager }}" = "pip" ]; then
-          CZ_CMD="cz"
-          echo "Using pip package manager"
-          echo "✓ Commitizen command: cz"
-        elif [ "${{ inputs.package-manager }}" = "pixi" ]; then
-          CZ_CMD="pixi run -e ${{ inputs.install-groups }} cz"
-          echo "Using pixi package manager"
-          echo "✓ Commitizen command: pixi run -e ${{ inputs.install-groups }} cz"
+        # Build the commitizen command as an argv array based on package manager
+        if [ "$PACKAGE_MANAGER" = "pip" ]; then
+          CZ_CMD=(cz)
+        elif [ "$PACKAGE_MANAGER" = "pixi" ]; then
+          CZ_CMD=(pixi run -e "$INSTALL_GROUPS" cz)
         else
-          CZ_CMD="${{ inputs.package-manager }} run cz"
-          echo "Using ${{ inputs.package-manager }} package manager"
-          echo "✓ Commitizen command: ${{ inputs.package-manager }} run cz"
+          CZ_CMD=("$PACKAGE_MANAGER" run cz)
         fi
+        echo "Using $PACKAGE_MANAGER package manager"
+        echo "✓ Commitizen command: ${CZ_CMD[*]}"
         echo "::endgroup::"
 
         # Determine and enter working directory
-        if [ -n "${{ inputs.config-file }}" ]; then
-          WORK_DIR=$(dirname "${{ inputs.config-file }}")
+        if [ -n "$CONFIG_FILE" ]; then
+          WORK_DIR=$(dirname "$CONFIG_FILE")
         else
           WORK_DIR="."
         fi
@@ -312,7 +315,7 @@ runs:
         fi
 
         echo "::group::Getting current version"
-        CURRENT_VERSION=$($CZ_CMD version --project)
+        CURRENT_VERSION=$("${CZ_CMD[@]}" version --project)
         echo "✓ Current version: $CURRENT_VERSION"
         echo "::endgroup::"
 
@@ -333,15 +336,15 @@ runs:
         fi
 
         echo "::group::Calculating next version"
-        echo "Increment type: ${{ inputs.increment }}"
-        if [ "${{ inputs.prerelease-type }}" != "none" ]; then
-          echo "Prerelease type: ${{ inputs.prerelease-type }}"
+        echo "Increment type: $INCREMENT"
+        if [ "$PRERELEASE_TYPE" != "none" ]; then
+          echo "Prerelease type: $PRERELEASE_TYPE"
           echo "Running dry-run to calculate version..."
-          NEXT_VERSION=$($CZ_CMD bump --dry-run --yes --increment ${{ inputs.increment }} --prerelease ${{ inputs.prerelease-type }} | grep "tag to create" | awk '{print $NF}')
+          NEXT_VERSION=$("${CZ_CMD[@]}" bump --dry-run --yes --increment "$INCREMENT" --prerelease "$PRERELEASE_TYPE" | grep "tag to create" | awk '{print $NF}')
         else
           echo "Prerelease type: none (standard release)"
           echo "Running dry-run to calculate version..."
-          NEXT_VERSION=$($CZ_CMD bump --dry-run --yes --increment ${{ inputs.increment }} | grep "tag to create" | awk '{print $NF}')
+          NEXT_VERSION=$("${CZ_CMD[@]}" bump --dry-run --yes --increment "$INCREMENT" | grep "tag to create" | awk '{print $NF}')
         fi
         echo "✓ Next version will be: $NEXT_VERSION"
         echo "  Version change: $CURRENT_VERSION → $NEXT_VERSION"
@@ -352,7 +355,7 @@ runs:
         # cz bump includes it in the version-bump commit.
         if [ "$IS_FIRST_RELEASE" = "true" ]; then
           echo "::group::Generating initial changelog"
-          $CZ_CMD changelog --unreleased-version="$NEXT_VERSION"
+          "${CZ_CMD[@]}" changelog --unreleased-version="$NEXT_VERSION"
           git add "$CHANGELOG_FILE"
           echo "✓ Initial changelog generated and staged"
           echo "::endgroup::"
@@ -364,11 +367,11 @@ runs:
         # Run cz bump - it handles changelog generation automatically
         # If it fails, we'll recover by generating full changelog and retrying
         set +e  # Don't exit on error
-        if [ "${{ inputs.prerelease-type }}" != "none" ]; then
-          $CZ_CMD bump --yes --increment ${{ inputs.increment }} --prerelease ${{ inputs.prerelease-type }}
+        if [ "$PRERELEASE_TYPE" != "none" ]; then
+          "${CZ_CMD[@]}" bump --yes --increment "$INCREMENT" --prerelease "$PRERELEASE_TYPE"
           BUMP_EXIT_CODE=$?
         else
-          $CZ_CMD bump --yes --increment ${{ inputs.increment }}
+          "${CZ_CMD[@]}" bump --yes --increment "$INCREMENT"
           BUMP_EXIT_CODE=$?
         fi
         set -e  # Re-enable exit on error
@@ -382,7 +385,7 @@ runs:
           git checkout -- "$CHANGELOG_FILE"
 
           # Generate full changelog
-          $CZ_CMD changelog --unreleased-version="$NEXT_VERSION"
+          "${CZ_CMD[@]}" changelog --unreleased-version="$NEXT_VERSION"
 
           # cz bump --files-only still triggers an incremental changelog update when
           # update_changelog_on_bump = true, and that update fails with exit 16
@@ -396,10 +399,10 @@ runs:
           fi
 
           # Retry bump with --files-only (skip changelog since we just generated it)
-          if [ "${{ inputs.prerelease-type }}" != "none" ]; then
-            $CZ_CMD bump --yes --increment ${{ inputs.increment }} --prerelease ${{ inputs.prerelease-type }} --files-only
+          if [ "$PRERELEASE_TYPE" != "none" ]; then
+            "${CZ_CMD[@]}" bump --yes --increment "$INCREMENT" --prerelease "$PRERELEASE_TYPE" --files-only
           else
-            $CZ_CMD bump --yes --increment ${{ inputs.increment }} --files-only
+            "${CZ_CMD[@]}" bump --yes --increment "$INCREMENT" --files-only
           fi
 
           if [ "$TOGGLED_CL" = "true" ]; then
@@ -435,9 +438,9 @@ runs:
         echo "=== Version Bump Summary ==="
         echo "Previous version: $CURRENT_VERSION"
         echo "New version: $NEW_VERSION"
-        echo "Increment type: ${{ inputs.increment }}"
-        if [ "${{ inputs.prerelease-type }}" != "none" ]; then
-          echo "Prerelease: ${{ inputs.prerelease-type }}"
+        echo "Increment type: $INCREMENT"
+        if [ "$PRERELEASE_TYPE" != "none" ]; then
+          echo "Prerelease: $PRERELEASE_TYPE"
         fi
         echo "=========================="
         echo "::endgroup::"
@@ -445,6 +448,8 @@ runs:
     - name: Fold refreshed lockfile into the version-bump commit
       if: ${{ inputs.package-manager == 'uv' || inputs.package-manager == 'pixi' }}
       shell: bash
+      env:
+        PACKAGE_MANAGER: ${{ inputs.package-manager }}
       run: |
         echo "::group::Folding refreshed lockfile into the version-bump commit"
 
@@ -473,7 +478,7 @@ runs:
         fi
 
         # Pick the lockfile + command for the active package manager.
-        case "${{ inputs.package-manager }}" in
+        case "$PACKAGE_MANAGER" in
           uv)   LOCK_FILE="uv.lock"   ; LOCK_CMD="uv lock"   ;;
           pixi) LOCK_FILE="pixi.lock" ; LOCK_CMD="pixi lock" ;;
         esac
@@ -542,12 +547,14 @@ runs:
 
     - name: Create GitHub Release
       shell: bash
+      env:
+        DRAFT: ${{ inputs.draft }}
       run: |
         echo "::group::Creating GitHub Release"
         echo "Release details:"
         echo "  Version: ${{ steps.bump_version.outputs.NEW_VERSION }}"
         echo "  Tag: ${{ steps.bump_version.outputs.NEW_VERSION }}"
-        if [ "${{ inputs.draft }}" = "true" ]; then
+        if [ "$DRAFT" = "true" ]; then
           echo "  Type: Draft release"
         else
           echo "  Type: Published release"
@@ -612,6 +619,10 @@ runs:
 
     - name: Release summary
       shell: bash
+      env:
+        INCREMENT: ${{ inputs.increment }}
+        PRERELEASE_TYPE: ${{ inputs.prerelease-type }}
+        DRAFT: ${{ inputs.draft }}
       run: |
         echo "::group::Release Summary"
         echo ""
@@ -620,11 +631,11 @@ runs:
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         echo ""
         echo "✓ Version: ${{ steps.bump_version.outputs.NEW_VERSION }}"
-        echo "✓ Increment: ${{ inputs.increment }}"
-        if [ "${{ inputs.prerelease-type }}" != "none" ]; then
-          echo "✓ Prerelease: ${{ inputs.prerelease-type }}"
+        echo "✓ Increment: $INCREMENT"
+        if [ "$PRERELEASE_TYPE" != "none" ]; then
+          echo "✓ Prerelease: $PRERELEASE_TYPE"
         fi
-        if [ "${{ inputs.draft }}" = "true" ]; then
+        if [ "$DRAFT" = "true" ]; then
           echo "✓ Status: Draft (not published)"
         else
           echo "✓ Status: Published"
