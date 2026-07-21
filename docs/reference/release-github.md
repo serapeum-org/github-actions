@@ -13,7 +13,7 @@
     draft: 'false'
     package-manager: 'uv'
     python-version: '3.12'
-    install-groups: 'groups: docs dev'
+    install-groups: # required
     config-file: ''
     skip-github-release: 'false'
 ```
@@ -29,6 +29,6 @@
 | `package-manager` | Package manager to use for setting up Python environment before release | No | `uv` |
 | `package-manager-version` | Version of the uv/pixi package manager to install (forwarded to its `version` input); ignored for pip. | No | `latest` |
 | `python-version` | Python version to install (passed to actions/setup-python) | No | `3.12` |
-| `install-groups` | Dependency groups or environments to install | No | `groups: docs dev` |
+| `install-groups` | Dependency groups or environments to install | Yes | - |
 | `config-file` | Path to a commitizen configuration file (pyproject.toml) | No | - |
 | `skip-github-release` | Skip creating the GitHub release via API | No | `false` |

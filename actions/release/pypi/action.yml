@@ -83,26 +83,32 @@ runs:
   steps:
     - name: Display release configuration
       shell: bash
+      env:
+        PACKAGE_MANAGER: ${{ inputs.package-manager }}
+        PYTHON_VERSION: ${{ inputs.python-version }}
+        INSTALL_GROUPS: ${{ inputs.install-groups }}
+        PACKAGE: ${{ inputs.package }}
+        PYPI_REPOSITORY_URL: ${{ inputs.pypi-repository-url }}
       run: |
         echo "::group::PyPI Release Configuration"
         echo "=== PyPI Release Action Configuration ==="
-        echo "✓ Package manager: ${{ inputs.package-manager }}"
-        echo "✓ Python version: ${{ inputs.python-version }}"
-        if [ -n "${{ inputs.install-groups }}" ]; then
-          echo "✓ Install groups: ${{ inputs.install-groups }}"
+        echo "✓ Package manager: $PACKAGE_MANAGER"
+        echo "✓ Python version: $PYTHON_VERSION"
+        if [ -n "$INSTALL_GROUPS" ]; then
+          echo "✓ Install groups: $INSTALL_GROUPS"
         else
           echo "✗ Install groups: none (core dependencies only)"
         fi
 
-        if [ -n "${{ inputs.package }}" ]; then
-          echo "✓ Target package: ${{ inputs.package }}"
+        if [ -n "$PACKAGE" ]; then
+          echo "✓ Target package: $PACKAGE"
         else
           echo "✗ Target package: not set (whole workspace / single-package repo)"
         fi
 
         # pypi configs
-        if [ -n "${{ inputs.pypi-repository-url }}" ]; then
-          echo "✓ PyPI repository: ${{ inputs.pypi-repository-url }}"
+        if [ -n "$PYPI_REPOSITORY_URL" ]; then
+          echo "✓ PyPI repository: $PYPI_REPOSITORY_URL"
         else
           echo "✓ PyPI repository: Official PyPI (https://pypi.org)"
         fi
@@ -142,6 +148,10 @@ runs:
 
     - name: Build package
       shell: bash
+      env:
+        PACKAGE_MANAGER: ${{ inputs.package-manager }}
+        PACKAGE: ${{ inputs.package }}
+        INSTALL_GROUPS: ${{ inputs.install-groups }}
       run: |
         echo "::group::Building package"
 
@@ -155,34 +165,34 @@ runs:
             | xargs dirname
         }
 
-        if [ "${{ inputs.package-manager }}" = "pip" ]; then
-          if [ -n "${{ inputs.package }}" ]; then
-            PKG_DIR=$(find_pkg_dir "${{ inputs.package }}")
+        if [ "$PACKAGE_MANAGER" = "pip" ]; then
+          if [ -n "$PACKAGE" ]; then
+            PKG_DIR=$(find_pkg_dir "$PACKAGE")
             if [ -z "$PKG_DIR" ]; then
-              echo "::error::Package '${{ inputs.package }}' not found in workspace (no pyproject.toml with name = \"${{ inputs.package }}\")"
+              echo "::error::Package '$PACKAGE' not found in workspace (no pyproject.toml with name = \"$PACKAGE\")"
               exit 1
             fi
-            echo "Building workspace package '${{ inputs.package }}' from: $PKG_DIR"
+            echo "Building workspace package '$PACKAGE' from: $PKG_DIR"
             python -m build "$PKG_DIR" --outdir dist/
           else
             python -m build
           fi
-        elif [ "${{ inputs.package-manager }}" = "uv" ]; then
-          if [ -n "${{ inputs.package }}" ]; then
-            uv build --package "${{ inputs.package }}"
+        elif [ "$PACKAGE_MANAGER" = "uv" ]; then
+          if [ -n "$PACKAGE" ]; then
+            uv build --package "$PACKAGE"
           else
             uv build
           fi
         else
-          PIXI_ENV="${{ inputs.install-groups }}"
+          PIXI_ENV="$INSTALL_GROUPS"
           PIXI_ENV="${PIXI_ENV:-default}"
-          if [ -n "${{ inputs.package }}" ]; then
-            PKG_DIR=$(find_pkg_dir "${{ inputs.package }}")
+          if [ -n "$PACKAGE" ]; then
+            PKG_DIR=$(find_pkg_dir "$PACKAGE")
             if [ -z "$PKG_DIR" ]; then
-              echo "::error::Package '${{ inputs.package }}' not found in workspace (no pyproject.toml with name = \"${{ inputs.package }}\")"
+              echo "::error::Package '$PACKAGE' not found in workspace (no pyproject.toml with name = \"$PACKAGE\")"
               exit 1
             fi
-            echo "Building workspace package '${{ inputs.package }}' from: $PKG_DIR"
+            echo "Building workspace package '$PACKAGE' from: $PKG_DIR"
             pixi run -e "$PIXI_ENV" python -m build "$PKG_DIR" --outdir dist/
           else
             pixi run -e "$PIXI_ENV" python -m build
@@ -200,23 +210,26 @@ runs:
       env:
         TWINE_USERNAME: ${{ inputs.pypi-username }}
         TWINE_PASSWORD: ${{ inputs.pypi-password }}
+        PACKAGE_MANAGER: ${{ inputs.package-manager }}
+        INSTALL_GROUPS: ${{ inputs.install-groups }}
+        PYPI_REPOSITORY_URL: ${{ inputs.pypi-repository-url }}
       run: |
         echo "::group::Publishing package to PyPI"
 
         # Build optional repository URL argument
-        REPO_ARGS=""
-        if [ -n "${{ inputs.pypi-repository-url }}" ]; then
-          REPO_ARGS="--repository-url ${{ inputs.pypi-repository-url }}"
+        REPO_ARGS=()
+        if [ -n "$PYPI_REPOSITORY_URL" ]; then
+          REPO_ARGS=(--repository-url "$PYPI_REPOSITORY_URL")
         fi
 
-        if [ "${{ inputs.package-manager }}" = "pip" ]; then
-          twine upload $REPO_ARGS dist/*
-        elif [ "${{ inputs.package-manager }}" = "uv" ]; then
-          uvx twine upload $REPO_ARGS dist/*
+        if [ "$PACKAGE_MANAGER" = "pip" ]; then
+          twine upload "${REPO_ARGS[@]}" dist/*
+        elif [ "$PACKAGE_MANAGER" = "uv" ]; then
+          uvx twine upload "${REPO_ARGS[@]}" dist/*
         else
-          PIXI_ENV="${{ inputs.install-groups }}"
+          PIXI_ENV="$INSTALL_GROUPS"
           PIXI_ENV="${PIXI_ENV:-default}"
-          pixi run -e "$PIXI_ENV" twine upload $REPO_ARGS dist/*
+          pixi run -e "$PIXI_ENV" twine upload "${REPO_ARGS[@]}" dist/*
         fi
 
         echo "✓ Package published successfully"
@@ -224,6 +237,9 @@ runs:
 
     - name: Release summary
       shell: bash
+      env:
+        SKIP_PUBLISH: ${{ inputs.skip-publish }}
+        PYPI_REPOSITORY_URL: ${{ inputs.pypi-repository-url }}
       run: |
         echo "::group::PyPI Release Summary"
         echo ""
@@ -232,12 +248,12 @@ runs:
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         echo ""
         echo "✓ Package built successfully"
-        if [ "${{ inputs.skip-publish }}" = "true" ]; then
+        if [ "$SKIP_PUBLISH" = "true" ]; then
           echo "✗ Publish: Skipped (skip-publish=true)"
         else
           echo "✓ Package published to PyPI"
-          if [ -n "${{ inputs.pypi-repository-url }}" ]; then
-            echo "✓ Repository: ${{ inputs.pypi-repository-url }}"
+          if [ -n "$PYPI_REPOSITORY_URL" ]; then
+            echo "✓ Repository: $PYPI_REPOSITORY_URL"
           else
             echo "✓ Repository: Official PyPI (https://pypi.org)"
           fi

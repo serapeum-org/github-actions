@@ -189,23 +189,33 @@ runs:
 
     - name: Configure Git
       shell: bash
+      env:
+        GIT_ACTOR: ${{ github.actor }}
       run: |
         echo "::group::Configuring Git"
-        git config --global user.name '${{ github.actor }}'
-        git config --global user.email '${{ github.actor }}@users.noreply.github.com'
+        git config --global user.name "$GIT_ACTOR"
+        git config --global user.email "${GIT_ACTOR}@users.noreply.github.com"
         echo "::endgroup::"
 
     - name: Set release tag environment variable
       if: ${{ inputs.trigger == 'release' }}
       shell: bash
+      env:
+        INPUT_RELEASE_TAG: ${{ inputs.release-tag }}
+        EVENT_RELEASE_TAG: ${{ github.event.release.tag_name }}
       run: |
         echo "::group::Setting release tag"
-        if [ -n "${{ inputs.release-tag }}" ]; then
-          export RELEASE_TAG_VERSION="${{ inputs.release-tag }}"
+        if [ -n "$INPUT_RELEASE_TAG" ]; then
+          RELEASE_TAG_VERSION="$INPUT_RELEASE_TAG"
         else
-          export RELEASE_TAG_VERSION="${{ github.event.release.tag_name }}"
+          RELEASE_TAG_VERSION="$EVENT_RELEASE_TAG"
         fi
-        echo "RELEASE_TAG_VERSION=${RELEASE_TAG_VERSION}" >> $GITHUB_ENV
+        if [ -z "$RELEASE_TAG_VERSION" ]; then
+          echo "::error::trigger is 'release' but no release tag could be resolved."
+          echo "::error::Provide the 'release-tag' input, or run on a release event so github.event.release.tag_name is set."
+          exit 1
+        fi
+        echo "RELEASE_TAG_VERSION=${RELEASE_TAG_VERSION}" >> "$GITHUB_ENV"
         echo "Release tag: ${RELEASE_TAG_VERSION}"
         echo "::endgroup::"
 
@@ -243,16 +253,11 @@ runs:
         MIKE_ALIAS: ${{ inputs.mike-alias }}
       run: |
         echo "::group::Deploying release documentation"
+        # A resolvable release tag is guaranteed here: the "Set release tag" step
+        # fails fast (exit 1) when neither release-tag nor github.event.release.tag_name
+        # is set, so this deploy always has a real version. mike_push.sh handles the
+        # package-manager dispatch and retries the push on a concurrent gh-pages update.
         SCRIPT="${{ github.action_path }}/scripts/mike_push.sh"
-        if [ -n "$RELEASE_TAG_VERSION" ]; then
-          bash "$SCRIPT" deploy --push --update-aliases "$RELEASE_TAG_VERSION" "$MIKE_ALIAS"
-        else
-          # No resolvable release tag (e.g. a simulated/dispatch release): deploy
-          # the alias name as the version, keeping --update-aliases so mike may
-          # reassign a pre-existing alias of that name instead of erroring
-          # ("version 'latest' already exists"). Matches the prior unquoted form
-          # `mike deploy --push --update-aliases <alias>`.
-          bash "$SCRIPT" deploy --push --update-aliases "$MIKE_ALIAS"
-        fi
+        bash "$SCRIPT" deploy --push --update-aliases "$RELEASE_TAG_VERSION" "$MIKE_ALIAS"
         bash "$SCRIPT" set-default --push "$MIKE_ALIAS"
         echo "::endgroup::"

@@ -86,16 +86,20 @@ runs:
 
     - name: List environment info
       shell: bash
+      env:
+        ACTIVATE_ENV: ${{ inputs.activate-environment }}
       run: |
         echo "::group::Pixi environment information"
-        echo "Active environment: ${{ inputs.activate-environment }}"
+        echo "Active environment: $ACTIVATE_ENV"
         echo "Available environments:"
         pixi info
         echo "::endgroup::"
 
     - name: List installed packages
       shell: bash
+      env:
+        ACTIVATE_ENV: ${{ inputs.activate-environment }}
       run: |
         echo "::group::Installed packages summary"
-        pixi list -e ${{ inputs.activate-environment }}
+        pixi list -e "$ACTIVATE_ENV"
         echo "::endgroup::"

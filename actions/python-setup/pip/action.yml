@@ -44,10 +44,12 @@ runs:
     - name: Validate cache requirements
       if: inputs.cache != ''
       shell: bash
+      env:
+        CACHE: ${{ inputs.cache }}
       run: |
         echo "::group::Validating cache requirements"
         if [ ! -f pyproject.toml ] && [ ! -f requirements.txt ]; then
-          echo "::error::Cache is enabled (cache='${{ inputs.cache }}') but no pyproject.toml or requirements.txt found."
+          echo "::error::Cache is enabled (cache='${CACHE}') but no pyproject.toml or requirements.txt found."
           echo "::error::Either create a pyproject.toml/requirements.txt file or set cache: '' to disable caching."
           exit 1
         fi
@@ -63,28 +65,32 @@ runs:
 
     - name: Upgrade pip
       shell: bash
+      env:
+        INSTALL_GROUPS: ${{ inputs.install-groups }}
       run: |
         echo "::group::Upgrading pip"
         python -m pip install --upgrade pip
         pip_version=$(pip --version | awk '{print $2}')
         echo "pip upgraded to $pip_version"
-        if [[ "${{ inputs.install-groups }}" == *"groups:"* ]]; then
+        if [[ "$INSTALL_GROUPS" == *"groups:"* ]]; then
           echo "Note: installing PEP 735 dependency groups requires pip >= 25.1."
         fi
         echo "::endgroup::"
 
     - name: Install dependencies
       shell: bash
+      env:
+        INSTALL_GROUPS: ${{ inputs.install-groups }}
       run: |
         echo "::group::Installing dependencies"
         if [ -f pyproject.toml ]; then
           echo "Found pyproject.toml, installing package..."
-          
+
           # Check if install-groups are specified
-          if [ -n "${{ inputs.install-groups }}" ]; then
-            echo "Processing install-groups: ${{ inputs.install-groups }}"
-            
-            input_str="${{ inputs.install-groups }}"
+          if [ -n "$INSTALL_GROUPS" ]; then
+            echo "Processing install-groups: $INSTALL_GROUPS"
+
+            input_str="$INSTALL_GROUPS"
             dependency_groups=()
             optional_deps=()
             
@@ -155,9 +161,9 @@ runs:
                   extras_list="$extras_list,$extra"
                 fi
               done
-              install_cmd="pip install .[$extras_list]"
-              echo "Installing package with optional dependencies: $install_cmd"
-              eval "$install_cmd"
+              install_target=".[$extras_list]"
+              echo "Installing package with optional dependencies: pip install $install_target"
+              pip install "$install_target"
             else
               echo "Installing package without optional dependencies..."
               pip install .
@@ -166,9 +172,9 @@ runs:
             # Install dependency groups if any (requires pip with PEP 735 support)
             if [ ${#dependency_groups[@]} -gt 0 ]; then
               # Build command with multiple --group flags
-              dep_groups_cmd="pip install ."
+              dep_groups_args=()
               for group in "${dependency_groups[@]}"; do
-                dep_groups_cmd="$dep_groups_cmd --group $group"
+                dep_groups_args+=("--group" "$group")
               done
               
               # Dependency groups (pip install --group) are a PEP 735 feature
@@ -181,8 +187,8 @@ runs:
               # unsupported branch is fatal.
               group_help="$(pip install --help)"
               if grep -q -- "--group" <<<"$group_help"; then
-                echo "Installing dependency groups: $dep_groups_cmd"
-                eval "$dep_groups_cmd"
+                echo "Installing dependency groups: pip install . ${dep_groups_args[*]}"
+                pip install . "${dep_groups_args[@]}"
               else
                 groups_list=$(IFS=,; echo "${dependency_groups[*]}")
                 echo "::error::pip $pip_version does not support the --group flag (PEP 735 dependency groups)."

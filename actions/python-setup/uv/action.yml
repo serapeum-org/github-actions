@@ -75,6 +75,8 @@ runs:
 
     - name: Install Dependencies
       shell: bash
+      env:
+        INSTALL_GROUPS: ${{ inputs.install-groups }}
       run: |
         echo "::group::Preparing uv sync command"
 
@@ -88,10 +90,10 @@ runs:
         installed_extras=()
 
         # Check if install-groups is provided
-        if [[ -n "${{ inputs.install-groups }}" ]]; then
-          echo "Processing install-groups: ${{ inputs.install-groups }}"
-          
-          input_str="${{ inputs.install-groups }}"
+        if [[ -n "$INSTALL_GROUPS" ]]; then
+          echo "Processing install-groups: $INSTALL_GROUPS"
+
+          input_str="$INSTALL_GROUPS"
           
           # Extract groups section if present
           if [[ "$input_str" =~ groups:[[:space:]]*([^,]*)(,|$) ]]; then
