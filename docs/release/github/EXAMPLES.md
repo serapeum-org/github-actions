@@ -40,6 +40,7 @@ jobs:
         uses: serapeum-org/github-actions/actions/release/github@github-release/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          install-groups: 'groups: dev'
 ```
 
 **Behavior:**
@@ -90,6 +91,7 @@ jobs:
         uses: serapeum-org/github-actions/actions/release/github@github-release/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          install-groups: 'groups: dev'
           increment: ${{ inputs.increment }}
 ```
 
@@ -193,6 +195,7 @@ release = "cz bump"
   uses: serapeum-org/github-actions/actions/release/github@github-release/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
+    install-groups: 'groups: dev'
     increment: 'patch'
 ```
 
@@ -213,6 +216,7 @@ git commit -m "fix: patch memory leak"
   uses: serapeum-org/github-actions/actions/release/github@github-release/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
+    install-groups: 'groups: dev'
     increment: 'minor'
 ```
 
@@ -233,6 +237,7 @@ git commit -m "feat: implement OAuth login"
   uses: serapeum-org/github-actions/actions/release/github@github-release/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
+    install-groups: 'groups: dev'
     increment: 'major'
 ```
 
@@ -259,6 +264,7 @@ BREAKING CHANGE: The old auth methods are no longer supported"
   uses: serapeum-org/github-actions/actions/release/github@github-release/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
+    install-groups: 'groups: dev'
     increment: 'patch'
     prerelease-type: 'alpha'
 ```
@@ -277,6 +283,7 @@ BREAKING CHANGE: The old auth methods are no longer supported"
   uses: serapeum-org/github-actions/actions/release/github@github-release/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
+    install-groups: 'groups: dev'
     increment: 'minor'
     prerelease-type: 'beta'
 ```
@@ -295,6 +302,7 @@ BREAKING CHANGE: The old auth methods are no longer supported"
   uses: serapeum-org/github-actions/actions/release/github@github-release/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
+    install-groups: 'groups: dev'
     increment: 'major'
     prerelease-type: 'rc'
 ```
@@ -338,6 +346,7 @@ jobs:
         uses: serapeum-org/github-actions/actions/release/github@github-release/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          install-groups: 'groups: dev'
           increment: 'minor'
           prerelease-type: ${{ inputs.stage }}
           draft: 'false'
@@ -350,6 +359,7 @@ jobs:
         uses: serapeum-org/github-actions/actions/release/github@github-release/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          install-groups: 'groups: dev'
           increment: 'minor'
           prerelease-type: 'none'
 ```
@@ -365,6 +375,7 @@ jobs:
   uses: serapeum-org/github-actions/actions/release/github@github-release/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
+    install-groups: 'groups: dev'
     release-branch: 'develop'
     increment: 'patch'
 ```
@@ -376,6 +387,7 @@ jobs:
   uses: serapeum-org/github-actions/actions/release/github@github-release/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
+    install-groups: 'groups: dev'
     release-branch: 'release/v2.0'
     increment: 'patch'
 ```
@@ -408,6 +420,7 @@ jobs:
         uses: serapeum-org/github-actions/actions/release/github@github-release/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          install-groups: 'groups: dev'
           release-branch: ${{ inputs.branch }}
           increment: 'patch'
 ```
@@ -506,6 +519,7 @@ dependencies = [
   uses: serapeum-org/github-actions/actions/release/github@github-release/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
+    install-groups: 'groups: dev'
     increment: 'minor'
     draft: 'true'
 ```
@@ -535,6 +549,7 @@ jobs:
         uses: serapeum-org/github-actions/actions/release/github@github-release/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          install-groups: 'groups: dev'
           draft: 'true'
 
       - name: Notify Team
@@ -606,6 +621,7 @@ jobs:
         uses: serapeum-org/github-actions/actions/release/github@github-release/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          install-groups: 'groups: dev'
           increment: ${{ inputs.increment }}
           package-manager: 'uv'
           python-version: '3.12'
@@ -656,6 +672,7 @@ jobs:
         uses: serapeum-org/github-actions/actions/release/github@github-release/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          install-groups: 'groups: dev'
           increment: 'patch'
           prerelease-type: 'beta'
 
@@ -701,6 +718,7 @@ jobs:
         uses: serapeum-org/github-actions/actions/release/github@github-release/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          install-groups: 'groups: dev'
           python-version: '3.12'  # Use latest for release
           increment: 'patch'
 ```
@@ -746,6 +764,7 @@ jobs:
         uses: serapeum-org/github-actions/actions/release/github@github-release/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          install-groups: 'groups: dev'
           release-branch: ${{ github.ref_name }}
           increment: ${{ steps.type.outputs.increment }}
           prerelease-type: ${{ steps.type.outputs.prerelease }}
@@ -825,6 +844,7 @@ jobs:
         uses: serapeum-org/github-actions/actions/release/github@github-release/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          install-groups: 'groups: dev'
           increment: ${{ inputs.increment }}
           config-file: '${{ inputs.package }}/pyproject.toml'
 ```
@@ -842,6 +862,7 @@ jobs:
   uses: serapeum-org/github-actions/actions/release/github@github-release/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
+    install-groups: 'groups: dev'
     increment: 'patch'
 ```
 
@@ -930,6 +951,7 @@ git tag -d 1.2.3  # Delete local tag
   uses: serapeum-org/github-actions/actions/release/github@github-release/v1
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
+    install-groups: 'groups: dev'
     draft: 'true'  # Safe to retry
 ```
 
@@ -967,6 +989,7 @@ jobs:
         uses: serapeum-org/github-actions/actions/release/github@github-release/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          install-groups: 'groups: dev'
 ```
 
 ### Hotfix Release Pattern
@@ -992,6 +1015,7 @@ jobs:
         uses: serapeum-org/github-actions/actions/release/github@github-release/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          install-groups: 'groups: dev'
           release-branch: ${{ github.ref_name }}
           increment: 'patch'
           draft: 'false'
@@ -1047,6 +1071,7 @@ jobs:
         uses: serapeum-org/github-actions/actions/release/github@github-release/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          install-groups: 'groups: dev'
 
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
@@ -1089,6 +1114,7 @@ jobs:
         uses: serapeum-org/github-actions/actions/release/github@github-release/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          install-groups: 'groups: dev'
 ```
 
 ---

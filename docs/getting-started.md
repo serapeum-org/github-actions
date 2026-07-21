@@ -146,6 +146,7 @@ jobs:
       - uses: serapeum-org/github-actions/actions/release/github@github-release/v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          install-groups: 'groups: dev'
           increment: ${{ inputs.increment }}
 ```
 
