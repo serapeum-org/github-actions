@@ -1908,10 +1908,24 @@ outputs stripped. A <code>pre-commit</code> hook such as
 <li>Configures git with the workflow actor's identity</li>
 <li>Runs the appropriate <code>mike</code> command based on trigger:</li>
 <li><strong>pull_request</strong>: <code>mike deploy --push develop</code></li>
-<li><strong>main</strong>: <code>mike deploy --push --update-aliases main latest &amp;&amp; mike set-default --push latest</code></li>
+<li><strong>main</strong>: <code>mike deploy --push main &amp;&amp; mike set-default --push main</code></li>
 <li><strong>release</strong>: <code>mike deploy --push --update-aliases &lt;tag&gt; latest</code></li>
 <li>For non-pip managers, commands are prefixed with <code>&lt;manager&gt; run</code></li>
 </ol>
+<p>Every <code>mike ... --push</code> runs through a fetch-reset-retry wrapper
+(<code>scripts/mike_push.sh</code>): before each attempt it fetches the current
+<code>gh-pages</code> tip and repoints the local branch ref to it, so a deploy that loses a
+push race (a concurrent deploy, or an out-of-band <code>gh-pages</code> push such as a
+history squash) refetches and retries instead of failing with
+<code>! [rejected] gh-pages -&gt; gh-pages (fetch first)</code>. mike merges <code>versions.json</code>
+from the tip it builds on, so retries are idempotent and concurrently-added
+versions are preserved. A single, uncontended deploy still publishes exactly
+one new <code>gh-pages</code> commit.</p>
+<blockquote>
+<p>A per-ref <code>concurrency:</code> group in your caller workflow is still worth adding
+as complementary serialization — it prevents this workflow's own runs from
+racing, while the retry above also covers out-of-band pushes it can't see.</p>
+</blockquote>
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
 <ul>
 <li><code>mkdocs</code> and <code>mike</code> in your project dependencies</li>
