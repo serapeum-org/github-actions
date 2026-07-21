@@ -74,7 +74,7 @@ jobs:
 | `package-manager` | Package manager: `pip`, `uv`, `pixi` | No | `uv` |
 | `package-manager-version` | Version of the `uv`/`pixi` package manager (forwarded to its `version` input); ignored for `pip`. | No | `latest` |
 | `python-version` | Python version to install | No | `3.12` |
-| `install-groups` | Dependency groups to install (see below) | No | `groups: docs dev` |
+| `install-groups` | Dependency groups to install (see below) — **required, no default**; must include the group that provides commitizen | Yes | _(none)_ |
 | `config-file` | Path to a per-package `pyproject.toml` (monorepo use) | No | `''` (root) |
 | `skip-github-release` | Skip GitHub Releases API call (testing only) | No | `false` |
 
