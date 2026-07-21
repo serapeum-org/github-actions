@@ -360,7 +360,10 @@ jobs:
           cp tests/data/mkdocs-deploy/test-release-tag-resolution/uv.lock .
           cp -r tests/data/mkdocs-deploy/test-release-tag-resolution/docs .
 
+      # Positive control: a release trigger WITH a resolvable tag must succeed.
       - name: Test with explicit release tag
+        id: with-tag
+        continue-on-error: true
         uses: ./actions/mkdocs-deploy
         with:
           trigger: 'release'
@@ -368,28 +371,36 @@ jobs:
           release-tag: 'v4.5.6'
           deploy-token: ${{ secrets.GITHUB_TOKEN }}
 
-      # Negative test: a release trigger with no explicit release-tag and no real
-      # release event (github.event.release.tag_name is empty) cannot resolve a
-      # version, so the action must fail fast with a clear error rather than
-      # deploy a bogus version.
+      # Negative test: the SAME fixture and setup but with NO resolvable tag (no
+      # release-tag input, and github.event.release.tag_name is empty because this
+      # workflow is push-triggered). The action must fail fast in its tag-resolution
+      # guard rather than deploy a bogus version.
       - name: Test release trigger without a resolvable tag fails fast
         id: no-tag
         continue-on-error: true
-        env:
-          GITHUB_EVENT_NAME: release
         uses: ./actions/mkdocs-deploy
         with:
           trigger: 'release'
           package-manager: 'uv'
           deploy-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Verify the unresolvable-tag deploy failed
+      # Assert that the ONLY difference (presence of a resolvable tag) is what flips
+      # the result: tagged succeeds, untagged fails. Because both runs share the same
+      # fixture and setup, an unrelated regression that broke setup would also fail
+      # the positive control and be caught here instead of passing silently.
+      - name: Verify tag presence flips success/failure
         run: |
-          if [ "${{ steps.no-tag.outcome }}" != "failure" ]; then
-            echo "::error::Expected the release deploy to fail when no release tag can be resolved"
+          echo "with-tag outcome: ${{ steps.with-tag.outcome }}"
+          echo "no-tag   outcome: ${{ steps.no-tag.outcome }}"
+          if [ "${{ steps.with-tag.outcome }}" != "success" ]; then
+            echo "::error::Positive control failed: a release deploy WITH a tag should succeed"
             exit 1
           fi
-          echo "[OK] Release trigger correctly fails fast when no tag is resolvable"
+          if [ "${{ steps.no-tag.outcome }}" != "failure" ]; then
+            echo "::error::A release deploy WITHOUT a resolvable tag should fail fast in the guard"
+            exit 1
+          fi
+          echo "[OK] Tag presence flips success/failure as expected"
 
   test-default-install-groups:
     name: Test Default install-groups Value
