@@ -321,6 +321,18 @@ runs:
         echo "✓ Commitizen command: ${CZ_CMD[*]}"
         echo "::endgroup::"
 
+        # Preflight: commitizen must be available. install-groups is required (no
+        # default); if it was omitted or names a group that does not provide
+        # commitizen, fail here with a clear message instead of a downstream
+        # "cz: not found" / "pixi run -e ''" error.
+        echo "::group::Checking commitizen availability"
+        if ! "${CZ_CMD[@]}" version >/dev/null 2>&1; then
+          echo "::error::commitizen (cz) is not available. Pass 'install-groups' including the dependency group that provides commitizen (e.g. 'groups: dev'), or ensure commitizen is a core dependency."
+          exit 1
+        fi
+        echo "✓ commitizen is available"
+        echo "::endgroup::"
+
         # Determine and enter working directory
         if [ -n "$CONFIG_FILE" ]; then
           WORK_DIR=$(dirname "$CONFIG_FILE")
