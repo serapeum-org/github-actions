@@ -321,18 +321,6 @@ runs:
         echo "✓ Commitizen command: ${CZ_CMD[*]}"
         echo "::endgroup::"
 
-        # Preflight: commitizen must be available. install-groups is required (no
-        # default); if it was omitted or names a group that does not provide
-        # commitizen, fail here with a clear message instead of a downstream
-        # "cz: not found" / "pixi run -e ''" error.
-        echo "::group::Checking commitizen availability"
-        if ! "${CZ_CMD[@]}" version >/dev/null 2>&1; then
-          echo "::error::commitizen (cz) is not available. Pass 'install-groups' including the dependency group that provides commitizen (e.g. 'groups: dev'), or ensure commitizen is a core dependency."
-          exit 1
-        fi
-        echo "✓ commitizen is available"
-        echo "::endgroup::"
-
         # Determine and enter working directory
         if [ -n "$CONFIG_FILE" ]; then
           WORK_DIR=$(dirname "$CONFIG_FILE")
@@ -341,6 +329,21 @@ runs:
         fi
         echo "Working directory: $WORK_DIR"
         cd "$WORK_DIR"
+
+        # Preflight (run from WORK_DIR — the same directory every cz command below
+        # uses). install-groups is required with no default; if commitizen is not
+        # runnable here, fail with a clear message instead of a downstream
+        # "cz: not found" / "pixi run -e ''". For uv this rarely fires (uv run
+        # re-syncs the default groups); it mainly guards pip (PATH) and commitizen
+        # placed in a non-default group. stderr is left visible so a real
+        # sync/network failure is not misreported as "commitizen missing".
+        echo "::group::Checking commitizen availability"
+        if ! "${CZ_CMD[@]}" version >/dev/null; then
+          echo "::error::commitizen (cz) could not be run. Ensure 'install-groups' includes the group that provides commitizen (e.g. 'groups: dev'), or that commitizen is a core dependency (see the error above)."
+          exit 1
+        fi
+        echo "✓ commitizen is available"
+        echo "::endgroup::"
 
         # Read changelog_file from commitizen config (needed for recovery path)
         CHANGELOG_FILE=""
