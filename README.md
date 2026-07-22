@@ -128,12 +128,12 @@ environments: 'default py312'
 Each action is versioned independently with namespaced tags:
 
 ```
-pip/v1.1.0      pip/v1       # Python setup with pip
-uv/v1.2.0       uv/v1        # Python setup with uv
-pixi/v1.2.0     pixi/v1      # Python setup with pixi
-mkdocs/v1.3.0   mkdocs/v1    # MkDocs deploy
-github-release/v1.4.0        github-release/v1
-pypi-release/v1.0.2          pypi-release/v1
+pip/v1.1.1      pip/v1       # Python setup with pip
+uv/v1.2.1       uv/v1        # Python setup with uv
+pixi/v1.2.1     pixi/v1      # Python setup with pixi
+mkdocs/v1.3.1   mkdocs/v1    # MkDocs deploy
+github-release/v1.5.0        github-release/v1
+pypi-release/v1.0.3          pypi-release/v1
 ```
 
 Pin to a major-version tag for automatic patch/minor updates, pin to an
@@ -145,10 +145,10 @@ hardening:
 uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1
 
 # Exact patch (for reproducibility)
-uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1.2.0
+uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1.2.1
 
 # Commit SHA (immutable — survives tag retagging)
-uses: serapeum-org/github-actions/actions/python-setup/uv@bc6c376c15ffbfe4d9f46fe7e39b0c2e56302ca8  # uv/v1
+uses: serapeum-org/github-actions/actions/python-setup/uv@38c111084f99d5ff5f4a1e63bedce48fe33a10c0  # uv/v1
 ```
 
 ### Current versions and rolling-`v1` commit SHAs
@@ -158,12 +158,12 @@ its `…/v1` rolling tag resolves to today. Update these when you bump a tag.
 
 | Action                      | Latest version          | Rolling tag         | Commit SHA                                 |
 |-----------------------------|-------------------------|---------------------|--------------------------------------------|
-| `actions/python-setup/pip`  | `pip/v1.1.0`            | `pip/v1`            | `bc6c376c15ffbfe4d9f46fe7e39b0c2e56302ca8` |
-| `actions/python-setup/uv`   | `uv/v1.2.0`             | `uv/v1`             | `bc6c376c15ffbfe4d9f46fe7e39b0c2e56302ca8` |
-| `actions/python-setup/pixi` | `pixi/v1.2.0`           | `pixi/v1`           | `bc6c376c15ffbfe4d9f46fe7e39b0c2e56302ca8` |
-| `actions/mkdocs-deploy`     | `mkdocs/v1.3.0`         | `mkdocs/v1`         | `a7076ffa6ad76831d1fee433b0cf93c42fd31443` |
-| `actions/release/github`    | `github-release/v1.4.0` | `github-release/v1` | `a7076ffa6ad76831d1fee433b0cf93c42fd31443` |
-| `actions/release/pypi`      | `pypi-release/v1.0.2`   | `pypi-release/v1`   | `a7076ffa6ad76831d1fee433b0cf93c42fd31443` |
+| `actions/python-setup/pip`  | `pip/v1.1.1`            | `pip/v1`            | `38c111084f99d5ff5f4a1e63bedce48fe33a10c0` |
+| `actions/python-setup/uv`   | `uv/v1.2.1`             | `uv/v1`             | `38c111084f99d5ff5f4a1e63bedce48fe33a10c0` |
+| `actions/python-setup/pixi` | `pixi/v1.2.1`           | `pixi/v1`           | `38c111084f99d5ff5f4a1e63bedce48fe33a10c0` |
+| `actions/mkdocs-deploy`     | `mkdocs/v1.3.1`         | `mkdocs/v1`         | `38c111084f99d5ff5f4a1e63bedce48fe33a10c0` |
+| `actions/release/github`    | `github-release/v1.5.0` | `github-release/v1` | `38c111084f99d5ff5f4a1e63bedce48fe33a10c0` |
+| `actions/release/pypi`      | `pypi-release/v1.0.3`   | `pypi-release/v1`   | `38c111084f99d5ff5f4a1e63bedce48fe33a10c0` |
 
 To verify locally: `git rev-parse <tag>^{commit}` (the `^{commit}` is
 required — `git rev-parse <tag>` returns the annotated-tag object SHA, not
