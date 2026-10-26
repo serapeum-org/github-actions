@@ -26,15 +26,15 @@ and configure caching. All three share the same `install-groups` input shape
 
 | Action | Usage | Guide | Reference |
 |---|---|---|---|
-| **pip** | `serapeum-org/github-actions/actions/python-setup/pip@pip/v1` | [guide](docs/python-setup/pip.md) | [reference](docs/reference/python-setup-pip.md) |
-| **uv** | `serapeum-org/github-actions/actions/python-setup/uv@uv/v1` | [guide](docs/python-setup/uv.md) | [reference](docs/reference/python-setup-uv.md) |
-| **pixi** | `serapeum-org/github-actions/actions/python-setup/pixi@pixi/v1` | [guide](docs/python-setup/pixi.md) | [reference](docs/reference/python-setup-pixi.md) |
+| **pip** | `serapeum-org/github-actions/actions/python-setup/pip@pip/v1.1.2` | [guide](docs/python-setup/pip.md) | [reference](docs/reference/python-setup-pip.md) |
+| **uv** | `serapeum-org/github-actions/actions/python-setup/uv@uv/v1.2.2` | [guide](docs/python-setup/uv.md) | [reference](docs/reference/python-setup-uv.md) |
+| **pixi** | `serapeum-org/github-actions/actions/python-setup/pixi@pixi/v1.2.2` | [guide](docs/python-setup/pixi.md) | [reference](docs/reference/python-setup-pixi.md) |
 
 ### Documentation
 
 | Action | Usage | Guide | Reference |
 |---|---|---|---|
-| **mkdocs-deploy** | `serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1` | [guide](docs/mkdocs-deploy.md) | [reference](docs/reference/mkdocs-deploy.md) |
+| **mkdocs-deploy** | `serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1.3.2` | [guide](docs/mkdocs-deploy.md) | [reference](docs/reference/mkdocs-deploy.md) |
 
 `mkdocs-deploy` builds and publishes a versioned MkDocs site to GitHub Pages
 via [mike](https://github.com/jimporter/mike). Version deployed is selected
@@ -62,8 +62,8 @@ assumption, concrete `pyproject.toml` snippet).
 
 | Action | Usage | Guide | Examples |
 |---|---|---|---|
-| **GitHub Release** | `serapeum-org/github-actions/actions/release/github@github-release/v1` | [guide](docs/release/github/README.md) | [examples](docs/release/github/EXAMPLES.md) |
-| **PyPI Release** | `serapeum-org/github-actions/actions/release/pypi@pypi-release/v1` | [guide](docs/release/pypi/README.md) | [examples](docs/release/pypi/EXAMPLES.md) |
+| **GitHub Release** | `serapeum-org/github-actions/actions/release/github@github-release/v1.5.1` | [guide](docs/release/github/README.md) | [examples](docs/release/github/EXAMPLES.md) |
+| **PyPI Release** | `serapeum-org/github-actions/actions/release/pypi@pypi-release/v1.0.4` | [guide](docs/release/pypi/README.md) | [examples](docs/release/pypi/EXAMPLES.md) |
 
 The `release/github` action automates version bumping via
 [Commitizen](https://commitizen-tools.github.io/commitizen/), writes the
@@ -82,9 +82,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
-      - uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1
+      - uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1.2.2
         with:
           python-version: '3.12'
           install-groups: 'groups: dev test'
@@ -95,7 +95,7 @@ jobs:
 Deploy docs (with notebook execution) on every PR, main push, and release:
 
 ```yaml
-- uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1
+- uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1.3.2
   with:
     trigger: ${{ github.event_name }}
     deploy-token: ${{ secrets.GITHUB_TOKEN }}
@@ -128,42 +128,38 @@ environments: 'default py312'
 Each action is versioned independently with namespaced tags:
 
 ```
-pip/v1.1.1      pip/v1       # Python setup with pip
-uv/v1.2.1       uv/v1        # Python setup with uv
-pixi/v1.2.1     pixi/v1      # Python setup with pixi
-mkdocs/v1.3.1   mkdocs/v1    # MkDocs deploy
-github-release/v1.5.0        github-release/v1
-pypi-release/v1.0.3          pypi-release/v1
+pip/v1.1.2              # Python setup with pip
+uv/v1.2.2               # Python setup with uv
+pixi/v1.2.2             # Python setup with pixi
+mkdocs/v1.3.2           # MkDocs deploy
+github-release/v1.5.1   # GitHub release via Commitizen
+pypi-release/v1.0.4     # PyPI release
 ```
 
-Pin to a major-version tag for automatic patch/minor updates, pin to an
-exact patch for reproducibility, or pin to a commit SHA for supply-chain
-hardening:
+Pin to an exact version, or to its commit SHA for supply-chain hardening.
+There are no rolling/moving `…/v1` tags; always pin an exact version:
 
 ```yaml
-# Auto-update within v1 (recommended for most consumers)
-uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1
+# Exact version (recommended)
+uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1.2.2
 
-# Exact patch (for reproducibility)
-uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1.2.1
-
-# Commit SHA (immutable — survives tag retagging)
-uses: serapeum-org/github-actions/actions/python-setup/uv@38c111084f99d5ff5f4a1e63bedce48fe33a10c0  # uv/v1
+# Commit SHA (most strict)
+uses: serapeum-org/github-actions/actions/python-setup/uv@6c0a569b67c149c4648c75495544732cba2d0eca  # uv/v1.2.2
 ```
 
-### Current versions and rolling-`v1` commit SHAs
+### Current versions and commit SHAs
 
-For SHA-based pinning, here is the latest release of each action and the commit
-its `…/v1` rolling tag resolves to today. Update these when you bump a tag.
+For SHA-based pinning, here is the latest release of each action and the commit it points to. Update these when
+you cut a new tag.
 
-| Action                      | Latest version          | Rolling tag         | Commit SHA                                 |
-|-----------------------------|-------------------------|---------------------|--------------------------------------------|
-| `actions/python-setup/pip`  | `pip/v1.1.1`            | `pip/v1`            | `38c111084f99d5ff5f4a1e63bedce48fe33a10c0` |
-| `actions/python-setup/uv`   | `uv/v1.2.1`             | `uv/v1`             | `38c111084f99d5ff5f4a1e63bedce48fe33a10c0` |
-| `actions/python-setup/pixi` | `pixi/v1.2.1`           | `pixi/v1`           | `38c111084f99d5ff5f4a1e63bedce48fe33a10c0` |
-| `actions/mkdocs-deploy`     | `mkdocs/v1.3.1`         | `mkdocs/v1`         | `38c111084f99d5ff5f4a1e63bedce48fe33a10c0` |
-| `actions/release/github`    | `github-release/v1.5.0` | `github-release/v1` | `38c111084f99d5ff5f4a1e63bedce48fe33a10c0` |
-| `actions/release/pypi`      | `pypi-release/v1.0.3`   | `pypi-release/v1`   | `38c111084f99d5ff5f4a1e63bedce48fe33a10c0` |
+| Action                      | Latest version          | Commit SHA                                 |
+|-----------------------------|-------------------------|--------------------------------------------|
+| `actions/python-setup/pip`  | `pip/v1.1.2`            | `6c0a569b67c149c4648c75495544732cba2d0eca` |
+| `actions/python-setup/uv`   | `uv/v1.2.2`             | `6c0a569b67c149c4648c75495544732cba2d0eca` |
+| `actions/python-setup/pixi` | `pixi/v1.2.2`           | `6c0a569b67c149c4648c75495544732cba2d0eca` |
+| `actions/mkdocs-deploy`     | `mkdocs/v1.3.2`         | `961524686fb512c05ca8e4c7bfe81ba68eef4dda` |
+| `actions/release/github`    | `github-release/v1.5.1` | `961524686fb512c05ca8e4c7bfe81ba68eef4dda` |
+| `actions/release/pypi`      | `pypi-release/v1.0.4`   | `961524686fb512c05ca8e4c7bfe81ba68eef4dda` |
 
 To verify locally: `git rev-parse <tag>^{commit}` (the `^{commit}` is
 required — `git rev-parse <tag>` returns the annotated-tag object SHA, not
