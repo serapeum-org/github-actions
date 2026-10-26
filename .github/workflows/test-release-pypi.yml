@@ -36,7 +36,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Copy pip/uv test fixture
         if: matrix.package-manager != 'pixi'
@@ -94,7 +94,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Copy test fixture (includes committed uv.lock)
         run: cp -r tests/data/release-pypi/test-basic-uv/. .
@@ -135,7 +135,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Copy test fixture (includes committed uv.lock)
         shell: bash
@@ -186,7 +186,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Copy test fixture (includes committed uv.lock)
         run: cp -r tests/data/release-pypi/test-with-groups/. .
@@ -230,7 +230,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Copy test fixture
         run: |
@@ -239,7 +239,7 @@ jobs:
 
       # Generate a fresh lock so verify-lock='true' always sees an up-to-date file.
       - name: Generate fresh uv lock
-        uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
+        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
         with:
           enable-cache: false
 
@@ -270,7 +270,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Copy test fixture (includes committed uv.lock)
         run: cp -r tests/data/release-pypi/test-basic-uv/. .
@@ -305,7 +305,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       # uv: copy the full virtual workspace — uv understands [tool.uv.workspace] roots.
       - name: Copy workspace fixture (uv)
@@ -401,7 +401,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Copy TestPyPI test fixture
         run: cp -r tests/data/release-pypi/test-testpypi/. .
@@ -419,7 +419,7 @@ jobs:
       # Since we patched the version, the committed lock is now stale — regenerate.
       - name: Regenerate uv lock after version patch (uv only)
         if: matrix.package-manager == 'uv'
-        uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
+        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
         with:
           enable-cache: false
 
@@ -466,7 +466,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Copy TestPyPI test fixture with pixi environment
         run: |

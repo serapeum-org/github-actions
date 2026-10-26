@@ -8,7 +8,7 @@ jobs:
     name: Test pixi action - defaults
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Copy test fixture files
         run: |
@@ -38,7 +38,7 @@ jobs:
     name: Test pixi action - Default environment only
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Copy test fixture files
         run: |
@@ -64,7 +64,7 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Copy test fixture files
         run: |
@@ -97,7 +97,7 @@ jobs:
     name: Test pixi action - Environment activation
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Copy test fixture files
         run: |
@@ -125,7 +125,7 @@ jobs:
     name: Test pixi action - Lock file verification (valid)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Copy test fixture files
         run: |
@@ -142,7 +142,7 @@ jobs:
     name: Test pixi action - Lock file verification (outdated)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Copy test fixture files
         run: |
@@ -175,7 +175,7 @@ jobs:
     name: Test pixi action - Lock file verification (disabled)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Copy test fixture files
         run: |
@@ -193,7 +193,7 @@ jobs:
     name: Test pixi action - Lock verification validation (should fail without lock file)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Copy test pyproject.toml (no lock file for this test)
         run: |
@@ -223,7 +223,7 @@ jobs:
     name: Test pixi action - Caching (populate)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Copy test fixture files
         run: |
@@ -246,7 +246,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: test-pixi-caching-populate
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Copy test fixture files
         run: |
@@ -268,7 +268,7 @@ jobs:
     name: Test pixi action - Cache validation (should fail without lock file)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Create test pyproject.toml
         run: |
@@ -314,7 +314,7 @@ jobs:
         environment: ["default", "py311", "py312"]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Copy test fixture files
         run: |
@@ -338,7 +338,7 @@ jobs:
     name: Test pixi action - Error scenarios
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Test without lock file (should fail with validation error)
         id: no-lock-test
@@ -402,7 +402,7 @@ jobs:
     name: Test pixi action - Complex project setup
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Copy test fixture files
         run: |
@@ -433,7 +433,7 @@ jobs:
     name: Test pixi action - Custom pixi version input
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Copy test fixture files
         run: |
