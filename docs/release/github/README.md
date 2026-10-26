@@ -171,6 +171,55 @@ dev = [
 ]
 ```
 
+### Changelog settings: first release vs. subsequent releases
+
+Two Commitizen settings interact with how this action generates the changelog, and the correct values differ for the
+very first release (no git tags yet) versus every release after it.
+
+- `changelog_incremental` — when `true`, Commitizen only appends the new version's section by diffing against the
+  **previous tag**. A first release has no previous tag, so `cz changelog` fails with
+  `No tag found to do an incremental changelog` (exit code 16) and the release aborts.
+- `update_changelog_on_bump` — when `true`, `cz bump` updates the changelog as part of the version bump. On a
+  non-first release this is the **only** thing that advances the changelog (the action does not run a separate
+  changelog step once tags exist). `changelog_incremental` has no effect unless this is `true`.
+
+**For the first release** (no tags yet):
+
+```toml
+[tool.commitizen]
+changelog_incremental    = false   # true -> "No tag found to do an incremental changelog" (exit 16)
+update_changelog_on_bump = true    # first release still works: the action generates the changelog itself
+```
+
+The action detects the first release, generates the full changelog with `cz changelog`, and (if
+`update_changelog_on_bump = true`) temporarily toggles it off for the bump, then restores it — so you can set
+`update_changelog_on_bump = true` from the start and never touch it again.
+
+**For every release after the first** (a tag now exists):
+
+```toml
+[tool.commitizen]
+changelog_incremental    = true    # safe now — a prior tag exists; appends only the new section
+update_changelog_on_bump = true    # required, or the changelog stops advancing past the last release
+```
+
+`changelog_incremental = true` is optional — `false` keeps working and just regenerates the whole changelog from
+history each run (more diff churn, identical content). `update_changelog_on_bump = true` is the one that matters: if
+it is `false`, releases after the first bump the version and tag but never update the changelog, and the GitHub
+Release notes fall back to a generic `Release X`.
+
+**Simplest set-once config** (works for the first release and all later ones, no flag juggling):
+
+```toml
+[tool.commitizen]
+changelog_incremental    = false
+update_changelog_on_bump = true
+```
+
+> Merge the release branch into the default branch with a **merge commit or fast-forward, never a squash or rebase**.
+> Squash/rebase rewrite the commit the tag points at, leaving the version tag unreachable from the default branch,
+> which breaks `git describe` and the next release's incremental changelog range.
+
 ## How It Works
 
 ### Release Flow
