@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -2631,16 +2631,16 @@ release composite action.</p>
 <p><strong>Required project files:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># pyproject.toml</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">[build-system]</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">requires</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;hatchling&quot;</span><span class="p">]</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">build-backend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;hatchling.build&quot;</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">requires</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"hatchling"</span><span class="p">]</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">build-backend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"hatchling.build"</span>
 <a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
 <a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="k">[project]</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;my-package&quot;</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;1.0.0&quot;</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="n">requires-python</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&gt;=3.10&quot;</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"my-package"</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"1.0.0"</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="n">requires-python</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"&gt;=3.10"</span>
 <a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
 <a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="k">[tool.hatch.build.targets.sdist]</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="n">include</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;src/&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;README.md&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;pyproject.toml&quot;</span><span class="p">]</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="n">include</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"src/"</span><span class="p">,</span><span class="w"> </span><span class="s2">"README.md"</span><span class="p">,</span><span class="w"> </span><span class="s2">"pyproject.toml"</span><span class="p">]</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>uv.lock        ← committed lock file (uv lock)
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>src/
@@ -2658,8 +2658,8 @@ release composite action.</p>
 <a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__token__</span>
 <a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.PYPI_API_TOKEN }}</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;pip&#39;</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">    </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.12&#39;</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">'pip'</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">    </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">'3.12'</span>
 </code></pre></div>
 <p><strong>How it works:</strong>
 - Installs Python with pip and <code>pyproject.toml</code> dependencies
@@ -2669,12 +2669,12 @@ release composite action.</p>
 <p><strong>No lock file required</strong> — pip resolves dependencies at install time.</p>
 <p><strong>Project setup:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">[project]</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;my-package&quot;</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;1.0.0&quot;</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">dependencies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;requests&gt;=2.28.0&quot;</span><span class="p">]</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"my-package"</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"1.0.0"</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">dependencies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"requests&gt;=2.28.0"</span><span class="p">]</span>
 <a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
 <a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="k">[project.optional-dependencies]</span>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;pytest&gt;=7.0.0&quot;</span><span class="p">]</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"pytest&gt;=7.0.0"</span><span class="p">]</span>
 </code></pre></div>
 <hr />
 <h3 id="uv-recommended">uv (Recommended)<a class="headerlink" href="#uv-recommended" title="Permanent link">&para;</a></h3>
@@ -2686,8 +2686,8 @@ release composite action.</p>
 <a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__token__</span>
 <a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">    </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.PYPI_API_TOKEN }}</span>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">    </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;uv&#39;</span>
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">    </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.12&#39;</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">    </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">'uv'</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">    </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">'3.12'</span>
 </code></pre></div>
 <p><strong>How it works:</strong>
 - Installs Python and uv
@@ -2697,11 +2697,11 @@ release composite action.</p>
 <p><strong>Commit the lock file before your first CI run:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>uv<span class="w"> </span>lock
 <a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>git<span class="w"> </span>add<span class="w"> </span>uv.lock
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;chore: add uv.lock&quot;</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"chore: add uv.lock"</span>
 </code></pre></div>
 <p><strong>Project setup:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">[dependency-groups]</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;pytest&gt;=7.0.0&quot;</span><span class="p">]</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"pytest&gt;=7.0.0"</span><span class="p">]</span>
 </code></pre></div>
 <hr />
 <h3 id="pixi">pixi<a class="headerlink" href="#pixi" title="Permanent link">&para;</a></h3>
@@ -2713,8 +2713,8 @@ release composite action.</p>
 <a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">    </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__token__</span>
 <a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">    </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.PYPI_API_TOKEN }}</span>
-<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">    </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;pixi&#39;</span>
-<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="w">    </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.12&#39;</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">    </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">'pixi'</span>
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="w">    </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">'3.12'</span>
 </code></pre></div>
 <p><strong>How it works:</strong>
 - Installs pixi and activates the default environment
@@ -2723,22 +2723,22 @@ release composite action.</p>
 <p><strong>The pixi environment must include <code>build</code> and <code>twine</code>:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># pixi.toml</span>
 <a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="k">[project]</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;my-package&quot;</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="n">channels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;conda-forge&quot;</span><span class="p">]</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="n">platforms</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;linux-64&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;osx-arm64&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;osx-64&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;win-64&quot;</span><span class="p">]</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"my-package"</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="n">channels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"conda-forge"</span><span class="p">]</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="n">platforms</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"linux-64"</span><span class="p">,</span><span class="w"> </span><span class="s2">"osx-arm64"</span><span class="p">,</span><span class="w"> </span><span class="s2">"osx-64"</span><span class="p">,</span><span class="w"> </span><span class="s2">"win-64"</span><span class="p">]</span>
 <a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>
 <a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="k">[feature.dev.dependencies]</span>
-<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="n">python</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;3.12.*&quot;</span>
-<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="n">python-build</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;*&quot;</span>
-<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="n">twine</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;*&quot;</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="n">python</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"3.12.*"</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="n">python-build</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"*"</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="n">twine</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"*"</span>
 <a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>
 <a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="k">[environments]</span>
-<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="n">default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;dev&quot;</span><span class="p">]</span>
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="n">default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"dev"</span><span class="p">]</span>
 </code></pre></div>
 <p><strong>Commit the lock file:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>pixi<span class="w"> </span>install
 <a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>git<span class="w"> </span>add<span class="w"> </span>pixi.lock
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;chore: add pixi.lock&quot;</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"chore: add pixi.lock"</span>
 </code></pre></div>
 <hr />
 <h2 id="repository-url-examples">Repository URL Examples<a class="headerlink" href="#repository-url-examples" title="Permanent link">&para;</a></h2>
@@ -2757,7 +2757,7 @@ release composite action.</p>
 <a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">    </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__token__</span>
 <a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">    </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.TEST_PYPI_TOKEN }}</span>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">    </span><span class="nt">pypi-repository-url</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;https://test.pypi.org/legacy/&#39;</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">    </span><span class="nt">pypi-repository-url</span><span class="p">:</span><span class="w"> </span><span class="s">'https://test.pypi.org/legacy/'</span>
 </code></pre></div>
 <p><strong>Token scope note:</strong>
 - First-ever upload of a new package: token must be scoped to <strong>All projects</strong>
@@ -2766,15 +2766,15 @@ release composite action.</p>
 <p><strong>Versioning tip:</strong> Publish dev releases to avoid version conflicts across CI runs:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Set unique dev version</span>
 <a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">    </span><span class="no">VERSION=&quot;0.0.dev${{ github.run_number }}&quot;</span>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">    </span><span class="no">sed -i &quot;s/version = \&quot;0.1.0\&quot;/version = \&quot;$VERSION\&quot;/&quot; pyproject.toml</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">    </span><span class="no">VERSION="0.0.dev${{ github.run_number }}"</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">    </span><span class="no">sed -i "s/version = \"0.1.0\"/version = \"$VERSION\"/" pyproject.toml</span>
 <a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>
 <a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">serapeum-org/github-actions/actions/release/pypi@pypi-release/v1</span>
 <a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="w">    </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__token__</span>
 <a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="w">    </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.TEST_PYPI_TOKEN }}</span>
-<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="w">    </span><span class="nt">pypi-repository-url</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;https://test.pypi.org/legacy/&#39;</span>
-<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="w">    </span><span class="nt">verify-lock</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;false&#39;</span><span class="w">   </span><span class="c1"># lock is stale after version patch</span>
+<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="w">    </span><span class="nt">pypi-repository-url</span><span class="p">:</span><span class="w"> </span><span class="s">'https://test.pypi.org/legacy/'</span>
+<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="w">    </span><span class="nt">verify-lock</span><span class="p">:</span><span class="w"> </span><span class="s">'false'</span><span class="w">   </span><span class="c1"># lock is stale after version patch</span>
 </code></pre></div>
 <hr />
 <h3 id="custom-private-index">Custom / Private Index<a class="headerlink" href="#custom-private-index" title="Permanent link">&para;</a></h3>
@@ -2783,7 +2783,7 @@ release composite action.</p>
 <a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">    </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.PRIVATE_INDEX_USER }}</span>
 <a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">    </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.PRIVATE_INDEX_TOKEN }}</span>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">    </span><span class="nt">pypi-repository-url</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;https://my-company.example.com/simple/&#39;</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">    </span><span class="nt">pypi-repository-url</span><span class="p">:</span><span class="w"> </span><span class="s">'https://my-company.example.com/simple/'</span>
 </code></pre></div>
 <hr />
 <h2 id="install-groups-examples">Install Groups Examples<a class="headerlink" href="#install-groups-examples" title="Permanent link">&para;</a></h2>
@@ -2793,7 +2793,7 @@ release composite action.</p>
 <a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">    </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__token__</span>
 <a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">    </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.PYPI_API_TOKEN }}</span>
-<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">    </span><span class="nt">install-groups</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&#39;</span><span class="w">   </span><span class="c1"># default — may be omitted</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">    </span><span class="nt">install-groups</span><span class="p">:</span><span class="w"> </span><span class="s">''</span><span class="w">   </span><span class="c1"># default — may be omitted</span>
 </code></pre></div>
 <hr />
 <h3 id="install-a-pep-735-dependency-group-uv">Install a PEP 735 dependency group (uv)<a class="headerlink" href="#install-a-pep-735-dependency-group-uv" title="Permanent link">&para;</a></h3>
@@ -2801,33 +2801,33 @@ release composite action.</p>
 <a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">    </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__token__</span>
 <a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">    </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.PYPI_API_TOKEN }}</span>
-<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="w">    </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;uv&#39;</span>
-<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="w">    </span><span class="nt">install-groups</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;groups:</span><span class="nv"> </span><span class="s">dev&#39;</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="w">    </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">'uv'</span>
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="w">    </span><span class="nt">install-groups</span><span class="p">:</span><span class="w"> </span><span class="s">'groups:</span><span class="nv"> </span><span class="s">dev'</span>
 </code></pre></div>
 <p><strong><code>pyproject.toml</code>:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="k">[dependency-groups]</span>
-<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;pytest&gt;=7.0.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;mypy&gt;=1.0.0&quot;</span><span class="p">]</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"pytest&gt;=7.0.0"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mypy&gt;=1.0.0"</span><span class="p">]</span>
 </code></pre></div>
 <hr />
 <h3 id="install-multiple-dependency-groups-uv">Install multiple dependency groups (uv)<a class="headerlink" href="#install-multiple-dependency-groups-uv" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nt">install-groups</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;groups:</span><span class="nv"> </span><span class="s">dev</span><span class="nv"> </span><span class="s">lint&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nt">install-groups</span><span class="p">:</span><span class="w"> </span><span class="s">'groups:</span><span class="nv"> </span><span class="s">dev</span><span class="nv"> </span><span class="s">lint'</span>
 </code></pre></div>
 <p><strong><code>pyproject.toml</code>:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="k">[dependency-groups]</span>
-<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="n">dev</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;pytest&gt;=7.0.0&quot;</span><span class="p">]</span>
-<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="n">lint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;black&gt;=23.0.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ruff&gt;=0.1.0&quot;</span><span class="p">]</span>
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="n">dev</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"pytest&gt;=7.0.0"</span><span class="p">]</span>
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="n">lint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"black&gt;=23.0.0"</span><span class="p">,</span><span class="w"> </span><span class="s2">"ruff&gt;=0.1.0"</span><span class="p">]</span>
 </code></pre></div>
 <hr />
 <h3 id="install-optional-extras-pipuv">Install optional extras (pip/uv)<a class="headerlink" href="#install-optional-extras-pipuv" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="nt">install-groups</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;extras:</span><span class="nv"> </span><span class="s">viz&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="nt">install-groups</span><span class="p">:</span><span class="w"> </span><span class="s">'extras:</span><span class="nv"> </span><span class="s">viz'</span>
 </code></pre></div>
 <p><strong><code>pyproject.toml</code>:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="k">[project.optional-dependencies]</span>
-<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="n">viz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;matplotlib&gt;=3.5.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;plotly&gt;=5.0.0&quot;</span><span class="p">]</span>
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="n">viz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"matplotlib&gt;=3.5.0"</span><span class="p">,</span><span class="w"> </span><span class="s2">"plotly&gt;=5.0.0"</span><span class="p">]</span>
 </code></pre></div>
 <hr />
 <h3 id="combine-groups-and-extras-uv">Combine groups and extras (uv)<a class="headerlink" href="#combine-groups-and-extras-uv" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="nt">install-groups</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;groups:</span><span class="nv"> </span><span class="s">dev,</span><span class="nv"> </span><span class="s">extras:</span><span class="nv"> </span><span class="s">viz&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="nt">install-groups</span><span class="p">:</span><span class="w"> </span><span class="s">'groups:</span><span class="nv"> </span><span class="s">dev,</span><span class="nv"> </span><span class="s">extras:</span><span class="nv"> </span><span class="s">viz'</span>
 </code></pre></div>
 <hr />
 <h3 id="named-pixi-environment">Named pixi environment<a class="headerlink" href="#named-pixi-environment" title="Permanent link">&para;</a></h3>
@@ -2837,18 +2837,18 @@ building and publishing:</p>
 <a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="w">    </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__token__</span>
 <a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="w">    </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.PYPI_API_TOKEN }}</span>
-<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="w">    </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;pixi&#39;</span>
-<a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="w">    </span><span class="nt">install-groups</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;release&#39;</span><span class="w">   </span><span class="c1"># activates the &#39;release&#39; environment</span>
+<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="w">    </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">'pixi'</span>
+<a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="w">    </span><span class="nt">install-groups</span><span class="p">:</span><span class="w"> </span><span class="s">'release'</span><span class="w">   </span><span class="c1"># activates the 'release' environment</span>
 </code></pre></div>
 <p><strong><code>pixi.toml</code>:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="k">[feature.release.dependencies]</span>
-<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="n">python</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;3.12.*&quot;</span>
-<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="n">python-build</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;*&quot;</span>
-<a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="n">twine</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;*&quot;</span>
+<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="n">python</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"3.12.*"</span>
+<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="n">python-build</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"*"</span>
+<a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="n">twine</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"*"</span>
 <a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a>
 <a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a><span class="k">[environments]</span>
-<a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a><span class="n">default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;release&quot;</span><span class="p">]</span>
-<a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a><span class="n">release</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;release&quot;</span><span class="p">]</span>
+<a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a><span class="n">default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"release"</span><span class="p">]</span>
+<a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a><span class="n">release</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"release"</span><span class="p">]</span>
 </code></pre></div>
 <blockquote>
 <p><strong>Important:</strong> The selected environment must include <code>python-build</code> and <code>twine</code>.</p>
@@ -2861,7 +2861,7 @@ building and publishing:</p>
 <a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="w">    </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__token__</span>
 <a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="w">    </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.PYPI_API_TOKEN }}</span>
-<a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="w">    </span><span class="nt">verify-lock</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;true&#39;</span><span class="w">   </span><span class="c1"># default — may be omitted</span>
+<a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="w">    </span><span class="nt">verify-lock</span><span class="p">:</span><span class="w"> </span><span class="s">'true'</span><span class="w">   </span><span class="c1"># default — may be omitted</span>
 </code></pre></div>
 <p>If the lock is stale, the job fails with a clear error message. Fix by running <code>uv lock</code> (or
 <code>pixi install</code>) locally and committing the updated lock file.</p>
@@ -2875,7 +2875,7 @@ building and publishing:</p>
 <a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a><span class="w">    </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__token__</span>
 <a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a><span class="w">    </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.PYPI_API_TOKEN }}</span>
-<a id="__codelineno-26-8" name="__codelineno-26-8" href="#__codelineno-26-8"></a><span class="w">    </span><span class="nt">verify-lock</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;false&#39;</span>
+<a id="__codelineno-26-8" name="__codelineno-26-8" href="#__codelineno-26-8"></a><span class="w">    </span><span class="nt">verify-lock</span><span class="p">:</span><span class="w"> </span><span class="s">'false'</span>
 </code></pre></div>
 <blockquote>
 <p><code>verify-lock</code> applies only to uv and pixi. For pip there is no lock file mechanism.</p>
@@ -2893,10 +2893,10 @@ the build pipeline without consuming TestPyPI quota or requiring credentials.</p
 <a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a><span class="w">    </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__token__</span>
 <a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a><span class="w">    </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unused-in-build-only-mode</span>
-<a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a><span class="w">    </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;uv&#39;</span>
-<a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a><span class="w">    </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.12&#39;</span>
-<a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a><span class="w">    </span><span class="nt">verify-lock</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;false&#39;</span>
-<a id="__codelineno-27-12" name="__codelineno-27-12" href="#__codelineno-27-12"></a><span class="w">    </span><span class="nt">skip-publish</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;true&#39;</span>
+<a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a><span class="w">    </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">'uv'</span>
+<a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a><span class="w">    </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">'3.12'</span>
+<a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a><span class="w">    </span><span class="nt">verify-lock</span><span class="p">:</span><span class="w"> </span><span class="s">'false'</span>
+<a id="__codelineno-27-12" name="__codelineno-27-12" href="#__codelineno-27-12"></a><span class="w">    </span><span class="nt">skip-publish</span><span class="p">:</span><span class="w"> </span><span class="s">'true'</span>
 <a id="__codelineno-27-13" name="__codelineno-27-13" href="#__codelineno-27-13"></a>
 <a id="__codelineno-27-14" name="__codelineno-27-14" href="#__codelineno-27-14"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Verify dist artifacts</span>
 <a id="__codelineno-27-15" name="__codelineno-27-15" href="#__codelineno-27-15"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ls dist/*.whl dist/*.tar.gz</span>
@@ -2921,9 +2921,9 @@ the build pipeline without consuming TestPyPI quota or requiring credentials.</p
 <a id="__codelineno-28-16" name="__codelineno-28-16" href="#__codelineno-28-16"></a><span class="w">          </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__token__</span>
 <a id="__codelineno-28-17" name="__codelineno-28-17" href="#__codelineno-28-17"></a><span class="w">          </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unused</span>
 <a id="__codelineno-28-18" name="__codelineno-28-18" href="#__codelineno-28-18"></a><span class="w">          </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.package-manager }}</span>
-<a id="__codelineno-28-19" name="__codelineno-28-19" href="#__codelineno-28-19"></a><span class="w">          </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.12&#39;</span>
-<a id="__codelineno-28-20" name="__codelineno-28-20" href="#__codelineno-28-20"></a><span class="w">          </span><span class="nt">verify-lock</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;false&#39;</span>
-<a id="__codelineno-28-21" name="__codelineno-28-21" href="#__codelineno-28-21"></a><span class="w">          </span><span class="nt">skip-publish</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;true&#39;</span>
+<a id="__codelineno-28-19" name="__codelineno-28-19" href="#__codelineno-28-19"></a><span class="w">          </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">'3.12'</span>
+<a id="__codelineno-28-20" name="__codelineno-28-20" href="#__codelineno-28-20"></a><span class="w">          </span><span class="nt">verify-lock</span><span class="p">:</span><span class="w"> </span><span class="s">'false'</span>
+<a id="__codelineno-28-21" name="__codelineno-28-21" href="#__codelineno-28-21"></a><span class="w">          </span><span class="nt">skip-publish</span><span class="p">:</span><span class="w"> </span><span class="s">'true'</span>
 </code></pre></div>
 <hr />
 <h3 id="build-matrix-across-python-versions">Build matrix across Python versions<a class="headerlink" href="#build-matrix-across-python-versions" title="Permanent link">&para;</a></h3>
@@ -2935,7 +2935,7 @@ the build pipeline without consuming TestPyPI quota or requiring credentials.</p
 <a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a><span class="w">  </span><span class="nt">build</span><span class="p">:</span>
 <a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a><span class="w">    </span><span class="nt">strategy</span><span class="p">:</span>
 <a id="__codelineno-29-8" name="__codelineno-29-8" href="#__codelineno-29-8"></a><span class="w">      </span><span class="nt">matrix</span><span class="p">:</span>
-<a id="__codelineno-29-9" name="__codelineno-29-9" href="#__codelineno-29-9"></a><span class="w">        </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;3.10&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;3.11&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;3.12&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;3.13&#39;</span><span class="p p-Indicator">]</span>
+<a id="__codelineno-29-9" name="__codelineno-29-9" href="#__codelineno-29-9"></a><span class="w">        </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'3.10'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'3.11'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'3.12'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'3.13'</span><span class="p p-Indicator">]</span>
 <a id="__codelineno-29-10" name="__codelineno-29-10" href="#__codelineno-29-10"></a><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
 <a id="__codelineno-29-11" name="__codelineno-29-11" href="#__codelineno-29-11"></a><span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
 <a id="__codelineno-29-12" name="__codelineno-29-12" href="#__codelineno-29-12"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v5</span>
@@ -2944,10 +2944,10 @@ the build pipeline without consuming TestPyPI quota or requiring credentials.</p
 <a id="__codelineno-29-15" name="__codelineno-29-15" href="#__codelineno-29-15"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-29-16" name="__codelineno-29-16" href="#__codelineno-29-16"></a><span class="w">          </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__token__</span>
 <a id="__codelineno-29-17" name="__codelineno-29-17" href="#__codelineno-29-17"></a><span class="w">          </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unused</span>
-<a id="__codelineno-29-18" name="__codelineno-29-18" href="#__codelineno-29-18"></a><span class="w">          </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;uv&#39;</span>
+<a id="__codelineno-29-18" name="__codelineno-29-18" href="#__codelineno-29-18"></a><span class="w">          </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">'uv'</span>
 <a id="__codelineno-29-19" name="__codelineno-29-19" href="#__codelineno-29-19"></a><span class="w">          </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.python-version }}</span>
-<a id="__codelineno-29-20" name="__codelineno-29-20" href="#__codelineno-29-20"></a><span class="w">          </span><span class="nt">verify-lock</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;false&#39;</span>
-<a id="__codelineno-29-21" name="__codelineno-29-21" href="#__codelineno-29-21"></a><span class="w">          </span><span class="nt">skip-publish</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;true&#39;</span>
+<a id="__codelineno-29-20" name="__codelineno-29-20" href="#__codelineno-29-20"></a><span class="w">          </span><span class="nt">verify-lock</span><span class="p">:</span><span class="w"> </span><span class="s">'false'</span>
+<a id="__codelineno-29-21" name="__codelineno-29-21" href="#__codelineno-29-21"></a><span class="w">          </span><span class="nt">skip-publish</span><span class="p">:</span><span class="w"> </span><span class="s">'true'</span>
 </code></pre></div>
 <hr />
 <h3 id="cross-platform-build-validation">Cross-platform build validation<a class="headerlink" href="#cross-platform-build-validation" title="Permanent link">&para;</a></h3>
@@ -2968,10 +2968,10 @@ the build pipeline without consuming TestPyPI quota or requiring credentials.</p
 <a id="__codelineno-30-15" name="__codelineno-30-15" href="#__codelineno-30-15"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-30-16" name="__codelineno-30-16" href="#__codelineno-30-16"></a><span class="w">          </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__token__</span>
 <a id="__codelineno-30-17" name="__codelineno-30-17" href="#__codelineno-30-17"></a><span class="w">          </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unused</span>
-<a id="__codelineno-30-18" name="__codelineno-30-18" href="#__codelineno-30-18"></a><span class="w">          </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;uv&#39;</span>
-<a id="__codelineno-30-19" name="__codelineno-30-19" href="#__codelineno-30-19"></a><span class="w">          </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.12&#39;</span>
-<a id="__codelineno-30-20" name="__codelineno-30-20" href="#__codelineno-30-20"></a><span class="w">          </span><span class="nt">verify-lock</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;false&#39;</span>
-<a id="__codelineno-30-21" name="__codelineno-30-21" href="#__codelineno-30-21"></a><span class="w">          </span><span class="nt">skip-publish</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;true&#39;</span>
+<a id="__codelineno-30-18" name="__codelineno-30-18" href="#__codelineno-30-18"></a><span class="w">          </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">'uv'</span>
+<a id="__codelineno-30-19" name="__codelineno-30-19" href="#__codelineno-30-19"></a><span class="w">          </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">'3.12'</span>
+<a id="__codelineno-30-20" name="__codelineno-30-20" href="#__codelineno-30-20"></a><span class="w">          </span><span class="nt">verify-lock</span><span class="p">:</span><span class="w"> </span><span class="s">'false'</span>
+<a id="__codelineno-30-21" name="__codelineno-30-21" href="#__codelineno-30-21"></a><span class="w">          </span><span class="nt">skip-publish</span><span class="p">:</span><span class="w"> </span><span class="s">'true'</span>
 <a id="__codelineno-30-22" name="__codelineno-30-22" href="#__codelineno-30-22"></a>
 <a id="__codelineno-30-23" name="__codelineno-30-23" href="#__codelineno-30-23"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Verify artifacts</span>
 <a id="__codelineno-30-24" name="__codelineno-30-24" href="#__codelineno-30-24"></a><span class="w">        </span><span class="nt">shell</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bash</span>
@@ -3002,8 +3002,8 @@ the build pipeline without consuming TestPyPI quota or requiring credentials.</p
 <a id="__codelineno-31-19" name="__codelineno-31-19" href="#__codelineno-31-19"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-31-20" name="__codelineno-31-20" href="#__codelineno-31-20"></a><span class="w">          </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__token__</span>
 <a id="__codelineno-31-21" name="__codelineno-31-21" href="#__codelineno-31-21"></a><span class="w">          </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.PYPI_API_TOKEN }}</span>
-<a id="__codelineno-31-22" name="__codelineno-31-22" href="#__codelineno-31-22"></a><span class="w">          </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;uv&#39;</span>
-<a id="__codelineno-31-23" name="__codelineno-31-23" href="#__codelineno-31-23"></a><span class="w">          </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.12&#39;</span>
+<a id="__codelineno-31-22" name="__codelineno-31-22" href="#__codelineno-31-22"></a><span class="w">          </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">'uv'</span>
+<a id="__codelineno-31-23" name="__codelineno-31-23" href="#__codelineno-31-23"></a><span class="w">          </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">'3.12'</span>
 </code></pre></div>
 <hr />
 <h3 id="publish-on-github-release-pip">Publish on GitHub Release (pip)<a class="headerlink" href="#publish-on-github-release-pip" title="Permanent link">&para;</a></h3>
@@ -3026,8 +3026,8 @@ the build pipeline without consuming TestPyPI quota or requiring credentials.</p
 <a id="__codelineno-32-17" name="__codelineno-32-17" href="#__codelineno-32-17"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-32-18" name="__codelineno-32-18" href="#__codelineno-32-18"></a><span class="w">          </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__token__</span>
 <a id="__codelineno-32-19" name="__codelineno-32-19" href="#__codelineno-32-19"></a><span class="w">          </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.PYPI_API_TOKEN }}</span>
-<a id="__codelineno-32-20" name="__codelineno-32-20" href="#__codelineno-32-20"></a><span class="w">          </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;pip&#39;</span>
-<a id="__codelineno-32-21" name="__codelineno-32-21" href="#__codelineno-32-21"></a><span class="w">          </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.12&#39;</span>
+<a id="__codelineno-32-20" name="__codelineno-32-20" href="#__codelineno-32-20"></a><span class="w">          </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">'pip'</span>
+<a id="__codelineno-32-21" name="__codelineno-32-21" href="#__codelineno-32-21"></a><span class="w">          </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">'3.12'</span>
 </code></pre></div>
 <hr />
 <h3 id="publish-on-github-release-pixi">Publish on GitHub Release (pixi)<a class="headerlink" href="#publish-on-github-release-pixi" title="Permanent link">&para;</a></h3>
@@ -3050,8 +3050,8 @@ the build pipeline without consuming TestPyPI quota or requiring credentials.</p
 <a id="__codelineno-33-17" name="__codelineno-33-17" href="#__codelineno-33-17"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-33-18" name="__codelineno-33-18" href="#__codelineno-33-18"></a><span class="w">          </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__token__</span>
 <a id="__codelineno-33-19" name="__codelineno-33-19" href="#__codelineno-33-19"></a><span class="w">          </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.PYPI_API_TOKEN }}</span>
-<a id="__codelineno-33-20" name="__codelineno-33-20" href="#__codelineno-33-20"></a><span class="w">          </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;pixi&#39;</span>
-<a id="__codelineno-33-21" name="__codelineno-33-21" href="#__codelineno-33-21"></a><span class="w">          </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.12&#39;</span>
+<a id="__codelineno-33-20" name="__codelineno-33-20" href="#__codelineno-33-20"></a><span class="w">          </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">'pixi'</span>
+<a id="__codelineno-33-21" name="__codelineno-33-21" href="#__codelineno-33-21"></a><span class="w">          </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">'3.12'</span>
 </code></pre></div>
 <hr />
 <h3 id="github-release-pypi-publish-in-sequence">GitHub Release + PyPI publish in sequence<a class="headerlink" href="#github-release-pypi-publish-in-sequence" title="Permanent link">&para;</a></h3>
@@ -3062,7 +3062,7 @@ the build pipeline without consuming TestPyPI quota or requiring credentials.</p
 <a id="__codelineno-34-4" name="__codelineno-34-4" href="#__codelineno-34-4"></a><span class="w">  </span><span class="nt">workflow_dispatch</span><span class="p">:</span>
 <a id="__codelineno-34-5" name="__codelineno-34-5" href="#__codelineno-34-5"></a><span class="w">    </span><span class="nt">inputs</span><span class="p">:</span>
 <a id="__codelineno-34-6" name="__codelineno-34-6" href="#__codelineno-34-6"></a><span class="w">      </span><span class="nt">increment</span><span class="p">:</span>
-<a id="__codelineno-34-7" name="__codelineno-34-7" href="#__codelineno-34-7"></a><span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Version</span><span class="nv"> </span><span class="s">increment&#39;</span>
+<a id="__codelineno-34-7" name="__codelineno-34-7" href="#__codelineno-34-7"></a><span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">'Version</span><span class="nv"> </span><span class="s">increment'</span>
 <a id="__codelineno-34-8" name="__codelineno-34-8" href="#__codelineno-34-8"></a><span class="w">        </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <a id="__codelineno-34-9" name="__codelineno-34-9" href="#__codelineno-34-9"></a><span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">choice</span>
 <a id="__codelineno-34-10" name="__codelineno-34-10" href="#__codelineno-34-10"></a><span class="w">        </span><span class="nt">options</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">patch</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">minor</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">major</span><span class="p p-Indicator">]</span>
@@ -3093,8 +3093,8 @@ the build pipeline without consuming TestPyPI quota or requiring credentials.</p
 <a id="__codelineno-34-35" name="__codelineno-34-35" href="#__codelineno-34-35"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-34-36" name="__codelineno-34-36" href="#__codelineno-34-36"></a><span class="w">          </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__token__</span>
 <a id="__codelineno-34-37" name="__codelineno-34-37" href="#__codelineno-34-37"></a><span class="w">          </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.PYPI_API_TOKEN }}</span>
-<a id="__codelineno-34-38" name="__codelineno-34-38" href="#__codelineno-34-38"></a><span class="w">          </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;uv&#39;</span>
-<a id="__codelineno-34-39" name="__codelineno-34-39" href="#__codelineno-34-39"></a><span class="w">          </span><span class="nt">verify-lock</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;false&#39;</span><span class="w">   </span><span class="c1"># lock was regenerated by release action</span>
+<a id="__codelineno-34-38" name="__codelineno-34-38" href="#__codelineno-34-38"></a><span class="w">          </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">'uv'</span>
+<a id="__codelineno-34-39" name="__codelineno-34-39" href="#__codelineno-34-39"></a><span class="w">          </span><span class="nt">verify-lock</span><span class="p">:</span><span class="w"> </span><span class="s">'false'</span><span class="w">   </span><span class="c1"># lock was regenerated by release action</span>
 </code></pre></div>
 <hr />
 <h3 id="test-on-pr-publish-on-merge-to-main">Test on PR, publish on merge to main<a class="headerlink" href="#test-on-pr-publish-on-merge-to-main" title="Permanent link">&para;</a></h3>
@@ -3119,11 +3119,11 @@ the build pipeline without consuming TestPyPI quota or requiring credentials.</p
 <a id="__codelineno-35-18" name="__codelineno-35-18" href="#__codelineno-35-18"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-35-19" name="__codelineno-35-19" href="#__codelineno-35-19"></a><span class="w">          </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__token__</span>
 <a id="__codelineno-35-20" name="__codelineno-35-20" href="#__codelineno-35-20"></a><span class="w">          </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unused</span>
-<a id="__codelineno-35-21" name="__codelineno-35-21" href="#__codelineno-35-21"></a><span class="w">          </span><span class="nt">skip-publish</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;true&#39;</span>
-<a id="__codelineno-35-22" name="__codelineno-35-22" href="#__codelineno-35-22"></a><span class="w">          </span><span class="nt">verify-lock</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;false&#39;</span>
+<a id="__codelineno-35-21" name="__codelineno-35-21" href="#__codelineno-35-21"></a><span class="w">          </span><span class="nt">skip-publish</span><span class="p">:</span><span class="w"> </span><span class="s">'true'</span>
+<a id="__codelineno-35-22" name="__codelineno-35-22" href="#__codelineno-35-22"></a><span class="w">          </span><span class="nt">verify-lock</span><span class="p">:</span><span class="w"> </span><span class="s">'false'</span>
 <a id="__codelineno-35-23" name="__codelineno-35-23" href="#__codelineno-35-23"></a>
 <a id="__codelineno-35-24" name="__codelineno-35-24" href="#__codelineno-35-24"></a><span class="w">  </span><span class="nt">publish</span><span class="p">:</span>
-<a id="__codelineno-35-25" name="__codelineno-35-25" href="#__codelineno-35-25"></a><span class="w">    </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github.event_name == &#39;push&#39; &amp;&amp; github.ref == &#39;refs/heads/main&#39;</span>
+<a id="__codelineno-35-25" name="__codelineno-35-25" href="#__codelineno-35-25"></a><span class="w">    </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github.event_name == 'push' &amp;&amp; github.ref == 'refs/heads/main'</span>
 <a id="__codelineno-35-26" name="__codelineno-35-26" href="#__codelineno-35-26"></a><span class="w">    </span><span class="nt">needs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">build-check</span>
 <a id="__codelineno-35-27" name="__codelineno-35-27" href="#__codelineno-35-27"></a><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
 <a id="__codelineno-35-28" name="__codelineno-35-28" href="#__codelineno-35-28"></a><span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
@@ -3143,15 +3143,15 @@ the build pipeline without consuming TestPyPI quota or requiring credentials.</p
 <a id="__codelineno-36-4" name="__codelineno-36-4" href="#__codelineno-36-4"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-36-5" name="__codelineno-36-5" href="#__codelineno-36-5"></a><span class="w">    </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__token__</span>
 <a id="__codelineno-36-6" name="__codelineno-36-6" href="#__codelineno-36-6"></a><span class="w">    </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.PYPI_API_TOKEN }}</span>
-<a id="__codelineno-36-7" name="__codelineno-36-7" href="#__codelineno-36-7"></a><span class="w">    </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;uv&#39;</span>
-<a id="__codelineno-36-8" name="__codelineno-36-8" href="#__codelineno-36-8"></a><span class="w">    </span><span class="nt">install-groups</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;groups:</span><span class="nv"> </span><span class="s">dev,</span><span class="nv"> </span><span class="s">extras:</span><span class="nv"> </span><span class="s">viz&#39;</span>
+<a id="__codelineno-36-7" name="__codelineno-36-7" href="#__codelineno-36-7"></a><span class="w">    </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">'uv'</span>
+<a id="__codelineno-36-8" name="__codelineno-36-8" href="#__codelineno-36-8"></a><span class="w">    </span><span class="nt">install-groups</span><span class="p">:</span><span class="w"> </span><span class="s">'groups:</span><span class="nv"> </span><span class="s">dev,</span><span class="nv"> </span><span class="s">extras:</span><span class="nv"> </span><span class="s">viz'</span>
 </code></pre></div>
 <p><strong><code>pyproject.toml</code>:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="k">[dependency-groups]</span>
-<a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;pytest&gt;=7.0.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;mypy&gt;=1.0.0&quot;</span><span class="p">]</span>
+<a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"pytest&gt;=7.0.0"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mypy&gt;=1.0.0"</span><span class="p">]</span>
 <a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a>
 <a id="__codelineno-37-4" name="__codelineno-37-4" href="#__codelineno-37-4"></a><span class="k">[project.optional-dependencies]</span>
-<a id="__codelineno-37-5" name="__codelineno-37-5" href="#__codelineno-37-5"></a><span class="n">viz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;matplotlib&gt;=3.5.0&quot;</span><span class="p">]</span>
+<a id="__codelineno-37-5" name="__codelineno-37-5" href="#__codelineno-37-5"></a><span class="n">viz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"matplotlib&gt;=3.5.0"</span><span class="p">]</span>
 </code></pre></div>
 <hr />
 <h3 id="testpypi-smoke-test-on-every-push-to-main">TestPyPI smoke-test on every push to main<a class="headerlink" href="#testpypi-smoke-test-on-every-push-to-main" title="Permanent link">&para;</a></h3>
@@ -3174,8 +3174,8 @@ the build pipeline without consuming TestPyPI quota or requiring credentials.</p
 <a id="__codelineno-38-16" name="__codelineno-38-16" href="#__codelineno-38-16"></a>
 <a id="__codelineno-38-17" name="__codelineno-38-17" href="#__codelineno-38-17"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Stamp unique dev version</span>
 <a id="__codelineno-38-18" name="__codelineno-38-18" href="#__codelineno-38-18"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-38-19" name="__codelineno-38-19" href="#__codelineno-38-19"></a><span class="w">          </span><span class="no">VERSION=&quot;0.0.dev${{ github.run_number }}&quot;</span>
-<a id="__codelineno-38-20" name="__codelineno-38-20" href="#__codelineno-38-20"></a><span class="w">          </span><span class="no">sed -i &quot;s/version = \&quot;.*\&quot;/version = \&quot;$VERSION\&quot;/&quot; pyproject.toml</span>
+<a id="__codelineno-38-19" name="__codelineno-38-19" href="#__codelineno-38-19"></a><span class="w">          </span><span class="no">VERSION="0.0.dev${{ github.run_number }}"</span>
+<a id="__codelineno-38-20" name="__codelineno-38-20" href="#__codelineno-38-20"></a><span class="w">          </span><span class="no">sed -i "s/version = \".*\"/version = \"$VERSION\"/" pyproject.toml</span>
 <a id="__codelineno-38-21" name="__codelineno-38-21" href="#__codelineno-38-21"></a>
 <a id="__codelineno-38-22" name="__codelineno-38-22" href="#__codelineno-38-22"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Regenerate lock after version patch</span>
 <a id="__codelineno-38-23" name="__codelineno-38-23" href="#__codelineno-38-23"></a><span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">astral-sh/setup-uv@v4</span>
@@ -3188,9 +3188,9 @@ the build pipeline without consuming TestPyPI quota or requiring credentials.</p
 <a id="__codelineno-38-30" name="__codelineno-38-30" href="#__codelineno-38-30"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-38-31" name="__codelineno-38-31" href="#__codelineno-38-31"></a><span class="w">          </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__token__</span>
 <a id="__codelineno-38-32" name="__codelineno-38-32" href="#__codelineno-38-32"></a><span class="w">          </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.TEST_PYPI_TOKEN }}</span>
-<a id="__codelineno-38-33" name="__codelineno-38-33" href="#__codelineno-38-33"></a><span class="w">          </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;uv&#39;</span>
-<a id="__codelineno-38-34" name="__codelineno-38-34" href="#__codelineno-38-34"></a><span class="w">          </span><span class="nt">pypi-repository-url</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;https://test.pypi.org/legacy/&#39;</span>
-<a id="__codelineno-38-35" name="__codelineno-38-35" href="#__codelineno-38-35"></a><span class="w">          </span><span class="nt">verify-lock</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;false&#39;</span>
+<a id="__codelineno-38-33" name="__codelineno-38-33" href="#__codelineno-38-33"></a><span class="w">          </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">'uv'</span>
+<a id="__codelineno-38-34" name="__codelineno-38-34" href="#__codelineno-38-34"></a><span class="w">          </span><span class="nt">pypi-repository-url</span><span class="p">:</span><span class="w"> </span><span class="s">'https://test.pypi.org/legacy/'</span>
+<a id="__codelineno-38-35" name="__codelineno-38-35" href="#__codelineno-38-35"></a><span class="w">          </span><span class="nt">verify-lock</span><span class="p">:</span><span class="w"> </span><span class="s">'false'</span>
 <a id="__codelineno-38-36" name="__codelineno-38-36" href="#__codelineno-38-36"></a>
 <a id="__codelineno-38-37" name="__codelineno-38-37" href="#__codelineno-38-37"></a><span class="w">  </span><span class="nt">test-publish-pip</span><span class="p">:</span>
 <a id="__codelineno-38-38" name="__codelineno-38-38" href="#__codelineno-38-38"></a><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
@@ -3199,15 +3199,15 @@ the build pipeline without consuming TestPyPI quota or requiring credentials.</p
 <a id="__codelineno-38-41" name="__codelineno-38-41" href="#__codelineno-38-41"></a>
 <a id="__codelineno-38-42" name="__codelineno-38-42" href="#__codelineno-38-42"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Stamp unique dev version (distinct base to avoid collision with uv job)</span>
 <a id="__codelineno-38-43" name="__codelineno-38-43" href="#__codelineno-38-43"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-38-44" name="__codelineno-38-44" href="#__codelineno-38-44"></a><span class="w">          </span><span class="no">VERSION=&quot;0.1.dev${{ github.run_number }}&quot;</span>
-<a id="__codelineno-38-45" name="__codelineno-38-45" href="#__codelineno-38-45"></a><span class="w">          </span><span class="no">sed -i &quot;s/version = \&quot;.*\&quot;/version = \&quot;$VERSION\&quot;/&quot; pyproject.toml</span>
+<a id="__codelineno-38-44" name="__codelineno-38-44" href="#__codelineno-38-44"></a><span class="w">          </span><span class="no">VERSION="0.1.dev${{ github.run_number }}"</span>
+<a id="__codelineno-38-45" name="__codelineno-38-45" href="#__codelineno-38-45"></a><span class="w">          </span><span class="no">sed -i "s/version = \".*\"/version = \"$VERSION\"/" pyproject.toml</span>
 <a id="__codelineno-38-46" name="__codelineno-38-46" href="#__codelineno-38-46"></a>
 <a id="__codelineno-38-47" name="__codelineno-38-47" href="#__codelineno-38-47"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">serapeum-org/github-actions/actions/release/pypi@pypi-release/v1</span>
 <a id="__codelineno-38-48" name="__codelineno-38-48" href="#__codelineno-38-48"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-38-49" name="__codelineno-38-49" href="#__codelineno-38-49"></a><span class="w">          </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__token__</span>
 <a id="__codelineno-38-50" name="__codelineno-38-50" href="#__codelineno-38-50"></a><span class="w">          </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.TEST_PYPI_TOKEN }}</span>
-<a id="__codelineno-38-51" name="__codelineno-38-51" href="#__codelineno-38-51"></a><span class="w">          </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;pip&#39;</span>
-<a id="__codelineno-38-52" name="__codelineno-38-52" href="#__codelineno-38-52"></a><span class="w">          </span><span class="nt">pypi-repository-url</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;https://test.pypi.org/legacy/&#39;</span>
+<a id="__codelineno-38-51" name="__codelineno-38-51" href="#__codelineno-38-51"></a><span class="w">          </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">'pip'</span>
+<a id="__codelineno-38-52" name="__codelineno-38-52" href="#__codelineno-38-52"></a><span class="w">          </span><span class="nt">pypi-repository-url</span><span class="p">:</span><span class="w"> </span><span class="s">'https://test.pypi.org/legacy/'</span>
 <a id="__codelineno-38-53" name="__codelineno-38-53" href="#__codelineno-38-53"></a>
 <a id="__codelineno-38-54" name="__codelineno-38-54" href="#__codelineno-38-54"></a><span class="w">  </span><span class="nt">test-publish-pixi</span><span class="p">:</span>
 <a id="__codelineno-38-55" name="__codelineno-38-55" href="#__codelineno-38-55"></a><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
@@ -3216,16 +3216,16 @@ the build pipeline without consuming TestPyPI quota or requiring credentials.</p
 <a id="__codelineno-38-58" name="__codelineno-38-58" href="#__codelineno-38-58"></a>
 <a id="__codelineno-38-59" name="__codelineno-38-59" href="#__codelineno-38-59"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Stamp unique dev version (distinct base)</span>
 <a id="__codelineno-38-60" name="__codelineno-38-60" href="#__codelineno-38-60"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-38-61" name="__codelineno-38-61" href="#__codelineno-38-61"></a><span class="w">          </span><span class="no">VERSION=&quot;0.2.dev${{ github.run_number }}&quot;</span>
-<a id="__codelineno-38-62" name="__codelineno-38-62" href="#__codelineno-38-62"></a><span class="w">          </span><span class="no">sed -i &quot;s/version = \&quot;.*\&quot;/version = \&quot;$VERSION\&quot;/&quot; pyproject.toml</span>
+<a id="__codelineno-38-61" name="__codelineno-38-61" href="#__codelineno-38-61"></a><span class="w">          </span><span class="no">VERSION="0.2.dev${{ github.run_number }}"</span>
+<a id="__codelineno-38-62" name="__codelineno-38-62" href="#__codelineno-38-62"></a><span class="w">          </span><span class="no">sed -i "s/version = \".*\"/version = \"$VERSION\"/" pyproject.toml</span>
 <a id="__codelineno-38-63" name="__codelineno-38-63" href="#__codelineno-38-63"></a>
 <a id="__codelineno-38-64" name="__codelineno-38-64" href="#__codelineno-38-64"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">serapeum-org/github-actions/actions/release/pypi@pypi-release/v1</span>
 <a id="__codelineno-38-65" name="__codelineno-38-65" href="#__codelineno-38-65"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-38-66" name="__codelineno-38-66" href="#__codelineno-38-66"></a><span class="w">          </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__token__</span>
 <a id="__codelineno-38-67" name="__codelineno-38-67" href="#__codelineno-38-67"></a><span class="w">          </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.TEST_PYPI_TOKEN }}</span>
-<a id="__codelineno-38-68" name="__codelineno-38-68" href="#__codelineno-38-68"></a><span class="w">          </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;pixi&#39;</span>
-<a id="__codelineno-38-69" name="__codelineno-38-69" href="#__codelineno-38-69"></a><span class="w">          </span><span class="nt">pypi-repository-url</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;https://test.pypi.org/legacy/&#39;</span>
-<a id="__codelineno-38-70" name="__codelineno-38-70" href="#__codelineno-38-70"></a><span class="w">          </span><span class="nt">verify-lock</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;false&#39;</span>
+<a id="__codelineno-38-68" name="__codelineno-38-68" href="#__codelineno-38-68"></a><span class="w">          </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">'pixi'</span>
+<a id="__codelineno-38-69" name="__codelineno-38-69" href="#__codelineno-38-69"></a><span class="w">          </span><span class="nt">pypi-repository-url</span><span class="p">:</span><span class="w"> </span><span class="s">'https://test.pypi.org/legacy/'</span>
+<a id="__codelineno-38-70" name="__codelineno-38-70" href="#__codelineno-38-70"></a><span class="w">          </span><span class="nt">verify-lock</span><span class="p">:</span><span class="w"> </span><span class="s">'false'</span>
 </code></pre></div>
 <blockquote>
 <p><strong>Version base strategy:</strong> When running pip, uv, and pixi publish jobs in parallel for the
@@ -3242,13 +3242,13 @@ the filenames uploaded to TestPyPI are distinct. Both <code>N.N.devN</code> form
 <a id="__codelineno-39-4" name="__codelineno-39-4" href="#__codelineno-39-4"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-39-5" name="__codelineno-39-5" href="#__codelineno-39-5"></a><span class="w">    </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__token__</span>
 <a id="__codelineno-39-6" name="__codelineno-39-6" href="#__codelineno-39-6"></a><span class="w">    </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.PYPI_API_TOKEN }}</span>
-<a id="__codelineno-39-7" name="__codelineno-39-7" href="#__codelineno-39-7"></a><span class="w">    </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;uv&#39;</span>
-<a id="__codelineno-39-8" name="__codelineno-39-8" href="#__codelineno-39-8"></a><span class="w">    </span><span class="nt">package</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;serapeum-ollama&#39;</span>
+<a id="__codelineno-39-7" name="__codelineno-39-7" href="#__codelineno-39-7"></a><span class="w">    </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">'uv'</span>
+<a id="__codelineno-39-8" name="__codelineno-39-8" href="#__codelineno-39-8"></a><span class="w">    </span><span class="nt">package</span><span class="p">:</span><span class="w"> </span><span class="s">'serapeum-ollama'</span>
 </code></pre></div>
 <p>Uses <code>uv build --package serapeum-ollama</code> — uv resolves the workspace member by name natively.</p>
 <p><strong>Workspace <code>pyproject.toml</code>:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a><span class="k">[tool.uv.workspace]</span>
-<a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a><span class="n">members</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;packages/*&quot;</span><span class="p">]</span>
+<a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a><span class="n">members</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"packages/*"</span><span class="p">]</span>
 </code></pre></div>
 <hr />
 <h3 id="build-a-specific-workspace-member-pip">Build a specific workspace member (pip)<a class="headerlink" href="#build-a-specific-workspace-member-pip" title="Permanent link">&para;</a></h3>
@@ -3258,8 +3258,8 @@ the filenames uploaded to TestPyPI are distinct. Both <code>N.N.devN</code> form
 <a id="__codelineno-41-4" name="__codelineno-41-4" href="#__codelineno-41-4"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-41-5" name="__codelineno-41-5" href="#__codelineno-41-5"></a><span class="w">    </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__token__</span>
 <a id="__codelineno-41-6" name="__codelineno-41-6" href="#__codelineno-41-6"></a><span class="w">    </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.PYPI_API_TOKEN }}</span>
-<a id="__codelineno-41-7" name="__codelineno-41-7" href="#__codelineno-41-7"></a><span class="w">    </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;pip&#39;</span>
-<a id="__codelineno-41-8" name="__codelineno-41-8" href="#__codelineno-41-8"></a><span class="w">    </span><span class="nt">package</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;serapeum-core&#39;</span>
+<a id="__codelineno-41-7" name="__codelineno-41-7" href="#__codelineno-41-7"></a><span class="w">    </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">'pip'</span>
+<a id="__codelineno-41-8" name="__codelineno-41-8" href="#__codelineno-41-8"></a><span class="w">    </span><span class="nt">package</span><span class="p">:</span><span class="w"> </span><span class="s">'serapeum-core'</span>
 </code></pre></div>
 <p>The action locates <code>packages/serapeum-core/pyproject.toml</code> (by matching <code>name = "serapeum-core"</code>)
 and runs <code>python -m build packages/serapeum-core/ --outdir dist/</code>.</p>
@@ -3271,8 +3271,8 @@ and runs <code>python -m build packages/serapeum-core/ --outdir dist/</code>.</p
 <a id="__codelineno-42-4" name="__codelineno-42-4" href="#__codelineno-42-4"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-42-5" name="__codelineno-42-5" href="#__codelineno-42-5"></a><span class="w">    </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__token__</span>
 <a id="__codelineno-42-6" name="__codelineno-42-6" href="#__codelineno-42-6"></a><span class="w">    </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.PYPI_API_TOKEN }}</span>
-<a id="__codelineno-42-7" name="__codelineno-42-7" href="#__codelineno-42-7"></a><span class="w">    </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;pixi&#39;</span>
-<a id="__codelineno-42-8" name="__codelineno-42-8" href="#__codelineno-42-8"></a><span class="w">    </span><span class="nt">package</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;serapeum-core&#39;</span>
+<a id="__codelineno-42-7" name="__codelineno-42-7" href="#__codelineno-42-7"></a><span class="w">    </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">'pixi'</span>
+<a id="__codelineno-42-8" name="__codelineno-42-8" href="#__codelineno-42-8"></a><span class="w">    </span><span class="nt">package</span><span class="p">:</span><span class="w"> </span><span class="s">'serapeum-core'</span>
 </code></pre></div>
 <p>Same directory-discovery as pip, but the build runs inside the pixi environment:
 <code>pixi run -e default python -m build packages/serapeum-core/ --outdir dist/</code>.</p>
@@ -3303,7 +3303,7 @@ and runs <code>python -m build packages/serapeum-core/ --outdir dist/</code>.</p
 <a id="__codelineno-43-23" name="__codelineno-43-23" href="#__codelineno-43-23"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-43-24" name="__codelineno-43-24" href="#__codelineno-43-24"></a><span class="w">          </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__token__</span>
 <a id="__codelineno-43-25" name="__codelineno-43-25" href="#__codelineno-43-25"></a><span class="w">          </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.PYPI_API_TOKEN }}</span>
-<a id="__codelineno-43-26" name="__codelineno-43-26" href="#__codelineno-43-26"></a><span class="w">          </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;uv&#39;</span>
+<a id="__codelineno-43-26" name="__codelineno-43-26" href="#__codelineno-43-26"></a><span class="w">          </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">'uv'</span>
 <a id="__codelineno-43-27" name="__codelineno-43-27" href="#__codelineno-43-27"></a><span class="w">          </span><span class="nt">package</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.package }}</span>
 </code></pre></div>
 <p>Each job builds and publishes exactly one package from the workspace. Because each matrix job
@@ -3329,9 +3329,9 @@ kilobytes larger than expected.</p>
 <p><strong>Fix:</strong> Add an explicit <code>include</code> list to <code>pyproject.toml</code>:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-45-1" name="__codelineno-45-1" href="#__codelineno-45-1"></a><span class="k">[tool.hatch.build.targets.sdist]</span>
 <a id="__codelineno-45-2" name="__codelineno-45-2" href="#__codelineno-45-2"></a><span class="n">include</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-45-3" name="__codelineno-45-3" href="#__codelineno-45-3"></a><span class="w">    </span><span class="s2">&quot;src/&quot;</span><span class="p">,</span>
-<a id="__codelineno-45-4" name="__codelineno-45-4" href="#__codelineno-45-4"></a><span class="w">    </span><span class="s2">&quot;README.md&quot;</span><span class="p">,</span>
-<a id="__codelineno-45-5" name="__codelineno-45-5" href="#__codelineno-45-5"></a><span class="w">    </span><span class="s2">&quot;pyproject.toml&quot;</span><span class="p">,</span>
+<a id="__codelineno-45-3" name="__codelineno-45-3" href="#__codelineno-45-3"></a><span class="w">    </span><span class="s2">"src/"</span><span class="p">,</span>
+<a id="__codelineno-45-4" name="__codelineno-45-4" href="#__codelineno-45-4"></a><span class="w">    </span><span class="s2">"README.md"</span><span class="p">,</span>
+<a id="__codelineno-45-5" name="__codelineno-45-5" href="#__codelineno-45-5"></a><span class="w">    </span><span class="s2">"pyproject.toml"</span><span class="p">,</span>
 <a id="__codelineno-45-6" name="__codelineno-45-6" href="#__codelineno-45-6"></a><span class="p">]</span>
 </code></pre></div>
 <p>This is a no-op for local development (the project directory is clean) and prevents workspace
@@ -3343,7 +3343,7 @@ pollution in CI.</p>
 <a id="__codelineno-46-3" name="__codelineno-46-3" href="#__codelineno-46-3"></a><span class="nt">on</span><span class="p">:</span>
 <a id="__codelineno-46-4" name="__codelineno-46-4" href="#__codelineno-46-4"></a><span class="w">  </span><span class="nt">push</span><span class="p">:</span>
 <a id="__codelineno-46-5" name="__codelineno-46-5" href="#__codelineno-46-5"></a><span class="w">    </span><span class="nt">tags</span><span class="p">:</span>
-<a id="__codelineno-46-6" name="__codelineno-46-6" href="#__codelineno-46-6"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;v*&#39;</span><span class="w">   </span><span class="c1"># matches v1.0.0, v2.3.4-rc1, etc.</span>
+<a id="__codelineno-46-6" name="__codelineno-46-6" href="#__codelineno-46-6"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'v*'</span><span class="w">   </span><span class="c1"># matches v1.0.0, v2.3.4-rc1, etc.</span>
 <a id="__codelineno-46-7" name="__codelineno-46-7" href="#__codelineno-46-7"></a>
 <a id="__codelineno-46-8" name="__codelineno-46-8" href="#__codelineno-46-8"></a><span class="nt">permissions</span><span class="p">:</span>
 <a id="__codelineno-46-9" name="__codelineno-46-9" href="#__codelineno-46-9"></a><span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span>
@@ -3376,7 +3376,7 @@ pollution in CI.</p>
 <a id="__codelineno-47-13" name="__codelineno-47-13" href="#__codelineno-47-13"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-47-14" name="__codelineno-47-14" href="#__codelineno-47-14"></a><span class="w">          </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__token__</span>
 <a id="__codelineno-47-15" name="__codelineno-47-15" href="#__codelineno-47-15"></a><span class="w">          </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.TEST_PYPI_TOKEN }}</span>
-<a id="__codelineno-47-16" name="__codelineno-47-16" href="#__codelineno-47-16"></a><span class="w">          </span><span class="nt">pypi-repository-url</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;https://test.pypi.org/legacy/&#39;</span>
+<a id="__codelineno-47-16" name="__codelineno-47-16" href="#__codelineno-47-16"></a><span class="w">          </span><span class="nt">pypi-repository-url</span><span class="p">:</span><span class="w"> </span><span class="s">'https://test.pypi.org/legacy/'</span>
 <a id="__codelineno-47-17" name="__codelineno-47-17" href="#__codelineno-47-17"></a>
 <a id="__codelineno-47-18" name="__codelineno-47-18" href="#__codelineno-47-18"></a><span class="w">  </span><span class="nt">publish-pypi</span><span class="p">:</span>
 <a id="__codelineno-47-19" name="__codelineno-47-19" href="#__codelineno-47-19"></a><span class="w">    </span><span class="nt">needs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">publish-testpypi</span><span class="w">   </span><span class="c1"># Only publish to production if TestPyPI succeeds</span>
@@ -3404,8 +3404,8 @@ pollution in CI.</p>
 <a id="__codelineno-48-11" name="__codelineno-48-11" href="#__codelineno-48-11"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-48-12" name="__codelineno-48-12" href="#__codelineno-48-12"></a><span class="w">    </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__token__</span>
 <a id="__codelineno-48-13" name="__codelineno-48-13" href="#__codelineno-48-13"></a><span class="w">    </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unused</span>
-<a id="__codelineno-48-14" name="__codelineno-48-14" href="#__codelineno-48-14"></a><span class="w">    </span><span class="nt">verify-lock</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;true&#39;</span><span class="w">   </span><span class="c1"># now consistent — lock was just generated</span>
-<a id="__codelineno-48-15" name="__codelineno-48-15" href="#__codelineno-48-15"></a><span class="w">    </span><span class="nt">skip-publish</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;true&#39;</span>
+<a id="__codelineno-48-14" name="__codelineno-48-14" href="#__codelineno-48-14"></a><span class="w">    </span><span class="nt">verify-lock</span><span class="p">:</span><span class="w"> </span><span class="s">'true'</span><span class="w">   </span><span class="c1"># now consistent — lock was just generated</span>
+<a id="__codelineno-48-15" name="__codelineno-48-15" href="#__codelineno-48-15"></a><span class="w">    </span><span class="nt">skip-publish</span><span class="p">:</span><span class="w"> </span><span class="s">'true'</span>
 </code></pre></div>
 <hr />
 <h3 id="custom-python-version">Custom Python version<a class="headerlink" href="#custom-python-version" title="Permanent link">&para;</a></h3>
@@ -3413,7 +3413,7 @@ pollution in CI.</p>
 <a id="__codelineno-49-2" name="__codelineno-49-2" href="#__codelineno-49-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-49-3" name="__codelineno-49-3" href="#__codelineno-49-3"></a><span class="w">    </span><span class="nt">pypi-username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__token__</span>
 <a id="__codelineno-49-4" name="__codelineno-49-4" href="#__codelineno-49-4"></a><span class="w">    </span><span class="nt">pypi-password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.PYPI_API_TOKEN }}</span>
-<a id="__codelineno-49-5" name="__codelineno-49-5" href="#__codelineno-49-5"></a><span class="w">    </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.11&#39;</span>
+<a id="__codelineno-49-5" name="__codelineno-49-5" href="#__codelineno-49-5"></a><span class="w">    </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">'3.11'</span>
 </code></pre></div>
 <p>All Python versions supported by <code>actions/setup-python</code> are accepted. The version is passed
 through to the underlying <code>python-setup</code> action.</p>
@@ -3431,10 +3431,10 @@ through to the underlying <code>python-setup</code> action.</p>
 <p>Never store credentials in plaintext in workflow files.</p>
 <h3 id="3-restrict-sdist-to-project-files">3. Restrict sdist to project files<a class="headerlink" href="#3-restrict-sdist-to-project-files" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-52-1" name="__codelineno-52-1" href="#__codelineno-52-1"></a><span class="k">[tool.hatch.build.targets.sdist]</span>
-<a id="__codelineno-52-2" name="__codelineno-52-2" href="#__codelineno-52-2"></a><span class="n">include</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;src/&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;README.md&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;pyproject.toml&quot;</span><span class="p">]</span>
+<a id="__codelineno-52-2" name="__codelineno-52-2" href="#__codelineno-52-2"></a><span class="n">include</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"src/"</span><span class="p">,</span><span class="w"> </span><span class="s2">"README.md"</span><span class="p">,</span><span class="w"> </span><span class="s2">"pyproject.toml"</span><span class="p">]</span>
 </code></pre></div>
 <h3 id="4-commit-your-lock-file">4. Commit your lock file<a class="headerlink" href="#4-commit-your-lock-file" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-53-1" name="__codelineno-53-1" href="#__codelineno-53-1"></a>uv<span class="w"> </span>lock<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>add<span class="w"> </span>uv.lock<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;chore: update uv.lock&quot;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-53-1" name="__codelineno-53-1" href="#__codelineno-53-1"></a>uv<span class="w"> </span>lock<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>add<span class="w"> </span>uv.lock<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"chore: update uv.lock"</span>
 </code></pre></div>
 <p>A committed lock file ensures fully reproducible builds and enables <code>verify-lock='true'</code>.</p>
 <h3 id="5-use-distinct-version-bases-for-parallel-testpypi-jobs">5. Use distinct version bases for parallel TestPyPI jobs<a class="headerlink" href="#5-use-distinct-version-bases-for-parallel-testpypi-jobs" title="Permanent link">&para;</a></h3>
@@ -3540,10 +3540,10 @@ PyPI quota or requiring secrets.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.c21346df.min.js"></script>
       
     
   </body>

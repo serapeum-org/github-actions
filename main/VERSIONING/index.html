@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -29,10 +29,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -3158,34 +3158,34 @@
 <p>Make and commit your changes:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Make your changes</span>
 <a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>git<span class="w"> </span>add<span class="w"> </span>.
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;feat: add caching support to pixi action&quot;</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"feat: add caching support to pixi action"</span>
 <a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>main
 </code></pre></div>
 <h5 id="2-create-specific-version-tag">2. Create Specific Version Tag<a class="headerlink" href="#2-create-specific-version-tag" title="Permanent link">&para;</a></h5>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Create an annotated tag</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>v1.1.0<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Release v1.1.0</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>v1.1.0<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Release v1.1.0</span>
 <a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
 <a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="s2">- Add caching support for faster CI runs</span>
 <a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="s2">- Improve error messages for missing lock files</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="s2">- Update documentation with caching examples&quot;</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="s2">- Update documentation with caching examples"</span>
 <a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>
 <a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="c1"># Push the tag</span>
 <a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>v1.1.0
 </code></pre></div>
 <h5 id="3-create-or-move-major-version-tag">3. Create or Move Major Version Tag<a class="headerlink" href="#3-create-or-move-major-version-tag" title="Permanent link">&para;</a></h5>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Move the major version tag to the new release</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>git<span class="w"> </span>tag<span class="w"> </span>-fa<span class="w"> </span>v1<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Update v1 to v1.1.0&quot;</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>git<span class="w"> </span>tag<span class="w"> </span>-fa<span class="w"> </span>v1<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Update v1 to v1.1.0"</span>
 <a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># Force push (required because we&#39;re overwriting an existing tag)</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># Force push (required because we're overwriting an existing tag)</span>
 <a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>v1<span class="w"> </span>--force
 </code></pre></div>
 <h5 id="4-create-github-release">4. Create GitHub Release<a class="headerlink" href="#4-create-github-release" title="Permanent link">&para;</a></h5>
 <p><strong>Option A: Using GitHub CLI</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>gh<span class="w"> </span>release<span class="w"> </span>create<span class="w"> </span>v1.1.0<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span>--title<span class="w"> </span><span class="s2">&quot;v1.1.0 - Caching Support&quot;</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span>--notes<span class="w"> </span><span class="s2">&quot;## 🎉 New Features</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span>--title<span class="w"> </span><span class="s2">"v1.1.0 - Caching Support"</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span>--notes<span class="w"> </span><span class="s2">"## 🎉 New Features</span>
 <a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="s2">- **Caching**: Enable environment caching with \`cache: &#39;true&#39;\`</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="s2">- **Caching**: Enable environment caching with \`cache: 'true'\`</span>
 <a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="s2">- **Improved Errors**: Better error messages for common issues</span>
 <a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>
 <a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="s2">## 📝 Documentation</span>
@@ -3200,7 +3200,7 @@
 <a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a>
 <a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a><span class="s2">## 📦 Upgrade Notes</span>
 <a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a>
-<a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a><span class="s2">This is a backward-compatible release. Simply update your action reference from \`@v1.0.0\` to \`@v1.1.0\` or use \`@v1\` for automatic updates.&quot;</span>
+<a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a><span class="s2">This is a backward-compatible release. Simply update your action reference from \`@v1.0.0\` to \`@v1.1.0\` or use \`@v1\` for automatic updates."</span>
 </code></pre></div>
 <p><strong>Option B: Using GitHub Web UI</strong></p>
 <ol>
@@ -3218,32 +3218,32 @@
 <p>Make and commit your changes to the specific action:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># Make your changes to actions/python-setup/pip/</span>
 <a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>git<span class="w"> </span>add<span class="w"> </span>actions/python-setup/pip/
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;feat(python-setup/pip): add support for dependency groups&quot;</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"feat(python-setup/pip): add support for dependency groups"</span>
 <a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>main
 </code></pre></div>
 <h5 id="2-create-namespaced-specific-version-tag">2. Create Namespaced Specific Version Tag<a class="headerlink" href="#2-create-namespaced-specific-version-tag" title="Permanent link">&para;</a></h5>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># Create an annotated tag with namespace prefix</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>pip/v1.0.1<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Release pip v1.0.1</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>pip/v1.0.1<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Release pip v1.0.1</span>
 <a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
 <a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="s2">- Add support for PEP 735 dependency groups</span>
 <a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="s2">- Fix cache key generation on Windows</span>
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="s2">- Improve error messages&quot;</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="s2">- Improve error messages"</span>
 <a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>
 <a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="c1"># Push the tag</span>
 <a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>pip/v1.0.1
 </code></pre></div>
 <h5 id="3-create-or-move-namespaced-major-version-tag">3. Create or Move Namespaced Major Version Tag<a class="headerlink" href="#3-create-or-move-namespaced-major-version-tag" title="Permanent link">&para;</a></h5>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># Move the major version tag for this specific action</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>git<span class="w"> </span>tag<span class="w"> </span>-fa<span class="w"> </span>pip/v1<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Update pip v1 to v1.0.1&quot;</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>git<span class="w"> </span>tag<span class="w"> </span>-fa<span class="w"> </span>pip/v1<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Update pip v1 to v1.0.1"</span>
 <a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="c1"># Force push (required because we&#39;re overwriting an existing tag)</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="c1"># Force push (required because we're overwriting an existing tag)</span>
 <a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>pip/v1<span class="w"> </span>--force
 </code></pre></div>
 <h5 id="4-create-github-release_1">4. Create GitHub Release<a class="headerlink" href="#4-create-github-release_1" title="Permanent link">&para;</a></h5>
 <p><strong>Option A: Using GitHub CLI</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>gh<span class="w"> </span>release<span class="w"> </span>create<span class="w"> </span>python-setup/pip/v1.0.1<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">  </span>--title<span class="w"> </span><span class="s2">&quot;python-setup/pip v1.0.1&quot;</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">  </span>--notes<span class="w"> </span><span class="s2">&quot;## 🎉 New Features</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">  </span>--title<span class="w"> </span><span class="s2">"python-setup/pip v1.0.1"</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">  </span>--notes<span class="w"> </span><span class="s2">"## 🎉 New Features</span>
 <a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>
 <a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="s2">- **Dependency Groups**: Support for PEP 735 dependency groups</span>
 <a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="s2">- **Improved Caching**: Better cache key generation on Windows</span>
@@ -3256,7 +3256,7 @@
 <a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="s2">\`\`\`yaml</span>
 <a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a><span class="s2">- uses: serapeum-org/github-actions/actions/python-setup/pip@python-setup/pip/v1.0.1</span>
 <a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a><span class="s2">  # or use @python-setup/pip/v1 for automatic updates</span>
-<a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a><span class="s2">\`\`\`&quot;</span>
+<a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a><span class="s2">\`\`\`"</span>
 </code></pre></div>
 <p><strong>Option B: Using GitHub Web UI</strong></p>
 <ol>
@@ -3275,7 +3275,7 @@
 <a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="nt">on</span><span class="p">:</span>
 <a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">  </span><span class="nt">push</span><span class="p">:</span>
 <a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">    </span><span class="nt">tags</span><span class="p">:</span>
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;v*.*.*&#39;</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'v*.*.*'</span>
 <a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>
 <a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="nt">permissions</span><span class="p">:</span>
 <a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
@@ -3295,8 +3295,8 @@
 <a id="__codelineno-14-23" name="__codelineno-14-23" href="#__codelineno-14-23"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
 <a id="__codelineno-14-24" name="__codelineno-14-24" href="#__codelineno-14-24"></a><span class="w">          </span><span class="no">TAG=${GITHUB_REF#refs/tags/}</span>
 <a id="__codelineno-14-25" name="__codelineno-14-25" href="#__codelineno-14-25"></a><span class="w">          </span><span class="no">MAJOR_VERSION=$(echo $TAG | cut -d. -f1)</span>
-<a id="__codelineno-14-26" name="__codelineno-14-26" href="#__codelineno-14-26"></a><span class="w">          </span><span class="no">echo &quot;tag=$TAG&quot; &gt;&gt; $GITHUB_OUTPUT</span>
-<a id="__codelineno-14-27" name="__codelineno-14-27" href="#__codelineno-14-27"></a><span class="w">          </span><span class="no">echo &quot;major=$MAJOR_VERSION&quot; &gt;&gt; $GITHUB_OUTPUT</span>
+<a id="__codelineno-14-26" name="__codelineno-14-26" href="#__codelineno-14-26"></a><span class="w">          </span><span class="no">echo "tag=$TAG" &gt;&gt; $GITHUB_OUTPUT</span>
+<a id="__codelineno-14-27" name="__codelineno-14-27" href="#__codelineno-14-27"></a><span class="w">          </span><span class="no">echo "major=$MAJOR_VERSION" &gt;&gt; $GITHUB_OUTPUT</span>
 <a id="__codelineno-14-28" name="__codelineno-14-28" href="#__codelineno-14-28"></a>
 <a id="__codelineno-14-29" name="__codelineno-14-29" href="#__codelineno-14-29"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Create GitHub Release</span>
 <a id="__codelineno-14-30" name="__codelineno-14-30" href="#__codelineno-14-30"></a><span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">softprops/action-gh-release@v2</span>
@@ -3307,9 +3307,9 @@
 <a id="__codelineno-14-35" name="__codelineno-14-35" href="#__codelineno-14-35"></a>
 <a id="__codelineno-14-36" name="__codelineno-14-36" href="#__codelineno-14-36"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Update major version tag</span>
 <a id="__codelineno-14-37" name="__codelineno-14-37" href="#__codelineno-14-37"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-14-38" name="__codelineno-14-38" href="#__codelineno-14-38"></a><span class="w">          </span><span class="no">git config user.name &quot;github-actions[bot]&quot;</span>
-<a id="__codelineno-14-39" name="__codelineno-14-39" href="#__codelineno-14-39"></a><span class="w">          </span><span class="no">git config user.email &quot;github-actions[bot]@users.noreply.github.com&quot;</span>
-<a id="__codelineno-14-40" name="__codelineno-14-40" href="#__codelineno-14-40"></a><span class="w">          </span><span class="no">git tag -fa ${{ steps.version.outputs.major }} -m &quot;Update ${{ steps.version.outputs.major }} to ${{ steps.version.outputs.tag }}&quot;</span>
+<a id="__codelineno-14-38" name="__codelineno-14-38" href="#__codelineno-14-38"></a><span class="w">          </span><span class="no">git config user.name "github-actions[bot]"</span>
+<a id="__codelineno-14-39" name="__codelineno-14-39" href="#__codelineno-14-39"></a><span class="w">          </span><span class="no">git config user.email "github-actions[bot]@users.noreply.github.com"</span>
+<a id="__codelineno-14-40" name="__codelineno-14-40" href="#__codelineno-14-40"></a><span class="w">          </span><span class="no">git tag -fa ${{ steps.version.outputs.major }} -m "Update ${{ steps.version.outputs.major }} to ${{ steps.version.outputs.tag }}"</span>
 <a id="__codelineno-14-41" name="__codelineno-14-41" href="#__codelineno-14-41"></a><span class="w">          </span><span class="no">git push origin ${{ steps.version.outputs.major }} --force</span>
 </code></pre></div>
 <p><strong>How it works:</strong>
@@ -3325,7 +3325,7 @@
 <a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="nt">on</span><span class="p">:</span>
 <a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">  </span><span class="nt">push</span><span class="p">:</span>
 <a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">    </span><span class="nt">tags</span><span class="p">:</span>
-<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;*/v*.*.*&#39;</span><span class="w">  </span><span class="c1"># Matches tags like python-setup/pip/v1.0.1</span>
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'*/v*.*.*'</span><span class="w">  </span><span class="c1"># Matches tags like python-setup/pip/v1.0.1</span>
 <a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>
 <a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="nt">permissions</span><span class="p">:</span>
 <a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
@@ -3345,30 +3345,30 @@
 <a id="__codelineno-15-23" name="__codelineno-15-23" href="#__codelineno-15-23"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
 <a id="__codelineno-15-24" name="__codelineno-15-24" href="#__codelineno-15-24"></a><span class="w">          </span><span class="no">TAG=${GITHUB_REF#refs/tags/}</span>
 <a id="__codelineno-15-25" name="__codelineno-15-25" href="#__codelineno-15-25"></a><span class="w">          </span><span class="no"># Extract action name (everything before /vX.Y.Z)</span>
-<a id="__codelineno-15-26" name="__codelineno-15-26" href="#__codelineno-15-26"></a><span class="w">          </span><span class="no">ACTION_NAME=$(echo $TAG | sed &#39;s|/v[0-9].*||&#39;)</span>
+<a id="__codelineno-15-26" name="__codelineno-15-26" href="#__codelineno-15-26"></a><span class="w">          </span><span class="no">ACTION_NAME=$(echo $TAG | sed 's|/v[0-9].*||')</span>
 <a id="__codelineno-15-27" name="__codelineno-15-27" href="#__codelineno-15-27"></a><span class="w">          </span><span class="no"># Extract version (vX.Y.Z)</span>
-<a id="__codelineno-15-28" name="__codelineno-15-28" href="#__codelineno-15-28"></a><span class="w">          </span><span class="no">VERSION=$(echo $TAG | grep -oP &#39;v[0-9]+\.[0-9]+\.[0-9]+$&#39;)</span>
+<a id="__codelineno-15-28" name="__codelineno-15-28" href="#__codelineno-15-28"></a><span class="w">          </span><span class="no">VERSION=$(echo $TAG | grep -oP 'v[0-9]+\.[0-9]+\.[0-9]+$')</span>
 <a id="__codelineno-15-29" name="__codelineno-15-29" href="#__codelineno-15-29"></a><span class="w">          </span><span class="no"># Extract major version (vX)</span>
 <a id="__codelineno-15-30" name="__codelineno-15-30" href="#__codelineno-15-30"></a><span class="w">          </span><span class="no">MAJOR_VERSION=$(echo $VERSION | cut -d. -f1)</span>
 <a id="__codelineno-15-31" name="__codelineno-15-31" href="#__codelineno-15-31"></a>
-<a id="__codelineno-15-32" name="__codelineno-15-32" href="#__codelineno-15-32"></a><span class="w">          </span><span class="no">echo &quot;tag=$TAG&quot; &gt;&gt; $GITHUB_OUTPUT</span>
-<a id="__codelineno-15-33" name="__codelineno-15-33" href="#__codelineno-15-33"></a><span class="w">          </span><span class="no">echo &quot;action=$ACTION_NAME&quot; &gt;&gt; $GITHUB_OUTPUT</span>
-<a id="__codelineno-15-34" name="__codelineno-15-34" href="#__codelineno-15-34"></a><span class="w">          </span><span class="no">echo &quot;version=$VERSION&quot; &gt;&gt; $GITHUB_OUTPUT</span>
-<a id="__codelineno-15-35" name="__codelineno-15-35" href="#__codelineno-15-35"></a><span class="w">          </span><span class="no">echo &quot;major=$ACTION_NAME/$MAJOR_VERSION&quot; &gt;&gt; $GITHUB_OUTPUT</span>
+<a id="__codelineno-15-32" name="__codelineno-15-32" href="#__codelineno-15-32"></a><span class="w">          </span><span class="no">echo "tag=$TAG" &gt;&gt; $GITHUB_OUTPUT</span>
+<a id="__codelineno-15-33" name="__codelineno-15-33" href="#__codelineno-15-33"></a><span class="w">          </span><span class="no">echo "action=$ACTION_NAME" &gt;&gt; $GITHUB_OUTPUT</span>
+<a id="__codelineno-15-34" name="__codelineno-15-34" href="#__codelineno-15-34"></a><span class="w">          </span><span class="no">echo "version=$VERSION" &gt;&gt; $GITHUB_OUTPUT</span>
+<a id="__codelineno-15-35" name="__codelineno-15-35" href="#__codelineno-15-35"></a><span class="w">          </span><span class="no">echo "major=$ACTION_NAME/$MAJOR_VERSION" &gt;&gt; $GITHUB_OUTPUT</span>
 <a id="__codelineno-15-36" name="__codelineno-15-36" href="#__codelineno-15-36"></a>
 <a id="__codelineno-15-37" name="__codelineno-15-37" href="#__codelineno-15-37"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Create GitHub Release</span>
 <a id="__codelineno-15-38" name="__codelineno-15-38" href="#__codelineno-15-38"></a><span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">softprops/action-gh-release@v2</span>
 <a id="__codelineno-15-39" name="__codelineno-15-39" href="#__codelineno-15-39"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
-<a id="__codelineno-15-40" name="__codelineno-15-40" href="#__codelineno-15-40"></a><span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;${{</span><span class="nv"> </span><span class="s">steps.version.outputs.action</span><span class="nv"> </span><span class="s">}}</span><span class="nv"> </span><span class="s">${{</span><span class="nv"> </span><span class="s">steps.version.outputs.version</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-15-40" name="__codelineno-15-40" href="#__codelineno-15-40"></a><span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"${{</span><span class="nv"> </span><span class="s">steps.version.outputs.action</span><span class="nv"> </span><span class="s">}}</span><span class="nv"> </span><span class="s">${{</span><span class="nv"> </span><span class="s">steps.version.outputs.version</span><span class="nv"> </span><span class="s">}}"</span>
 <a id="__codelineno-15-41" name="__codelineno-15-41" href="#__codelineno-15-41"></a><span class="w">          </span><span class="nt">generate_release_notes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <a id="__codelineno-15-42" name="__codelineno-15-42" href="#__codelineno-15-42"></a><span class="w">          </span><span class="nt">draft</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 <a id="__codelineno-15-43" name="__codelineno-15-43" href="#__codelineno-15-43"></a><span class="w">          </span><span class="nt">prerelease</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 <a id="__codelineno-15-44" name="__codelineno-15-44" href="#__codelineno-15-44"></a>
 <a id="__codelineno-15-45" name="__codelineno-15-45" href="#__codelineno-15-45"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Update major version tag</span>
 <a id="__codelineno-15-46" name="__codelineno-15-46" href="#__codelineno-15-46"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-15-47" name="__codelineno-15-47" href="#__codelineno-15-47"></a><span class="w">          </span><span class="no">git config user.name &quot;github-actions[bot]&quot;</span>
-<a id="__codelineno-15-48" name="__codelineno-15-48" href="#__codelineno-15-48"></a><span class="w">          </span><span class="no">git config user.email &quot;github-actions[bot]@users.noreply.github.com&quot;</span>
-<a id="__codelineno-15-49" name="__codelineno-15-49" href="#__codelineno-15-49"></a><span class="w">          </span><span class="no">git tag -fa ${{ steps.version.outputs.major }} -m &quot;Update ${{ steps.version.outputs.major }} to ${{ steps.version.outputs.tag }}&quot;</span>
+<a id="__codelineno-15-47" name="__codelineno-15-47" href="#__codelineno-15-47"></a><span class="w">          </span><span class="no">git config user.name "github-actions[bot]"</span>
+<a id="__codelineno-15-48" name="__codelineno-15-48" href="#__codelineno-15-48"></a><span class="w">          </span><span class="no">git config user.email "github-actions[bot]@users.noreply.github.com"</span>
+<a id="__codelineno-15-49" name="__codelineno-15-49" href="#__codelineno-15-49"></a><span class="w">          </span><span class="no">git tag -fa ${{ steps.version.outputs.major }} -m "Update ${{ steps.version.outputs.major }} to ${{ steps.version.outputs.tag }}"</span>
 <a id="__codelineno-15-50" name="__codelineno-15-50" href="#__codelineno-15-50"></a><span class="w">          </span><span class="no">git push origin ${{ steps.version.outputs.major }} --force</span>
 </code></pre></div>
 <p><strong>How it works:</strong>
@@ -3391,26 +3391,26 @@
 <h3 id="commands-explained">Commands Explained<a class="headerlink" href="#commands-explained" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1"># -f  = force (allows overwriting existing tag)</span>
 <a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="c1"># -a  = annotated (creates tag with metadata)</span>
-<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>git<span class="w"> </span>tag<span class="w"> </span>-fa<span class="w"> </span>v1<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Update v1 to v1.1.0&quot;</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>git<span class="w"> </span>tag<span class="w"> </span>-fa<span class="w"> </span>v1<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Update v1 to v1.1.0"</span>
 <a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>
 <a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="c1"># --force = required to overwrite remote tag</span>
 <a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>v1<span class="w"> </span>--force
 </code></pre></div>
 <h3 id="example-flow">Example Flow<a class="headerlink" href="#example-flow" title="Permanent link">&para;</a></h3>
 <p><strong>Initial Release (v1.0.0):</strong>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>v1.0.0<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Release v1.0.0&quot;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>v1.0.0<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Release v1.0.0"</span>
 <a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>v1.0.0
 <a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>
-<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>v1<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Major version v1 -&gt; v1.0.0&quot;</span>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>v1<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Major version v1 -&gt; v1.0.0"</span>
 <a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>v1
 </code></pre></div></p>
 <p>Result: Both <code>v1</code> and <code>v1.0.0</code> point to the same commit.</p>
 <p><strong>Bug Fix Release (v1.0.1):</strong>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>v1.0.1<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Release v1.0.1&quot;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>v1.0.1<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Release v1.0.1"</span>
 <a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>v1.0.1
 <a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>
 <a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="c1"># Move v1 to point to v1.0.1</span>
-<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>git<span class="w"> </span>tag<span class="w"> </span>-fa<span class="w"> </span>v1<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Update v1 -&gt; v1.0.1&quot;</span>
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>git<span class="w"> </span>tag<span class="w"> </span>-fa<span class="w"> </span>v1<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Update v1 -&gt; v1.0.1"</span>
 <a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>v1<span class="w"> </span>--force
 </code></pre></div></p>
 <p>Result: 
@@ -3418,20 +3418,20 @@
 - <code>v1.0.1</code> → Points to new commit
 - <code>v1</code> → Now points to new commit (moved)</p>
 <p><strong>New Feature Release (v1.1.0):</strong>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>v1.1.0<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Release v1.1.0&quot;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>v1.1.0<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Release v1.1.0"</span>
 <a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>v1.1.0
 <a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>
 <a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="c1"># Move v1 again</span>
-<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>git<span class="w"> </span>tag<span class="w"> </span>-fa<span class="w"> </span>v1<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Update v1 -&gt; v1.1.0&quot;</span>
+<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>git<span class="w"> </span>tag<span class="w"> </span>-fa<span class="w"> </span>v1<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Update v1 -&gt; v1.1.0"</span>
 <a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>v1<span class="w"> </span>--force
 </code></pre></div></p>
 <p>Result: <code>v1</code> now points to v1.1.0 (moved again).</p>
 <p><strong>Breaking Change Release (v2.0.0):</strong>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>v2.0.0<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Release v2.0.0&quot;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>v2.0.0<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Release v2.0.0"</span>
 <a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>v2.0.0
 <a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>
-<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="c1"># Create NEW major version tag (don&#39;t move v1)</span>
-<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>v2<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Major version v2 -&gt; v2.0.0&quot;</span>
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="c1"># Create NEW major version tag (don't move v1)</span>
+<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>v2<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Major version v2 -&gt; v2.0.0"</span>
 <a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>v2
 </code></pre></div></p>
 <p>Result: 
@@ -3545,20 +3545,20 @@
 <p><strong>v1.5.0 - Deprecation:</strong>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="nt">inputs</span><span class="p">:</span>
 <a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="w">  </span><span class="nt">old-name</span><span class="p">:</span>
-<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;DEPRECATED:</span><span class="nv"> </span><span class="s">Use</span><span class="nv"> </span><span class="s">new-name</span><span class="nv"> </span><span class="s">instead&#39;</span>
+<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">'DEPRECATED:</span><span class="nv"> </span><span class="s">Use</span><span class="nv"> </span><span class="s">new-name</span><span class="nv"> </span><span class="s">instead'</span>
 <a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="w">    </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 </code></pre></div></p>
 <p>Add warning in action:
 <div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deprecation warning</span>
-<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="w">  </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">inputs.old-name != &#39;&#39;</span>
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="w">  </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">inputs.old-name != ''</span>
 <a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="w">  </span><span class="nt">shell</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bash</span>
 <a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="w">    </span><span class="no">echo &quot;::warning::Input &#39;old-name&#39; is deprecated and will be removed in v2.0.0. Use &#39;new-name&#39; instead.&quot;</span>
+<a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="w">    </span><span class="no">echo "::warning::Input 'old-name' is deprecated and will be removed in v2.0.0. Use 'new-name' instead."</span>
 </code></pre></div></p>
 <p><strong>v2.0.0 - Removal:</strong>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="nt">inputs</span><span class="p">:</span>
 <a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="w">  </span><span class="nt">new-name</span><span class="p">:</span>
-<a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Replacement</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">old-name&#39;</span>
+<a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">'Replacement</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">old-name'</span>
 <a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="w">    </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 </code></pre></div></p>
 <h4 id="2-migration-guide">2. Migration Guide<a class="headerlink" href="#2-migration-guide" title="Permanent link">&para;</a></h4>
@@ -3575,7 +3575,7 @@
 <a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a><span class="k">-</span><span class="w"> </span>uses: serapeum-org/github-actions/actions/python-setup/pixi@v1
 <a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a>  with:
 <a id="__codelineno-27-12" name="__codelineno-27-12" href="#__codelineno-27-12"></a><span class="k">-</span><span class="w"> </span>  cache-key: custom-key
-<a id="__codelineno-27-13" name="__codelineno-27-13" href="#__codelineno-27-13"></a>    cache: &#39;true&#39;
+<a id="__codelineno-27-13" name="__codelineno-27-13" href="#__codelineno-27-13"></a>    cache: 'true'
 </code></pre></div>
 <p>The action will automatically generate an optimal cache key.</p>
 <h3 id="changed-verify-lock-default">Changed <code>verify-lock</code> default<a class="headerlink" href="#changed-verify-lock-default" title="Permanent link">&para;</a></h3>
@@ -3584,7 +3584,7 @@
 <p>If you want the old behavior:</p>
 <p><div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">serapeum-org/github-actions/actions/python-setup/pixi@v2</span>
 <a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
-<a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="w">    </span><span class="nt">verify-lock</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;false&#39;</span><span class="w">  </span><span class="c1"># Explicit old behavior</span>
+<a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="w">    </span><span class="nt">verify-lock</span><span class="p">:</span><span class="w"> </span><span class="s">'false'</span><span class="w">  </span><span class="c1"># Explicit old behavior</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>## Examples
 <a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>
@@ -3594,118 +3594,118 @@
 <a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a>
 <a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a>```bash
 <a id="__codelineno-29-8" name="__codelineno-29-8" href="#__codelineno-29-8"></a># Initial release
-<a id="__codelineno-29-9" name="__codelineno-29-9" href="#__codelineno-29-9"></a>git tag -a v1.0.0 -m &quot;Release v1.0.0: Initial release&quot;
+<a id="__codelineno-29-9" name="__codelineno-29-9" href="#__codelineno-29-9"></a>git tag -a v1.0.0 -m "Release v1.0.0: Initial release"
 <a id="__codelineno-29-10" name="__codelineno-29-10" href="#__codelineno-29-10"></a>git push origin v1.0.0
 <a id="__codelineno-29-11" name="__codelineno-29-11" href="#__codelineno-29-11"></a>
-<a id="__codelineno-29-12" name="__codelineno-29-12" href="#__codelineno-29-12"></a>git tag -a v1 -m &quot;Major version v1&quot;
+<a id="__codelineno-29-12" name="__codelineno-29-12" href="#__codelineno-29-12"></a>git tag -a v1 -m "Major version v1"
 <a id="__codelineno-29-13" name="__codelineno-29-13" href="#__codelineno-29-13"></a>git push origin v1
 <a id="__codelineno-29-14" name="__codelineno-29-14" href="#__codelineno-29-14"></a>
-<a id="__codelineno-29-15" name="__codelineno-29-15" href="#__codelineno-29-15"></a>gh release create v1.0.0 --title &quot;v1.0.0 - Initial Release&quot; --generate-notes
+<a id="__codelineno-29-15" name="__codelineno-29-15" href="#__codelineno-29-15"></a>gh release create v1.0.0 --title "v1.0.0 - Initial Release" --generate-notes
 </code></pre></div></p>
 <h4 id="example-2-bug-fix">Example 2: Bug Fix<a class="headerlink" href="#example-2-bug-fix" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="c1"># Bug fix release</span>
-<a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>v1.0.1<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Release v1.0.1: Fix cache key generation&quot;</span>
+<a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>v1.0.1<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Release v1.0.1: Fix cache key generation"</span>
 <a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>v1.0.1
 <a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a>
 <a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a><span class="c1"># Move v1 to include the fix</span>
-<a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a>git<span class="w"> </span>tag<span class="w"> </span>-fa<span class="w"> </span>v1<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Update v1 to v1.0.1&quot;</span>
+<a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a>git<span class="w"> </span>tag<span class="w"> </span>-fa<span class="w"> </span>v1<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Update v1 to v1.0.1"</span>
 <a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>v1<span class="w"> </span>--force
 <a id="__codelineno-30-8" name="__codelineno-30-8" href="#__codelineno-30-8"></a>
-<a id="__codelineno-30-9" name="__codelineno-30-9" href="#__codelineno-30-9"></a>gh<span class="w"> </span>release<span class="w"> </span>create<span class="w"> </span>v1.0.1<span class="w"> </span>--title<span class="w"> </span><span class="s2">&quot;v1.0.1 - Bug Fixes&quot;</span><span class="w"> </span>--notes<span class="w"> </span><span class="s2">&quot;Fix cache key generation for Windows&quot;</span>
+<a id="__codelineno-30-9" name="__codelineno-30-9" href="#__codelineno-30-9"></a>gh<span class="w"> </span>release<span class="w"> </span>create<span class="w"> </span>v1.0.1<span class="w"> </span>--title<span class="w"> </span><span class="s2">"v1.0.1 - Bug Fixes"</span><span class="w"> </span>--notes<span class="w"> </span><span class="s2">"Fix cache key generation for Windows"</span>
 </code></pre></div>
 <h4 id="example-3-new-feature">Example 3: New Feature<a class="headerlink" href="#example-3-new-feature" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="c1"># New feature release</span>
-<a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>v1.1.0<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Release v1.1.0: Add caching support&quot;</span>
+<a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>v1.1.0<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Release v1.1.0: Add caching support"</span>
 <a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>v1.1.0
 <a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a>
 <a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a><span class="c1"># Move v1 to include the feature</span>
-<a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a>git<span class="w"> </span>tag<span class="w"> </span>-fa<span class="w"> </span>v1<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Update v1 to v1.1.0&quot;</span>
+<a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a>git<span class="w"> </span>tag<span class="w"> </span>-fa<span class="w"> </span>v1<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Update v1 to v1.1.0"</span>
 <a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>v1<span class="w"> </span>--force
 <a id="__codelineno-31-8" name="__codelineno-31-8" href="#__codelineno-31-8"></a>
-<a id="__codelineno-31-9" name="__codelineno-31-9" href="#__codelineno-31-9"></a>gh<span class="w"> </span>release<span class="w"> </span>create<span class="w"> </span>v1.1.0<span class="w"> </span>--title<span class="w"> </span><span class="s2">&quot;v1.1.0 - Caching Support&quot;</span><span class="w"> </span>--generate-notes
+<a id="__codelineno-31-9" name="__codelineno-31-9" href="#__codelineno-31-9"></a>gh<span class="w"> </span>release<span class="w"> </span>create<span class="w"> </span>v1.1.0<span class="w"> </span>--title<span class="w"> </span><span class="s2">"v1.1.0 - Caching Support"</span><span class="w"> </span>--generate-notes
 </code></pre></div>
 <h4 id="example-4-breaking-change">Example 4: Breaking Change<a class="headerlink" href="#example-4-breaking-change" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="c1"># Breaking change release</span>
-<a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>v2.0.0<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Release v2.0.0: Remove deprecated inputs&quot;</span>
+<a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>v2.0.0<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Release v2.0.0: Remove deprecated inputs"</span>
 <a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>v2.0.0
 <a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a>
-<a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a><span class="c1"># Create NEW major version tag (don&#39;t touch v1)</span>
-<a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>v2<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Major version v2&quot;</span>
+<a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a><span class="c1"># Create NEW major version tag (don't touch v1)</span>
+<a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>v2<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Major version v2"</span>
 <a id="__codelineno-32-7" name="__codelineno-32-7" href="#__codelineno-32-7"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>v2
 <a id="__codelineno-32-8" name="__codelineno-32-8" href="#__codelineno-32-8"></a>
-<a id="__codelineno-32-9" name="__codelineno-32-9" href="#__codelineno-32-9"></a>gh<span class="w"> </span>release<span class="w"> </span>create<span class="w"> </span>v2.0.0<span class="w"> </span>--title<span class="w"> </span><span class="s2">&quot;v2.0.0 - Breaking Changes&quot;</span><span class="w"> </span>--notes<span class="w"> </span><span class="s2">&quot;See MIGRATION.md for upgrade guide&quot;</span>
+<a id="__codelineno-32-9" name="__codelineno-32-9" href="#__codelineno-32-9"></a>gh<span class="w"> </span>release<span class="w"> </span>create<span class="w"> </span>v2.0.0<span class="w"> </span>--title<span class="w"> </span><span class="s2">"v2.0.0 - Breaking Changes"</span><span class="w"> </span>--notes<span class="w"> </span><span class="s2">"See MIGRATION.md for upgrade guide"</span>
 </code></pre></div>
 <h3 id="namespaced-versioning-examples">Namespaced Versioning Examples<a class="headerlink" href="#namespaced-versioning-examples" title="Permanent link">&para;</a></h3>
 <h4 id="example-1-first-release-of-specific-action">Example 1: First Release of Specific Action<a class="headerlink" href="#example-1-first-release-of-specific-action" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="c1"># Initial release of python-setup/pip action</span>
-<a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>python-setup/pip/v1.0.0<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Release python-setup/pip v1.0.0: Initial release&quot;</span>
+<a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>python-setup/pip/v1.0.0<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Release python-setup/pip v1.0.0: Initial release"</span>
 <a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>python-setup/pip/v1.0.0
 <a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a>
-<a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>python-setup/pip/v1<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Major version python-setup/pip v1&quot;</span>
+<a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>python-setup/pip/v1<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Major version python-setup/pip v1"</span>
 <a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>python-setup/pip/v1
 <a id="__codelineno-33-7" name="__codelineno-33-7" href="#__codelineno-33-7"></a>
 <a id="__codelineno-33-8" name="__codelineno-33-8" href="#__codelineno-33-8"></a>gh<span class="w"> </span>release<span class="w"> </span>create<span class="w"> </span>python-setup/pip/v1.0.0<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-33-9" name="__codelineno-33-9" href="#__codelineno-33-9"></a><span class="w">  </span>--title<span class="w"> </span><span class="s2">&quot;python-setup/pip v1.0.0 - Initial Release&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-33-9" name="__codelineno-33-9" href="#__codelineno-33-9"></a><span class="w">  </span>--title<span class="w"> </span><span class="s2">"python-setup/pip v1.0.0 - Initial Release"</span><span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-33-10" name="__codelineno-33-10" href="#__codelineno-33-10"></a><span class="w">  </span>--generate-notes
 </code></pre></div>
 <h4 id="example-2-bug-fix-for-specific-action">Example 2: Bug Fix for Specific Action<a class="headerlink" href="#example-2-bug-fix-for-specific-action" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="c1"># Bug fix release for python-setup/pip</span>
-<a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>python-setup/pip/v1.0.1<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Release python-setup/pip v1.0.1: Fix cache key generation&quot;</span>
+<a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>python-setup/pip/v1.0.1<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Release python-setup/pip v1.0.1: Fix cache key generation"</span>
 <a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>python-setup/pip/v1.0.1
 <a id="__codelineno-34-4" name="__codelineno-34-4" href="#__codelineno-34-4"></a>
 <a id="__codelineno-34-5" name="__codelineno-34-5" href="#__codelineno-34-5"></a><span class="c1"># Move python-setup/pip/v1 to include the fix</span>
-<a id="__codelineno-34-6" name="__codelineno-34-6" href="#__codelineno-34-6"></a>git<span class="w"> </span>tag<span class="w"> </span>-fa<span class="w"> </span>python-setup/pip/v1<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Update python-setup/pip v1 to v1.0.1&quot;</span>
+<a id="__codelineno-34-6" name="__codelineno-34-6" href="#__codelineno-34-6"></a>git<span class="w"> </span>tag<span class="w"> </span>-fa<span class="w"> </span>python-setup/pip/v1<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Update python-setup/pip v1 to v1.0.1"</span>
 <a id="__codelineno-34-7" name="__codelineno-34-7" href="#__codelineno-34-7"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>python-setup/pip/v1<span class="w"> </span>--force
 <a id="__codelineno-34-8" name="__codelineno-34-8" href="#__codelineno-34-8"></a>
 <a id="__codelineno-34-9" name="__codelineno-34-9" href="#__codelineno-34-9"></a>gh<span class="w"> </span>release<span class="w"> </span>create<span class="w"> </span>python-setup/pip/v1.0.1<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-34-10" name="__codelineno-34-10" href="#__codelineno-34-10"></a><span class="w">  </span>--title<span class="w"> </span><span class="s2">&quot;python-setup/pip v1.0.1 - Bug Fixes&quot;</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-34-11" name="__codelineno-34-11" href="#__codelineno-34-11"></a><span class="w">  </span>--notes<span class="w"> </span><span class="s2">&quot;Fix cache key generation for Windows&quot;</span>
+<a id="__codelineno-34-10" name="__codelineno-34-10" href="#__codelineno-34-10"></a><span class="w">  </span>--title<span class="w"> </span><span class="s2">"python-setup/pip v1.0.1 - Bug Fixes"</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-34-11" name="__codelineno-34-11" href="#__codelineno-34-11"></a><span class="w">  </span>--notes<span class="w"> </span><span class="s2">"Fix cache key generation for Windows"</span>
 </code></pre></div>
 <h4 id="example-3-new-feature-for-specific-action">Example 3: New Feature for Specific Action<a class="headerlink" href="#example-3-new-feature-for-specific-action" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a><span class="c1"># New feature release for mkdocs-deploy</span>
-<a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>mkdocs/v1.1.0<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Release mkdocs-deploy v1.1.0: Add custom domain support&quot;</span>
+<a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>mkdocs/v1.1.0<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Release mkdocs-deploy v1.1.0: Add custom domain support"</span>
 <a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>mkdocs/v1.1.0
 <a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a>
 <a id="__codelineno-35-5" name="__codelineno-35-5" href="#__codelineno-35-5"></a><span class="c1"># Move mkdocs/v1 to include the feature</span>
-<a id="__codelineno-35-6" name="__codelineno-35-6" href="#__codelineno-35-6"></a>git<span class="w"> </span>tag<span class="w"> </span>-fa<span class="w"> </span>mkdocs/v1<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Update mkdocs-deploy v1 to v1.1.0&quot;</span>
+<a id="__codelineno-35-6" name="__codelineno-35-6" href="#__codelineno-35-6"></a>git<span class="w"> </span>tag<span class="w"> </span>-fa<span class="w"> </span>mkdocs/v1<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Update mkdocs-deploy v1 to v1.1.0"</span>
 <a id="__codelineno-35-7" name="__codelineno-35-7" href="#__codelineno-35-7"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>mkdocs/v1<span class="w"> </span>--force
 <a id="__codelineno-35-8" name="__codelineno-35-8" href="#__codelineno-35-8"></a>
 <a id="__codelineno-35-9" name="__codelineno-35-9" href="#__codelineno-35-9"></a>gh<span class="w"> </span>release<span class="w"> </span>create<span class="w"> </span>mkdocs/v1.1.0<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-35-10" name="__codelineno-35-10" href="#__codelineno-35-10"></a><span class="w">  </span>--title<span class="w"> </span><span class="s2">&quot;mkdocs-deploy v1.1.0 - Custom Domain Support&quot;</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-35-11" name="__codelineno-35-11" href="#__codelineno-35-11"></a><span class="w">  </span>--notes<span class="w"> </span><span class="s2">&quot;## New Features</span>
+<a id="__codelineno-35-10" name="__codelineno-35-10" href="#__codelineno-35-10"></a><span class="w">  </span>--title<span class="w"> </span><span class="s2">"mkdocs-deploy v1.1.0 - Custom Domain Support"</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-35-11" name="__codelineno-35-11" href="#__codelineno-35-11"></a><span class="w">  </span>--notes<span class="w"> </span><span class="s2">"## New Features</span>
 <a id="__codelineno-35-12" name="__codelineno-35-12" href="#__codelineno-35-12"></a>
 <a id="__codelineno-35-13" name="__codelineno-35-13" href="#__codelineno-35-13"></a><span class="s2">- Add support for custom domain configuration</span>
-<a id="__codelineno-35-14" name="__codelineno-35-14" href="#__codelineno-35-14"></a><span class="s2">- Improve deployment reliability&quot;</span>
+<a id="__codelineno-35-14" name="__codelineno-35-14" href="#__codelineno-35-14"></a><span class="s2">- Improve deployment reliability"</span>
 </code></pre></div>
 <h4 id="example-4-breaking-change-for-specific-action">Example 4: Breaking Change for Specific Action<a class="headerlink" href="#example-4-breaking-change-for-specific-action" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a><span class="c1"># Breaking change release for python-setup/uv</span>
-<a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>python-setup/uv/v2.0.0<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Release python-setup/uv v2.0.0: Remove deprecated inputs&quot;</span>
+<a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>python-setup/uv/v2.0.0<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Release python-setup/uv v2.0.0: Remove deprecated inputs"</span>
 <a id="__codelineno-36-3" name="__codelineno-36-3" href="#__codelineno-36-3"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>python-setup/uv/v2.0.0
 <a id="__codelineno-36-4" name="__codelineno-36-4" href="#__codelineno-36-4"></a>
-<a id="__codelineno-36-5" name="__codelineno-36-5" href="#__codelineno-36-5"></a><span class="c1"># Create NEW major version tag (don&#39;t touch python-setup/uv/v1)</span>
-<a id="__codelineno-36-6" name="__codelineno-36-6" href="#__codelineno-36-6"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>python-setup/uv/v2<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Major version python-setup/uv v2&quot;</span>
+<a id="__codelineno-36-5" name="__codelineno-36-5" href="#__codelineno-36-5"></a><span class="c1"># Create NEW major version tag (don't touch python-setup/uv/v1)</span>
+<a id="__codelineno-36-6" name="__codelineno-36-6" href="#__codelineno-36-6"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>python-setup/uv/v2<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Major version python-setup/uv v2"</span>
 <a id="__codelineno-36-7" name="__codelineno-36-7" href="#__codelineno-36-7"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>python-setup/uv/v2
 <a id="__codelineno-36-8" name="__codelineno-36-8" href="#__codelineno-36-8"></a>
 <a id="__codelineno-36-9" name="__codelineno-36-9" href="#__codelineno-36-9"></a>gh<span class="w"> </span>release<span class="w"> </span>create<span class="w"> </span>python-setup/uv/v2.0.0<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-36-10" name="__codelineno-36-10" href="#__codelineno-36-10"></a><span class="w">  </span>--title<span class="w"> </span><span class="s2">&quot;python-setup/uv v2.0.0 - Breaking Changes&quot;</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-36-11" name="__codelineno-36-11" href="#__codelineno-36-11"></a><span class="w">  </span>--notes<span class="w"> </span><span class="s2">&quot;## Breaking Changes</span>
+<a id="__codelineno-36-10" name="__codelineno-36-10" href="#__codelineno-36-10"></a><span class="w">  </span>--title<span class="w"> </span><span class="s2">"python-setup/uv v2.0.0 - Breaking Changes"</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-36-11" name="__codelineno-36-11" href="#__codelineno-36-11"></a><span class="w">  </span>--notes<span class="w"> </span><span class="s2">"## Breaking Changes</span>
 <a id="__codelineno-36-12" name="__codelineno-36-12" href="#__codelineno-36-12"></a>
 <a id="__codelineno-36-13" name="__codelineno-36-13" href="#__codelineno-36-13"></a><span class="s2">- Removed \`legacy-mode\` input</span>
 <a id="__codelineno-36-14" name="__codelineno-36-14" href="#__codelineno-36-14"></a><span class="s2">- Changed default behavior for lockfile validation</span>
 <a id="__codelineno-36-15" name="__codelineno-36-15" href="#__codelineno-36-15"></a>
-<a id="__codelineno-36-16" name="__codelineno-36-16" href="#__codelineno-36-16"></a><span class="s2">See migration guide in docs.&quot;</span>
+<a id="__codelineno-36-16" name="__codelineno-36-16" href="#__codelineno-36-16"></a><span class="s2">See migration guide in docs."</span>
 </code></pre></div>
 <h4 id="example-5-releasing-multiple-actions-independently">Example 5: Releasing Multiple Actions Independently<a class="headerlink" href="#example-5-releasing-multiple-actions-independently" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="c1"># Release python-setup/pip v1.0.1</span>
-<a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>python-setup/pip/v1.0.1<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Release python-setup/pip v1.0.1&quot;</span>
+<a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>python-setup/pip/v1.0.1<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Release python-setup/pip v1.0.1"</span>
 <a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>python-setup/pip/v1.0.1
-<a id="__codelineno-37-4" name="__codelineno-37-4" href="#__codelineno-37-4"></a>git<span class="w"> </span>tag<span class="w"> </span>-fa<span class="w"> </span>python-setup/pip/v1<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Update to v1.0.1&quot;</span>
+<a id="__codelineno-37-4" name="__codelineno-37-4" href="#__codelineno-37-4"></a>git<span class="w"> </span>tag<span class="w"> </span>-fa<span class="w"> </span>python-setup/pip/v1<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Update to v1.0.1"</span>
 <a id="__codelineno-37-5" name="__codelineno-37-5" href="#__codelineno-37-5"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>python-setup/pip/v1<span class="w"> </span>--force
 <a id="__codelineno-37-6" name="__codelineno-37-6" href="#__codelineno-37-6"></a>
 <a id="__codelineno-37-7" name="__codelineno-37-7" href="#__codelineno-37-7"></a><span class="c1"># Release mkdocs-deploy v1.2.0 (different version, same commit)</span>
-<a id="__codelineno-37-8" name="__codelineno-37-8" href="#__codelineno-37-8"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>mkdocs/v1.2.0<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Release mkdocs-deploy v1.2.0&quot;</span>
+<a id="__codelineno-37-8" name="__codelineno-37-8" href="#__codelineno-37-8"></a>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>mkdocs/v1.2.0<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Release mkdocs-deploy v1.2.0"</span>
 <a id="__codelineno-37-9" name="__codelineno-37-9" href="#__codelineno-37-9"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>mkdocs/v1.2.0
-<a id="__codelineno-37-10" name="__codelineno-37-10" href="#__codelineno-37-10"></a>git<span class="w"> </span>tag<span class="w"> </span>-fa<span class="w"> </span>mkdocs/v1<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Update to v1.2.0&quot;</span>
+<a id="__codelineno-37-10" name="__codelineno-37-10" href="#__codelineno-37-10"></a>git<span class="w"> </span>tag<span class="w"> </span>-fa<span class="w"> </span>mkdocs/v1<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Update to v1.2.0"</span>
 <a id="__codelineno-37-11" name="__codelineno-37-11" href="#__codelineno-37-11"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>mkdocs/v1<span class="w"> </span>--force
 <a id="__codelineno-37-12" name="__codelineno-37-12" href="#__codelineno-37-12"></a>
 <a id="__codelineno-37-13" name="__codelineno-37-13" href="#__codelineno-37-13"></a><span class="c1"># python-setup/uv can stay at its current version - not affected</span>
@@ -3830,10 +3830,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../assets/javascripts/bundle.c21346df.min.js"></script>
       
     
   </body>
