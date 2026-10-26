@@ -2,6 +2,10 @@ name: Test python-setup/pip
 
 on:
   push:
+    paths:
+      - 'actions/python-setup/pip/**'
+      - 'tests/data/pip/**'
+      - '.github/workflows/test-python-setup-pip.yml'
 
 jobs:
   test-pip-basic:

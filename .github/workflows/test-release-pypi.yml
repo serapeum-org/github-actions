@@ -2,7 +2,10 @@ name: Test release/pypi
 
 on:
   push:
-    branches: [main]
+    paths:
+      - 'actions/release/pypi/**'
+      - 'tests/data/release-pypi/**'
+      - '.github/workflows/test-release-pypi.yml'
   workflow_dispatch:
 
 permissions:

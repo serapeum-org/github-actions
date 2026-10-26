@@ -2,7 +2,11 @@ name: Test release/github
 
 on:
   push:
-    branches: [main]
+    paths:
+      - 'actions/release/github/**'
+      - 'tests/data/release-github/**'
+      - '.github/workflows/test-release-github.yml'
+      - '.github/workflows/test-helpers/**'
   workflow_dispatch:
 
 # contents: read is sufficient ONLY because every job below invokes

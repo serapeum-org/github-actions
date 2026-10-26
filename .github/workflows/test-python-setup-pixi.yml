@@ -2,6 +2,10 @@ name: Test python-setup/pixi
 
 on:
   push:
+    paths:
+      - 'actions/python-setup/pixi/**'
+      - 'tests/data/pixi/**'
+      - '.github/workflows/test-python-setup-pixi.yml'
 
 jobs:
   test-pixi-basic:
