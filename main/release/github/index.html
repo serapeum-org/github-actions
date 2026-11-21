@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.2">
     
     
       
@@ -893,6 +893,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#outputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outputs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tag-after-merge-releases-skip-tag" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tag-after-merge releases (skip-tag)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#monorepo-support" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1689,6 +1711,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#outputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outputs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tag-after-merge-releases-skip-tag" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tag-after-merge releases (skip-tag)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#monorepo-support" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2139,6 +2183,12 @@
 <td>No</td>
 <td><code>false</code></td>
 </tr>
+<tr>
+<td><code>skip-tag</code></td>
+<td>Bump + commit without creating a git tag (tag-after-merge model). Implies no GitHub Release.</td>
+<td>No</td>
+<td><code>false</code></td>
+</tr>
 </tbody>
 </table>
 <h3 id="install-groups-format">Install Groups Format<a class="headerlink" href="#install-groups-format" title="Permanent link">&para;</a></h3>
@@ -2152,26 +2202,60 @@
 - <code>"default"</code> - Use default environment
 - <code>"py312"</code> - Single named environment
 - <code>"py312 py313"</code> - Multiple environments</p>
+<h2 id="outputs">Outputs<a class="headerlink" href="#outputs" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Output</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>version</code></td>
+<td>The version computed by commitizen (equals the tag name under the repo's <code>tag_format</code>). Available in both modes.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="tag-after-merge-releases-skip-tag">Tag-after-merge releases (<code>skip-tag</code>)<a class="headerlink" href="#tag-after-merge-releases-skip-tag" title="Permanent link">&para;</a></h2>
+<p>By default the action runs <code>cz bump</code>, which creates the version-bump <strong>commit and the git tag together</strong> on the
+branch it runs on. If the consuming repo squash-merges that branch into <code>main</code>, the squash rewrites the commit and
+the pre-made tag is left pointing at a commit that is never an ancestor of <code>main</code> — an <strong>orphaned tag</strong>.</p>
+<p>Set <code>skip-tag: 'true'</code> to support a <strong>tag-after-merge</strong> model: the action bumps the version files + changelog,
+folds in the refreshed lockfile (uv/pixi), and lands it all as <strong>one commit with no tag</strong>; the release PR is merged
+first, and the tag is created afterwards on the commit that is actually on <code>main</code>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Bump without tagging</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bump</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">serapeum-org/github-actions/actions/release/github@github-release/v1.6.0</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="nt">github-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GITHUB_TOKEN }}</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="nt">increment</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ inputs.increment }}</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="nt">skip-tag</span><span class="p">:</span><span class="w"> </span><span class="s">'true'</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">echo "Computed version is ${{ steps.bump.outputs.version }}"</span>
+</code></pre></div>
+<p><code>skip-tag: 'true'</code> <strong>implies no GitHub Release</strong> — <code>softprops/action-gh-release</code> would otherwise create the tag
+itself from <code>tag_name</code>, re-introducing the orphaned tag it is meant to avoid. Creating the tag and GitHub Release
+after the merge is a separate step (see #9).</p>
 <h2 id="monorepo-support">Monorepo Support<a class="headerlink" href="#monorepo-support" title="Permanent link">&para;</a></h2>
 <p>Use the <code>config-file</code> input to release a sub-package in a monorepo that has its own Commitizen configuration.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Release sub-package</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">serapeum-org/github-actions/actions/release/github@github-release/v1</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nt">github-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GITHUB_TOKEN }}</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="nt">increment</span><span class="p">:</span><span class="w"> </span><span class="s">'minor'</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="nt">config-file</span><span class="p">:</span><span class="w"> </span><span class="s">'libs/my-package/pyproject.toml'</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Release sub-package</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">serapeum-org/github-actions/actions/release/github@github-release/v1</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="nt">github-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GITHUB_TOKEN }}</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="nt">increment</span><span class="p">:</span><span class="w"> </span><span class="s">'minor'</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="nt">config-file</span><span class="p">:</span><span class="w"> </span><span class="s">'libs/my-package/pyproject.toml'</span>
 </code></pre></div>
 <h3 id="how-it-works">How it works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h3>
 <p>When <code>config-file</code> is provided, the action determines the working directory as <code>dirname(config-file)</code> (e.g. <code>libs/my-package/</code>) and runs all Commitizen commands from there. The Python environment is still installed from the repository root before changing directory.</p>
 <p><strong>Important:</strong> All paths inside the sub-package's <code>pyproject.toml</code> Commitizen config must be relative to that sub-package directory, <strong>not</strong> the repository root:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># libs/my-package/pyproject.toml</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">[tool.commitizen]</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"cz_conventional_commits"</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"0.1.0"</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="n">version_files</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"pyproject.toml:version"</span><span class="p">]</span><span class="w">   </span><span class="c1"># relative to libs/my-package/</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">tag_format</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"my-package-$version"</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="n">update_changelog_on_bump</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="n">changelog_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"docs/change-log.md"</span><span class="w">        </span><span class="c1"># relative to libs/my-package/</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># libs/my-package/pyproject.toml</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">[tool.commitizen]</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"cz_conventional_commits"</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"0.1.0"</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="n">version_files</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"pyproject.toml:version"</span><span class="p">]</span><span class="w">   </span><span class="c1"># relative to libs/my-package/</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="n">tag_format</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"my-package-$version"</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="n">update_changelog_on_bump</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="n">changelog_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"docs/change-log.md"</span><span class="w">        </span><span class="c1"># relative to libs/my-package/</span>
 </code></pre></div>
 <p>The root <code>pyproject.toml</code> and its changelog are left untouched.</p>
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
@@ -2179,34 +2263,34 @@
 <ol>
 <li><strong>pyproject.toml</strong> with Commitizen configuration:</li>
 </ol>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">[tool.commitizen]</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"cz_conventional_commits"</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"0.1.0"</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">version_files</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"pyproject.toml:version"</span><span class="p">]</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="n">tag_format</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"$version"</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="n">update_changelog_on_bump</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w">  </span><span class="c1"># Required for automatic changelog updates</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">[tool.commitizen]</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"cz_conventional_commits"</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"0.1.0"</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">version_files</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"pyproject.toml:version"</span><span class="p">]</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">tag_format</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"$version"</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="n">update_changelog_on_bump</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w">  </span><span class="c1"># Required for automatic changelog updates</span>
 </code></pre></div>
 <p><strong>Important:</strong> The <code>update_changelog_on_bump = true</code> setting is <strong>recommended</strong> but not strictly required. If not set, the action will detect this and generate the changelog manually, then amend it to the version bump commit.</p>
 <p><strong>Optional Commitizen settings:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">[tool.commitizen]</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="c1"># ... other settings ...</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">changelog_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"CHANGELOG.md"</span><span class="w">      </span><span class="c1"># Custom changelog path (default: CHANGELOG.md)</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">changelog_incremental</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w">         </span><span class="c1"># Incremental updates (default: false)</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">changelog_merge_prerelease</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w">    </span><span class="c1"># Merge prerelease entries (default: false)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">[tool.commitizen]</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="c1"># ... other settings ...</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">changelog_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"CHANGELOG.md"</span><span class="w">      </span><span class="c1"># Custom changelog path (default: CHANGELOG.md)</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="n">changelog_incremental</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w">         </span><span class="c1"># Incremental updates (default: false)</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="n">changelog_merge_prerelease</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w">    </span><span class="c1"># Merge prerelease entries (default: false)</span>
 </code></pre></div>
 <ol>
 <li><strong>Changelog file</strong> (default: <code>CHANGELOG.md</code>, can be empty initially):</li>
 </ol>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="gh"># Changelog</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>All notable changes to this project will be documented in this file.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="gh"># Changelog</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>All notable changes to this project will be documented in this file.
 </code></pre></div>
 <h3 id="commitizen-in-dependencies">Commitizen in Dependencies<a class="headerlink" href="#commitizen-in-dependencies" title="Permanent link">&para;</a></h3>
 <p>Add Commitizen to your project dependencies:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">[dependency-groups]</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="s2">"commitizen&gt;=3.0.0"</span><span class="p">,</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">[dependency-groups]</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">    </span><span class="s2">"commitizen&gt;=3.0.0"</span><span class="p">,</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="p">]</span>
 </code></pre></div>
 <h3 id="changelog-settings-first-release-vs-subsequent-releases">Changelog settings: first release vs. subsequent releases<a class="headerlink" href="#changelog-settings-first-release-vs-subsequent-releases" title="Permanent link">&para;</a></h3>
 <p>Two Commitizen settings interact with how this action generates the changelog, and the correct values differ for the
@@ -2220,26 +2304,26 @@ very first release (no git tags yet) versus every release after it.</p>
   changelog step once tags exist). <code>changelog_incremental</code> has no effect unless this is <code>true</code>.</li>
 </ul>
 <p><strong>For the first release</strong> (no tags yet):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">[tool.commitizen]</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">changelog_incremental</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="w">   </span><span class="c1"># true -&gt; "No tag found to do an incremental changelog" (exit 16)</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">update_changelog_on_bump</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w">    </span><span class="c1"># first release still works: the action generates the changelog itself</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">[tool.commitizen]</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">changelog_incremental</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="w">   </span><span class="c1"># true -&gt; "No tag found to do an incremental changelog" (exit 16)</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="n">update_changelog_on_bump</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w">    </span><span class="c1"># first release still works: the action generates the changelog itself</span>
 </code></pre></div>
 <p>The action detects the first release, generates the full changelog with <code>cz changelog</code>, and (if
 <code>update_changelog_on_bump = true</code>) temporarily toggles it off for the bump, then restores it — so you can set
 <code>update_changelog_on_bump = true</code> from the start and never touch it again.</p>
 <p><strong>For every release after the first</strong> (a tag now exists):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">[tool.commitizen]</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">changelog_incremental</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w">    </span><span class="c1"># safe now — a prior tag exists; appends only the new section</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="n">update_changelog_on_bump</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w">    </span><span class="c1"># required, or the changelog stops advancing past the last release</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">[tool.commitizen]</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">changelog_incremental</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w">    </span><span class="c1"># safe now — a prior tag exists; appends only the new section</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="n">update_changelog_on_bump</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w">    </span><span class="c1"># required, or the changelog stops advancing past the last release</span>
 </code></pre></div>
 <p><code>changelog_incremental = true</code> is optional — <code>false</code> keeps working and just regenerates the whole changelog from
 history each run (more diff churn, identical content). <code>update_changelog_on_bump = true</code> is the one that matters: if
 it is <code>false</code>, releases after the first bump the version and tag but never update the changelog, and the GitHub
 Release notes fall back to a generic <code>Release X</code>.</p>
 <p><strong>Simplest set-once config</strong> (works for the first release and all later ones, no flag juggling):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">[tool.commitizen]</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">changelog_incremental</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="n">update_changelog_on_bump</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">[tool.commitizen]</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">changelog_incremental</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="n">update_changelog_on_bump</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
 </code></pre></div>
 <blockquote>
 <p>Merge the release branch into the default branch with a <strong>merge commit or fast-forward, never a squash or rebase</strong>.
@@ -2353,24 +2437,24 @@ which breaks <code>git describe</code> and the next release's incremental change
 <h2 id="changelog-generation">Changelog Generation<a class="headerlink" href="#changelog-generation" title="Permanent link">&para;</a></h2>
 <h3 id="first-release-no-tags">First Release (No Tags)<a class="headerlink" href="#first-release-no-tags" title="Permanent link">&para;</a></h3>
 <p>When no tags exist, the action generates a <strong>full changelog</strong> from all commits:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="gu">## 0.1.0 (2024-01-18)</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="gu">### Features</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="k">-</span><span class="w"> </span>feat: add user authentication
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="k">-</span><span class="w"> </span>feat: add database integration
-<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>
-<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="gu">### Bug Fixes</span>
-<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>
-<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="k">-</span><span class="w"> </span>fix: resolve login issue
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="gu">## 0.1.0 (2024-01-18)</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="gu">### Features</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="k">-</span><span class="w"> </span>feat: add user authentication
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="k">-</span><span class="w"> </span>feat: add database integration
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="gu">### Bug Fixes</span>
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="k">-</span><span class="w"> </span>fix: resolve login issue
 </code></pre></div>
 <h3 id="subsequent-releases-1-tags">Subsequent Releases (1+ Tags)<a class="headerlink" href="#subsequent-releases-1-tags" title="Permanent link">&para;</a></h3>
 <p>With existing tags, the action generates an <strong>incremental changelog</strong> from the last tag:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="gu">## 0.1.1 (2024-01-19)</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="gu">### Bug Fixes</span>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="k">-</span><span class="w"> </span>fix: patch security vulnerability
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="gu">## 0.1.1 (2024-01-19)</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="gu">### Bug Fixes</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="k">-</span><span class="w"> </span>fix: patch security vulnerability
 </code></pre></div>
 <h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
 <p>See <a href="EXAMPLES/">EXAMPLES.md</a> for comprehensive examples covering:</p>
@@ -2384,8 +2468,8 @@ which breaks <code>git describe</code> and the next release's incremental change
 </ul>
 <h2 id="permissions">Permissions<a class="headerlink" href="#permissions" title="Permanent link">&para;</a></h2>
 <p>The action requires <code>contents: write</code> permission:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nt">permissions</span><span class="p">:</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nt">permissions</span><span class="p">:</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
 </code></pre></div>
 <p>This allows the action to:
 - Push commits and tags
@@ -2393,13 +2477,13 @@ which breaks <code>git describe</code> and the next release's incremental change
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
 <h3 id="error-changelogmd-file-not-found">Error: "CHANGELOG.md file not found"<a class="headerlink" href="#error-changelogmd-file-not-found" title="Permanent link">&para;</a></h3>
 <p><strong>Solution:</strong> Create a CHANGELOG.md file at the expected location:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>cat<span class="w"> </span>&gt;<span class="w"> </span>CHANGELOG.md<span class="w"> </span><span class="s">&lt;&lt; 'EOF'</span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="s"># Changelog</span>
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="s">All notable changes to this project will be documented in this file.</span>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="s">EOF</span>
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>git<span class="w"> </span>add<span class="w"> </span>CHANGELOG.md
-<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"docs: add changelog"</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>cat<span class="w"> </span>&gt;<span class="w"> </span>CHANGELOG.md<span class="w"> </span><span class="s">&lt;&lt; 'EOF'</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="s"># Changelog</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="s">All notable changes to this project will be documented in this file.</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="s">EOF</span>
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>git<span class="w"> </span>add<span class="w"> </span>CHANGELOG.md
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"docs: add changelog"</span>
 </code></pre></div>
 <p>If using <code>config-file</code> for a monorepo sub-package, the changelog path is resolved <strong>relative to the sub-package directory</strong> (i.e. <code>dirname(config-file)</code>). Ensure the file configured under <code>changelog_file</code> exists inside that directory, not the repository root.</p>
 <h3 id="error-no-commits-found">Error: "No commits found"<a class="headerlink" href="#error-no-commits-found" title="Permanent link">&para;</a></h3>
@@ -2422,16 +2506,16 @@ which breaks <code>git describe</code> and the next release's incremental change
 <li><strong>Missing <code>update_changelog_on_bump = true</code></strong></li>
 </ol>
 <p>The action will automatically detect this and generate the changelog manually. However, for optimal performance, add this to your <code>pyproject.toml</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="k">[tool.commitizen]</span>
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="c1"># ... other settings ...</span>
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="n">update_changelog_on_bump</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">[tool.commitizen]</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="c1"># ... other settings ...</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="n">update_changelog_on_bump</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
 </code></pre></div>
 <ol>
 <li><strong>Custom changelog file path</strong></li>
 </ol>
 <p>If using a custom path (e.g., <code>docs/HISTORY.md</code>), ensure it's configured:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">[tool.commitizen]</span>
-<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="n">changelog_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"docs/HISTORY.md"</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="k">[tool.commitizen]</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="n">changelog_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"docs/HISTORY.md"</span>
 </code></pre></div>
 <p>The action automatically detects and uses the configured path.</p>
 <ol>
@@ -2512,7 +2596,7 @@ which breaks <code>git describe</code> and the next release's incremental change
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
+      <script src="../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
     
   </body>
