@@ -1,7 +1,9 @@
 name: Test release/github
 
 on:
+  workflow_call:
   push:
+    branches-ignore: [main]
     paths:
       - 'actions/release/github/**'
       - 'tests/data/release-github/**'

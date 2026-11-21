@@ -1,7 +1,9 @@
 name: Test release/pypi
 
 on:
+  workflow_call:
   push:
+    branches-ignore: [main]
     paths:
       - 'actions/release/pypi/**'
       - 'tests/data/release-pypi/**'

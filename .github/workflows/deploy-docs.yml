@@ -1,13 +1,7 @@
 name: Deploy Documentation
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'docs/**'
-      - 'mkdocs.yml'
-      - 'actions/**/action.yml'
-      - 'scripts/generate_action_docs.py'
+  workflow_call:
   workflow_dispatch:
 
 permissions:

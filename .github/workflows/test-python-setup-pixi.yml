@@ -1,7 +1,9 @@
 name: Test python-setup/pixi
 
 on:
+  workflow_call:
   push:
+    branches-ignore: [main]
     paths:
       - 'actions/python-setup/pixi/**'
       - 'tests/data/pixi/**'

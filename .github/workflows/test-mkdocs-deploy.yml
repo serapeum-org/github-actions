@@ -1,7 +1,9 @@
 name: Test mkdocs-deploy
 
 on:
+  workflow_call:
   push:
+    branches-ignore: [main]
     paths:
       - 'actions/mkdocs-deploy/**'
       - 'tests/data/mkdocs-deploy/**'

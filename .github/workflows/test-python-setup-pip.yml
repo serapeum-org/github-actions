@@ -1,7 +1,9 @@
 name: Test python-setup/pip
 
 on:
+  workflow_call:
   push:
+    branches-ignore: [main]
     paths:
       - 'actions/python-setup/pip/**'
       - 'tests/data/pip/**'

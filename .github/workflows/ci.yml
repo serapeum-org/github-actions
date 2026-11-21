@@ -1,0 +1,44 @@
+name: CI (main)
+
+# Runs the full suite on every push to main (i.e. every merge), regardless of
+# which files changed. Each job calls one of the existing workflows as a
+# reusable workflow. Those workflows keep their own path-filtered push triggers
+# for feature branches (branches-ignore: [main]), so main is driven only from
+# here and nothing double-runs.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  python-setup-pip:
+    uses: ./.github/workflows/test-python-setup-pip.yml
+    secrets: inherit
+
+  python-setup-pixi:
+    uses: ./.github/workflows/test-python-setup-pixi.yml
+    secrets: inherit
+
+  python-setup-uv:
+    uses: ./.github/workflows/test-python-setup-uv.yml
+    secrets: inherit
+
+  mkdocs-deploy:
+    uses: ./.github/workflows/test-mkdocs-deploy.yml
+    secrets: inherit
+
+  release-github:
+    uses: ./.github/workflows/test-release-github.yml
+    secrets: inherit
+
+  release-pypi:
+    uses: ./.github/workflows/test-release-pypi.yml
+    secrets: inherit
+
+  deploy-docs:
+    uses: ./.github/workflows/deploy-docs.yml
+    secrets: inherit
