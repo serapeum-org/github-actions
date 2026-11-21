@@ -1,5 +1,11 @@
 name: Test release/github
 
+# Exercises the release/github composite action across pip/uv/pixi: version
+# bump, changelog, tag, and release wiring. Every job runs with
+# skip-github-release: 'true' and targets a local fake remote, so no real tag,
+# push, or GitHub release escapes. Runs on feature-branch pushes that touch the
+# action, its fixtures, or this file; called by ci.yml on every merge to main.
+
 on:
   workflow_call:
   push:

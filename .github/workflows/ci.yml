@@ -17,6 +17,9 @@ permissions:
   contents: read
 
 jobs:
+  validate-workflows:
+    uses: ./.github/workflows/validate-workflows.yml
+
   python-setup-pip:
     uses: ./.github/workflows/test-python-setup-pip.yml
 
