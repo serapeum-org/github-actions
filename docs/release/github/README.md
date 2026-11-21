@@ -77,6 +77,7 @@ jobs:
 | `install-groups` | Dependency groups to install (see below) — **required, no default**; must include the group that provides commitizen | Yes | _(none)_ |
 | `config-file` | Path to a per-package `pyproject.toml` (monorepo use) | No | `''` (root) |
 | `skip-github-release` | Skip GitHub Releases API call (testing only) | No | `false` |
+| `skip-tag` | Bump + commit without creating a git tag (tag-after-merge model). Implies no GitHub Release. | No | `false` |
 
 ### Install Groups Format
 
@@ -92,6 +93,37 @@ The `install-groups` input format varies by package manager:
 - `"default"` - Use default environment
 - `"py312"` - Single named environment
 - `"py312 py313"` - Multiple environments
+
+## Outputs
+
+| Output | Description |
+|--------|-------------|
+| `version` | The version computed by commitizen (equals the tag name under the repo's `tag_format`). Available in both modes. |
+
+## Tag-after-merge releases (`skip-tag`)
+
+By default the action runs `cz bump`, which creates the version-bump **commit and the git tag together** on the
+branch it runs on. If the consuming repo squash-merges that branch into `main`, the squash rewrites the commit and
+the pre-made tag is left pointing at a commit that is never an ancestor of `main` — an **orphaned tag**.
+
+Set `skip-tag: 'true'` to support a **tag-after-merge** model: the action bumps the version files + changelog,
+folds in the refreshed lockfile (uv/pixi), and lands it all as **one commit with no tag**; the release PR is merged
+first, and the tag is created afterwards on the commit that is actually on `main`.
+
+```yaml
+- name: Bump without tagging
+  id: bump
+  uses: serapeum-org/github-actions/actions/release/github@github-release/v1.6.0
+  with:
+    github-token: ${{ secrets.GITHUB_TOKEN }}
+    increment: ${{ inputs.increment }}
+    skip-tag: 'true'
+- run: echo "Computed version is ${{ steps.bump.outputs.version }}"
+```
+
+`skip-tag: 'true'` **implies no GitHub Release** — `softprops/action-gh-release` would otherwise create the tag
+itself from `tag_name`, re-introducing the orphaned tag it is meant to avoid. Creating the tag and GitHub Release
+after the merge is a separate step (see #9).
 
 ## Monorepo Support
 
