@@ -699,6 +699,7 @@ runs:
         echo "::endgroup::"
 
     - name: Create GitHub Release
+      if: ${{ inputs.skip-tag != 'true' }}
       shell: bash
       env:
         NEW_VERSION: ${{ steps.bump_version.outputs.NEW_VERSION }}
@@ -725,6 +726,7 @@ runs:
 
     - name: Extract release notes from changelog
       id: release_notes
+      if: ${{ inputs.skip-tag != 'true' }}
       shell: bash
       env:
         NEW_VERSION: ${{ steps.bump_version.outputs.NEW_VERSION }}
@@ -782,9 +784,18 @@ runs:
         NEW_VERSION: ${{ steps.bump_version.outputs.NEW_VERSION }}
         SERVER_URL: ${{ github.server_url }}
         REPOSITORY: ${{ github.repository }}
+        SKIP_TAG: ${{ inputs.skip-tag }}
       run: |
         echo "::group::Release Summary"
         echo ""
+        if [ "$SKIP_TAG" = "true" ]; then
+          echo "Version bump committed and pushed; no tag or GitHub Release created."
+          echo "Tag + GitHub Release are created after the release PR merges (tag-after-merge model)."
+          echo "  Version: $NEW_VERSION"
+          echo "  Increment: $INCREMENT"
+          echo "::endgroup::"
+          exit 0
+        fi
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         echo "        GitHub Release Created"
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
