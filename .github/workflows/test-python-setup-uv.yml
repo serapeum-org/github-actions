@@ -8,6 +8,9 @@ on:
       - 'actions/python-setup/uv/**'
       - '.github/workflows/test-python-setup-uv.yml'
 
+permissions:
+  contents: read
+
 jobs:
   test-uv-basic:
     name: Test uv action - defaults (core only)

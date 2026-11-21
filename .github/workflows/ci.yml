@@ -11,34 +11,35 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# Least privilege: the orchestrator itself needs only read. The one job that
+# pushes (deploy-docs) is granted contents: write on the job below.
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   python-setup-pip:
     uses: ./.github/workflows/test-python-setup-pip.yml
-    secrets: inherit
 
   python-setup-pixi:
     uses: ./.github/workflows/test-python-setup-pixi.yml
-    secrets: inherit
 
   python-setup-uv:
     uses: ./.github/workflows/test-python-setup-uv.yml
-    secrets: inherit
 
   mkdocs-deploy:
     uses: ./.github/workflows/test-mkdocs-deploy.yml
-    secrets: inherit
 
   release-github:
     uses: ./.github/workflows/test-release-github.yml
-    secrets: inherit
 
+  # Only this workflow needs a user-defined secret; it is passed explicitly
+  # rather than inheriting every repository secret.
   release-pypi:
     uses: ./.github/workflows/test-release-pypi.yml
-    secrets: inherit
+    secrets:
+      PYPI_TEST_PUBLISH: ${{ secrets.PYPI_TEST_PUBLISH }}
 
   deploy-docs:
+    permissions:
+      contents: write
     uses: ./.github/workflows/deploy-docs.yml
-    secrets: inherit

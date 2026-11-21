@@ -2,6 +2,9 @@ name: Test release/pypi
 
 on:
   workflow_call:
+    secrets:
+      PYPI_TEST_PUBLISH:
+        required: false
   push:
     branches-ignore: [main]
     paths:

@@ -7,6 +7,12 @@ on:
 permissions:
   contents: write
 
+# Serialize the gh-pages push: two merges landing close together would
+# otherwise run `mike deploy --push` in parallel and collide (non-fast-forward).
+concurrency:
+  group: gh-pages-deploy
+  cancel-in-progress: false
+
 jobs:
   docs:
     runs-on: ubuntu-latest

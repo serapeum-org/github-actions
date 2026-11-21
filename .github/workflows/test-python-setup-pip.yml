@@ -9,6 +9,9 @@ on:
       - 'tests/data/pip/**'
       - '.github/workflows/test-python-setup-pip.yml'
 
+permissions:
+  contents: read
+
 jobs:
   test-pip-basic:
     name: Test pip action - defaults

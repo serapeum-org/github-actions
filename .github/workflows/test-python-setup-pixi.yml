@@ -9,6 +9,9 @@ on:
       - 'tests/data/pixi/**'
       - '.github/workflows/test-python-setup-pixi.yml'
 
+permissions:
+  contents: read
+
 jobs:
   test-pixi-basic:
     name: Test pixi action - defaults
