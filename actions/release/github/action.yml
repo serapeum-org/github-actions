@@ -571,8 +571,14 @@ runs:
           fi
         fi
 
-        # Stage version files + changelog + refreshed lockfile into one commit.
-        git add -A
+        # Stage exactly the release content: tracked version files + changelog
+        # (git add -u, never -A, so stray untracked files in the consumer's tree
+        # cannot ride the squash-merged release commit into main), plus the
+        # refreshed lockfile if this package manager has one.
+        git add -u
+        if [ -n "$LOCK_FILE" ] && [ -f "$LOCK_FILE" ]; then
+          git add -- "$LOCK_FILE"
+        fi
         if git diff --cached --quiet; then
           echo "::error::Nothing staged to commit for the version bump"
           exit 1
