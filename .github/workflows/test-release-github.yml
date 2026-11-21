@@ -256,6 +256,107 @@ jobs:
 
           echo "✓ skip-tag: no new tag; exactly one bump commit with a bare-version subject"
 
+  test-release-skip-tag-monorepo:
+    name: Test skip-tag - monorepo config-file (prefixed tag_format)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Copy test fixture
+        run: |
+          mkdir -p libs/pkg/docs docs
+          cp -r tests/data/release-github/test-with-config/. .
+
+      - name: Clean up repository tags
+        run: git tag -l | xargs -r git tag -d
+
+      - name: Setup fake git remote for testing
+        uses: ./.github/workflows/test-helpers/setup-fake-remote
+
+      - name: Normalize local branch to main (dispatch-testability)
+        shell: bash
+        run: |
+          git checkout -B main
+          git config push.default current
+
+      - name: Create baseline with a prefixed prior tag
+        shell: bash
+        run: |
+          git config user.name "Test Bot"
+          git config user.email "test@example.com"
+
+          git add pyproject.toml uv.lock libs/pkg/pyproject.toml docs/change-log.md libs/pkg/docs/change-log.md
+          git commit -m "chore: initial commit"
+          git tag test-pkg-0.1.0
+          git push origin main
+          git push origin test-pkg-0.1.0
+
+          echo "# Feature" > README.md
+          git add README.md
+          git commit -m "feat: add feature to sub-package"
+          git push origin main
+
+          echo "BEFORE_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+          echo "TAGS_BEFORE=$(git tag -l | tr '\n' ' ')" >> "$GITHUB_ENV"
+
+      - name: Run release action with skip-tag + config-file
+        uses: ./actions/release/github
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          increment: 'minor'
+          package-manager: 'uv'
+          python-version: '3.12'
+          install-groups: 'groups: dev docs'
+          config-file: 'libs/pkg/pyproject.toml'
+          skip-tag: 'true'
+          skip-github-release: 'true'
+
+      - name: Verify bare-version subject and no prefixed tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Tags now: $(git tag -l | tr '\n' ' ')"
+          git log --oneline -n 5
+
+          # No new tag: the prefixed tag_format must NOT yield test-pkg-0.2.0.
+          TAGS_NOW=$(git tag -l | tr '\n' ' ')
+          if [ "$TAGS_NOW" != "$TAGS_BEFORE" ]; then
+            echo "::error::skip-tag created or moved a tag (before='$TAGS_BEFORE' now='$TAGS_NOW')"
+            exit 1
+          fi
+
+          # Exactly one new commit (the bump).
+          COUNT=$(git rev-list "${BEFORE_SHA}..HEAD" --count)
+          if [ "$COUNT" != "1" ]; then
+            echo "::error::expected exactly one new commit, got $COUNT"
+            git log --oneline "${BEFORE_SHA}..HEAD"
+            exit 1
+          fi
+
+          # The subject must carry the BARE bumped version, never the tag_format
+          # prefix: "bump: version 0.1.0 → 0.2.0", not "→ test-pkg-0.2.0".
+          SUBJECT=$(git log -1 --format=%s)
+          echo "Bump commit subject: $SUBJECT"
+          if printf '%s' "$SUBJECT" | grep -q 'test-pkg-'; then
+            echo "::error::commit subject leaked the tag_format prefix: $SUBJECT"
+            exit 1
+          fi
+          if ! printf '%s' "$SUBJECT" | grep -qE '^bump: version 0\.1\.0 → 0\.2\.0$'; then
+            echo "::error::expected 'bump: version 0.1.0 → 0.2.0', got: $SUBJECT"
+            exit 1
+          fi
+
+          # The sub-package version file changed in that commit.
+          if ! git show --name-only --format= HEAD | grep -q 'libs/pkg/pyproject.toml'; then
+            echo "::error::bump commit does not touch libs/pkg/pyproject.toml"
+            exit 1
+          fi
+
+          echo "✓ skip-tag monorepo: no prefixed tag; bare-version subject; sub-package bumped"
+
   test-release-pixi:
     name: Test release - pixi (patch)
     runs-on: ubuntu-latest
