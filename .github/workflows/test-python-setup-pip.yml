@@ -144,22 +144,29 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
 
-      - name: Test pip action with cache on but no dependency file (should auto-skip, not fail)
+      - name: Strip all dependency files so caching has nothing to hash
+        shell: bash
+        run: |
+          find . -path ./.git -prune -o -type f \
+            \( -name pyproject.toml -o -name requirements.txt -o -name Pipfile.lock -o -name poetry.lock \) \
+            -print -delete
+
+      - name: Test pip action with cache on but no dependency file (must auto-skip)
         id: cache-autoskip
-        continue-on-error: true
         uses: ./actions/python-setup/pip
         with:
           cache: 'true'
 
-      - name: Verify the action auto-skipped caching and succeeded
+      - name: Verify caching was auto-skipped (resolved cache is empty)
         shell: bash
         run: |
-          if [ "${{ steps.cache-autoskip.outcome }}" != "success" ]; then
-            echo "::error::Expected pip to auto-skip caching and succeed with no pyproject.toml/requirements.txt"
+          used='${{ steps.cache-autoskip.outputs.cache }}'
+          if [ -n "$used" ]; then
+            echo "::error::Expected caching to auto-skip (empty resolved cache), got '$used'"
             exit 1
           fi
           python --version
-          echo "[OK] Action auto-skipped caching and completed without a dependency file"
+          echo "[OK] cache auto-skipped with no dependency file (resolved cache empty)"
 
   test-pip-cache-boolean-true:
     name: Test pip action - cache 'true' with a dependency file
@@ -172,16 +179,21 @@ jobs:
         run: cp tests/data/pip/test-pip-cache/pyproject.toml .
 
       - name: Test pip action with boolean cache on
+        id: cache-true
         uses: ./actions/python-setup/pip
         with:
           cache: 'true'
 
-      - name: Verify cache 'true' accepted and install succeeded (smoke)
+      - name: Verify caching was enabled (resolved cache = pip)
         shell: bash
         run: |
+          used='${{ steps.cache-true.outputs.cache }}'
+          if [ "$used" != "pip" ]; then
+            echo "::error::Expected resolved cache 'pip' with a dependency file present, got '$used'"
+            exit 1
+          fi
           python --version
-          pip list
-          echo "[OK] cache: 'true' accepted and installed with a dependency file"
+          echo "[OK] cache: 'true' resolved to pip caching with a dependency file"
 
   test-pip-cache-boolean-false:
     name: Test pip action - cache 'false' disables caching
@@ -194,16 +206,20 @@ jobs:
         run: cp tests/data/pip/test-pip-cache/pyproject.toml .
 
       - name: Test pip action with boolean cache off
+        id: cache-false
         uses: ./actions/python-setup/pip
         with:
           cache: 'false'
 
-      - name: Verify the run succeeded with caching disabled
+      - name: Verify caching was disabled (resolved cache empty)
         shell: bash
         run: |
-          python --version
-          pip list
-          echo "[OK] cache: 'false' accepted and caching disabled"
+          used='${{ steps.cache-false.outputs.cache }}'
+          if [ -n "$used" ]; then
+            echo "::error::Expected caching disabled (empty resolved cache) for cache: 'false', got '$used'"
+            exit 1
+          fi
+          echo "[OK] cache: 'false' disabled caching (resolved cache empty)"
 
   test-pip-cache-poetry-autoskip:
     name: Test pip action - cache 'poetry' auto-skips without poetry.lock
@@ -222,15 +238,20 @@ jobs:
         with:
           cache: 'poetry'
 
-      - name: Verify the action auto-skipped and succeeded
+      - name: Verify poetry caching auto-skipped and the run succeeded
         shell: bash
         run: |
           if [ "${{ steps.poetry-autoskip.outcome }}" != "success" ]; then
             echo "::error::Expected cache: 'poetry' with no poetry.lock to auto-skip and succeed, not hard-fail"
             exit 1
           fi
+          used='${{ steps.poetry-autoskip.outputs.cache }}'
+          if [ -n "$used" ]; then
+            echo "::error::Expected poetry caching to auto-skip (empty resolved cache), got '$used'"
+            exit 1
+          fi
           python --version
-          echo "[OK] cache: 'poetry' auto-skipped (no poetry.lock) and the run succeeded"
+          echo "[OK] cache: 'poetry' auto-skipped (no poetry.lock), resolved cache empty, run succeeded"
 
   test-pip-cache-pipenv-autoskip:
     name: Test pip action - cache 'pipenv' auto-skips without Pipfile.lock
@@ -246,15 +267,20 @@ jobs:
         with:
           cache: 'pipenv'
 
-      - name: Verify the action auto-skipped and succeeded
+      - name: Verify pipenv caching auto-skipped and the run succeeded
         shell: bash
         run: |
           if [ "${{ steps.pipenv-autoskip.outcome }}" != "success" ]; then
             echo "::error::Expected cache: 'pipenv' with no Pipfile.lock to auto-skip and succeed"
             exit 1
           fi
+          used='${{ steps.pipenv-autoskip.outputs.cache }}'
+          if [ -n "$used" ]; then
+            echo "::error::Expected pipenv caching to auto-skip (empty resolved cache), got '$used'"
+            exit 1
+          fi
           python --version
-          echo "[OK] cache: 'pipenv' auto-skipped (no Pipfile.lock) and the run succeeded"
+          echo "[OK] cache: 'pipenv' auto-skipped (no Pipfile.lock), resolved cache empty, run succeeded"
 
   test-pip-cache-invalid-value:
     name: Test pip action - invalid cache value is rejected
@@ -308,16 +334,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
 
-      - name: Test pip action without pyproject.toml or requirements.txt
-        id: no-dep-file
-        continue-on-error: true
-        uses: ./actions/python-setup/pip
-
-      - name: Verify default cache auto-skipped and Python still works
+      - name: Strip all dependency files so the default cache has nothing to hash
         shell: bash
         run: |
-          if [ "${{ steps.no-dep-file.outcome }}" != "success" ]; then
-            echo "::error::Expected pip to auto-skip the default cache and succeed with no dependency file"
+          find . -path ./.git -prune -o -type f \
+            \( -name pyproject.toml -o -name requirements.txt -o -name Pipfile.lock -o -name poetry.lock \) \
+            -print -delete
+
+      - name: Test pip action without any dependency file (default cache on)
+        id: no-dep-file
+        uses: ./actions/python-setup/pip
+
+      - name: Verify the default cache auto-skipped and Python still works
+        shell: bash
+        run: |
+          used='${{ steps.no-dep-file.outputs.cache }}'
+          if [ -n "$used" ]; then
+            echo "::error::Expected the default cache to auto-skip (empty resolved cache), got '$used'"
             exit 1
           fi
           python --version
