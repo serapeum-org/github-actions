@@ -24,9 +24,9 @@ inputs:
       environments between runs (cache key is based on pixi.lock hash).
       Cache writes only happen on pushes to main.
       Examples: "true", "false".
-      Default is "false".
+      Default is "true" (caching enabled).
     required: false
-    default: 'false'
+    default: 'true'
   verify-lock:
     description: >
       Whether to verify the lock file is up to date (uses --locked mode).
