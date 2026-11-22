@@ -25,7 +25,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
 
-      - name: Test pip action with defaults (cache='')
+      - name: Test pip action with defaults (cache on; auto-skips with no dep file)
         uses: ./actions/python-setup/pip
 
       - name: Verify Python installation
@@ -137,28 +137,73 @@ jobs:
           python --version
           python -c "import platform; print(f'Architecture: {platform.architecture()}')"
 
-  test-pip-cache-validation-error:
-    name: Test pip action - Cache validation error
+  test-pip-cache-auto-skip:
+    name: Test pip action - Cache auto-skips without a dependency file
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
 
-      - name: Test pip action with cache but no dependency file (should fail)
-        id: test-cache-error
+      - name: Test pip action with cache on but no dependency file (should auto-skip, not fail)
+        id: cache-autoskip
         continue-on-error: true
         uses: ./actions/python-setup/pip
         with:
-          cache: 'pip'
+          cache: 'true'
 
-      - name: Verify action failed as expected
+      - name: Verify the action auto-skipped caching and succeeded
         shell: bash
         run: |
-          if [ "${{ steps.test-cache-error.outcome }}" != "failure" ]; then
-            echo "::error::Expected action to fail when cache is enabled without pyproject.toml/requirements.txt"
+          if [ "${{ steps.cache-autoskip.outcome }}" != "success" ]; then
+            echo "::error::Expected pip to auto-skip caching and succeed with no pyproject.toml/requirements.txt"
             exit 1
           fi
-          echo "[OK] Action correctly failed when cache enabled without dependency files"
+          python --version
+          echo "[OK] Action auto-skipped caching and completed without a dependency file"
+
+  test-pip-cache-boolean-true:
+    name: Test pip action - cache 'true' with a dependency file
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Copy test fixture files
+        run: cp tests/data/pip/test-pip-cache/pyproject.toml .
+
+      - name: Test pip action with boolean cache on
+        uses: ./actions/python-setup/pip
+        with:
+          cache: 'true'
+
+      - name: Verify caching ran and Python works
+        shell: bash
+        run: |
+          python --version
+          pip list
+          echo "[OK] cache: 'true' accepted and installed with a dependency file"
+
+  test-pip-cache-boolean-false:
+    name: Test pip action - cache 'false' disables caching
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Copy test fixture files
+        run: cp tests/data/pip/test-pip-cache/pyproject.toml .
+
+      - name: Test pip action with boolean cache off
+        uses: ./actions/python-setup/pip
+        with:
+          cache: 'false'
+
+      - name: Verify the run succeeded with caching disabled
+        shell: bash
+        run: |
+          python --version
+          pip list
+          echo "[OK] cache: 'false' accepted and caching disabled"
 
   test-pip-cache-with-requirements:
     name: Test pip action - Cache with requirements.txt
@@ -183,18 +228,24 @@ jobs:
           echo "[OK] Cache validation passed with requirements.txt"
 
   test-pip-no-dependency-file:
-    name: Test pip action - No dependency files (no cache)
+    name: Test pip action - No dependency files (default cache auto-skips)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
 
       - name: Test pip action without pyproject.toml or requirements.txt
+        id: no-dep-file
+        continue-on-error: true
         uses: ./actions/python-setup/pip
 
-      - name: Verify Python still works
+      - name: Verify default cache auto-skipped and Python still works
         shell: bash
         run: |
+          if [ "${{ steps.no-dep-file.outcome }}" != "success" ]; then
+            echo "::error::Expected pip to auto-skip the default cache and succeed with no dependency file"
+            exit 1
+          fi
           python --version
           pip --version
           pip install requests
