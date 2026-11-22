@@ -15,9 +15,10 @@ inputs:
       and pixi actions, plus setup-python cache types for advanced use:
       "true" enables caching (uses setup-python's "pip" cache), "false" or ""
       disables it, and "pip" / "pipenv" / "poetry" are passed straight through to
-      actions/setup-python. Caching needs a pyproject.toml or requirements.txt to
-      hash; if caching is requested but neither file exists it is auto-disabled with
-      a warning and the run still succeeds.
+      actions/setup-python. Caching needs the dependency file setup-python hashes
+      for the chosen type (pip: pyproject.toml/requirements.txt, pipenv:
+      Pipfile.lock, poetry: poetry.lock); if it is absent the action auto-disables
+      caching with a warning and still succeeds.
       Examples: "true", "false", "pip", "pipenv", "poetry".
       Default is "true" (caching enabled).
     required: false

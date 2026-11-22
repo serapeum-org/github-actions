@@ -90,9 +90,10 @@ pixi actions, plus setup-python cache types for advanced use:
 - `'pipenv'`: Cache pipenv dependencies from `Pipfile.lock`
 - `'poetry'`: Cache poetry dependencies from `poetry.lock`
 
-**Auto-skip**: caching needs a `pyproject.toml` or `requirements.txt` to hash. If caching is requested but neither
-file exists, the action auto-disables caching with a `::warning::` and the run still succeeds (pip, unlike uv/pixi,
-can run with no lockfile).
+**Auto-skip**: caching needs the dependency file that `actions/setup-python` hashes for the chosen cache type
+(`pip` → `pyproject.toml`/`requirements.txt`, `pipenv` → `Pipfile.lock`, `poetry` → `poetry.lock`), searched at
+any depth. If caching is requested but that file does not exist, the action auto-disables caching with a
+`::warning::` and the run still succeeds (pip, unlike uv/pixi, can run with no lockfile).
 
 #### `architecture`
 Selects CPU architecture (mainly relevant for Windows):
@@ -125,9 +126,10 @@ job (`exit 1`) instead of emitting a warning and installing only core + extras. 
 
 ### 1. Cache Auto-skip
 
-Caching is on by default but needs a dependency file to hash. When caching is requested with no `pyproject.toml`
-or `requirements.txt`, the action auto-disables caching (emitting a `::warning::`) and still succeeds, instead of
-failing:
+Caching is on by default but needs the dependency file `actions/setup-python` hashes for the cache type
+(`pip` → `pyproject.toml`/`requirements.txt`, `pipenv` → `Pipfile.lock`, `poetry` → `poetry.lock`). When caching
+is requested but that file is absent, the action auto-disables caching (emitting a `::warning::`) and still
+succeeds, instead of failing:
 
 ```yaml
 # This SUCCEEDS; caching auto-skips because there is no dependency file
@@ -617,11 +619,12 @@ need no `cache` setting. Keep it on when:
 ```
 cache: 'true' (default) | 'false'/'' | 'pip'/'pipenv'/'poetry'
     ↓
-Resolve to a setup-python cache type (true → pip; false/'' → off; others pass through)
+Resolve to a setup-python cache type (true → pip; false/'' → off; pip/pipenv/poetry kept; else → error)
     ↓
 Caching requested?
     → No  → setup-python runs with caching off
-    → Yes → pyproject.toml or requirements.txt present?
+    → Yes → the type's dependency file present, at any depth?
+            (pip: pyproject.toml/requirements.txt; pipenv: Pipfile.lock; poetry: poetry.lock)
               → Yes → setup-python caches
               → No  → auto-skip caching with a ::warning:: (run still succeeds)
 ```
