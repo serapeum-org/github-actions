@@ -156,7 +156,9 @@ runs:
         environments: ${{ inputs.install-groups != '' && inputs.install-groups || 'default' }}
         activate-environment: ${{ inputs.install-groups != '' && inputs.install-groups || 'default' }}
         verify-lock: ${{ inputs.verify-lock }}
-        version: ${{ inputs.package-manager-version }}
+        # pixi has no empty-string "auto-resolve" semantics (unlike uv), so coalesce
+        # an explicitly-empty value back to the documented default.
+        version: ${{ inputs.package-manager-version != '' && inputs.package-manager-version || 'latest' }}
 
     - name: Install build tools (pip)
       if: ${{ inputs.package-manager == 'pip' }}
