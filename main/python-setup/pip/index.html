@@ -800,10 +800,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-cache-validation" class="md-nav__link">
+  <a href="#1-cache-auto-skip" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Cache Validation
+        1. Cache Auto-skip
       
     </span>
   </a>
@@ -1043,10 +1043,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#when-to-enable-cache" class="md-nav__link">
+  <a href="#when-to-disable-cache" class="md-nav__link">
     <span class="md-ellipsis">
       
-        When to Enable Cache
+        When to Disable Cache
       
     </span>
   </a>
@@ -1054,10 +1054,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#cache-validation-flow" class="md-nav__link">
+  <a href="#cache-resolution-flow" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Cache Validation Flow
+        Cache Resolution Flow
       
     </span>
   </a>
@@ -2264,10 +2264,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-cache-validation" class="md-nav__link">
+  <a href="#1-cache-auto-skip" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Cache Validation
+        1. Cache Auto-skip
       
     </span>
   </a>
@@ -2507,10 +2507,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#when-to-enable-cache" class="md-nav__link">
+  <a href="#when-to-disable-cache" class="md-nav__link">
     <span class="md-ellipsis">
       
-        When to Enable Cache
+        When to Disable Cache
       
     </span>
   </a>
@@ -2518,10 +2518,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#cache-validation-flow" class="md-nav__link">
+  <a href="#cache-resolution-flow" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Cache Validation Flow
+        Cache Resolution Flow
       
     </span>
   </a>
@@ -3006,7 +3006,7 @@
 <li><a href="#best-practices">Best Practices</a></li>
 </ul>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>This action wraps <code>actions/setup-python@v6</code> with additional functionality for managing pip-based Python projects. It provides:</p>
+<p>This action wraps <code>actions/setup-python@v7</code> with additional functionality for managing pip-based Python projects. It provides:</p>
 <ul>
 <li>Automatic Python installation and configuration</li>
 <li>Optional dependency caching for faster CI runs</li>
@@ -3062,8 +3062,8 @@
 <td><code>cache</code></td>
 <td>Enable dependency caching</td>
 <td>No</td>
-<td><code>''</code> (disabled)</td>
-<td><code>''</code>, <code>'pip'</code>, <code>'pipenv'</code>, <code>'poetry'</code></td>
+<td><code>'true'</code> (enabled)</td>
+<td><code>'true'</code>, <code>'false'</code>, <code>'pip'</code>, <code>'pipenv'</code>, <code>'poetry'</code></td>
 </tr>
 <tr>
 <td><code>architecture</code></td>
@@ -3088,12 +3088,18 @@
 - Full versions: <code>'3.11.5'</code>
 - Version ranges: <code>'3.x'</code>, <code>'&gt;=3.11'</code></p>
 <h4 id="cache"><code>cache</code><a class="headerlink" href="#cache" title="Permanent link">&para;</a></h4>
-<p>Controls dependency caching via <code>actions/setup-python@v6</code>:
-- <code>''</code> (empty string, default): No caching. Use when no <code>pyproject.toml</code> or <code>requirements.txt</code> exists.
+<p>Controls dependency caching via <code>actions/setup-python@v7</code>. Accepts a boolean-string (<code>'true'</code>/<code>'false'</code>) like the
+uv and pixi actions (parsed case- and space-insensitively here), plus setup-python cache types for advanced use:
+- <code>'true'</code> (default): Enable caching (uses setup-python's <code>'pip'</code> cache).
+- <code>'false'</code> or <code>''</code>: Disable caching.
 - <code>'pip'</code>: Cache pip dependencies from <code>pyproject.toml</code> or <code>requirements.txt</code>
 - <code>'pipenv'</code>: Cache pipenv dependencies from <code>Pipfile.lock</code>
 - <code>'poetry'</code>: Cache poetry dependencies from <code>poetry.lock</code></p>
-<p><strong>Cache Validation</strong>: If <code>cache</code> is non-empty, the action validates that <code>pyproject.toml</code> or <code>requirements.txt</code> exists. If neither file is found, the action fails with a clear error message.</p>
+<p><strong>Auto-skip</strong>: caching needs the dependency file that <code>actions/setup-python</code> hashes for the chosen cache type
+(<code>pip</code> → <code>pyproject.toml</code>/<code>requirements.txt</code>, <code>pipenv</code> → <code>Pipfile.lock</code>, <code>poetry</code> → <code>poetry.lock</code>), searched at
+any depth — the same <code>**/</code> search <code>actions/setup-python</code> uses, so a matching file anywhere in the tree (including
+vendored directories) keeps caching on. If no such file exists, the action auto-disables caching with a
+<code>::warning::</code> and the run still succeeds (pip, unlike uv/pixi, can run with no lockfile).</p>
 <h4 id="architecture"><code>architecture</code><a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h4>
 <p>Selects CPU architecture (mainly relevant for Windows):
 - <code>'x64'</code>: 64-bit Python (default, recommended)
@@ -3117,16 +3123,18 @@ job (<code>exit 1</code>) instead of emitting a warning and installing only core
 <p>= 25.1, or use the <code>uv</code> action, which has native PEP 735 support.</p>
 </blockquote>
 <h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
-<h3 id="1-cache-validation">1. Cache Validation<a class="headerlink" href="#1-cache-validation" title="Permanent link">&para;</a></h3>
-<p>The action validates cache requirements <strong>before</strong> running <code>actions/setup-python@v6</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># This will FAIL with a clear error</span>
+<h3 id="1-cache-auto-skip">1. Cache Auto-skip<a class="headerlink" href="#1-cache-auto-skip" title="Permanent link">&para;</a></h3>
+<p>Caching is on by default but needs the dependency file <code>actions/setup-python</code> hashes for the cache type
+(<code>pip</code> → <code>pyproject.toml</code>/<code>requirements.txt</code>, <code>pipenv</code> → <code>Pipfile.lock</code>, <code>poetry</code> → <code>poetry.lock</code>). When caching
+is requested but that file is absent, the action auto-disables caching (emitting a <code>::warning::</code>) and still
+succeeds, instead of failing:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># This SUCCEEDS; caching auto-skips because there is no dependency file</span>
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./actions/python-setup/pip</span>
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="nt">cache</span><span class="p">:</span><span class="w"> </span><span class="s">'pip'</span><span class="w">  </span><span class="c1"># No pyproject.toml or requirements.txt exists</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="nt">cache</span><span class="p">:</span><span class="w"> </span><span class="s">'true'</span><span class="w">  </span><span class="c1"># No pyproject.toml or requirements.txt exists</span>
 <a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="c1"># Error message:</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1"># Cache is enabled (cache='pip') but no pyproject.toml or requirements.txt found.</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="c1"># Either create a pyproject.toml/requirements.txt file or set cache: '' to disable caching.</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="c1"># Warning emitted:</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1"># Caching requested but no dependency file found; caching disabled for this run.</span>
 </code></pre></div>
 <h3 id="2-smart-dependency-installation">2. Smart Dependency Installation<a class="headerlink" href="#2-smart-dependency-installation" title="Permanent link">&para;</a></h3>
 <p>The action intelligently handles different scenarios:</p>
@@ -3192,7 +3200,7 @@ job (<code>exit 1</code>) instead of emitting a warning and installing only core
 - Python 3.12 installed (default)
 - Pip upgraded to latest
 - No dependencies installed (logs "No pyproject.toml found - skipping package installation")
-- Cache disabled by default</p>
+- Caching on by default, but auto-skipped here (no dependency file to hash)</p>
 <p><strong>When to use</strong>: Quick scripts, action testing, or when you prefer manual <code>pip install</code> commands</p>
 <h3 id="scenario-2-basic-project-with-pyprojecttoml">Scenario 2: Basic Project with pyproject.toml<a class="headerlink" href="#scenario-2-basic-project-with-pyprojecttoml" title="Permanent link">&para;</a></h3>
 <p><strong>Use Case</strong>: Standard Python package with core dependencies.</p>
@@ -3518,23 +3526,27 @@ job (<code>exit 1</code>) instead of emitting a warning and installing only core
 - Action parses both sections regardless of order
 - Same result as <code>'groups: dev, extras: aws'</code></p>
 <h2 id="cache-configuration">Cache Configuration<a class="headerlink" href="#cache-configuration" title="Permanent link">&para;</a></h2>
-<h3 id="when-to-enable-cache">When to Enable Cache<a class="headerlink" href="#when-to-enable-cache" title="Permanent link">&para;</a></h3>
-<p><strong>Enable cache (<code>cache: 'pip'</code>) when:</strong>
+<h3 id="when-to-disable-cache">When to Disable Cache<a class="headerlink" href="#when-to-disable-cache" title="Permanent link">&para;</a></h3>
+<p>Caching is <strong>on by default</strong> (<code>cache: 'true'</code>) and auto-skips when there is no dependency file, so most projects
+need no <code>cache</code> setting. Keep it on when:
 - You have <code>pyproject.toml</code> or <code>requirements.txt</code>
 - Your dependencies don't change frequently
 - You want faster CI runs (caching can save 30-60 seconds per run)</p>
-<p><strong>Disable cache (<code>cache: ''</code>) when:</strong>
-- No <code>pyproject.toml</code> or <code>requirements.txt</code> exists
+<p><strong>Disable cache (<code>cache: 'false'</code>) when:</strong>
 - Dependencies change on every commit
 - Testing the action itself
 - Debugging dependency issues</p>
-<h3 id="cache-validation-flow">Cache Validation Flow<a class="headerlink" href="#cache-validation-flow" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>User sets cache: 'pip'
+<h3 id="cache-resolution-flow">Cache Resolution Flow<a class="headerlink" href="#cache-resolution-flow" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>cache: 'true' (default) | 'false'/'' | 'pip'/'pipenv'/'poetry'
 <a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>    ↓
-<a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>Action checks for pyproject.toml or requirements.txt
+<a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>Resolve to a setup-python cache type (true → pip; false/'' → off; pip/pipenv/poetry kept; else → error)
 <a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a>    ↓
-<a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a>Found? → Yes → Continue to setup-python (cache enabled)
-<a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a>       → No  → FAIL with error message
+<a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a>Caching requested?
+<a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a>    → No  → setup-python runs with caching off
+<a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a>    → Yes → the type's dependency file present, at any depth?
+<a id="__codelineno-26-8" name="__codelineno-26-8" href="#__codelineno-26-8"></a>            (pip: pyproject.toml/requirements.txt; pipenv: Pipfile.lock; poetry: poetry.lock)
+<a id="__codelineno-26-9" name="__codelineno-26-9" href="#__codelineno-26-9"></a>              → Yes → setup-python caches
+<a id="__codelineno-26-10" name="__codelineno-26-10" href="#__codelineno-26-10"></a>              → No  → auto-skip caching with a ::warning:: (run still succeeds)
 </code></pre></div>
 <h3 id="cache-example-before-and-after">Cache Example: Before and After<a class="headerlink" href="#cache-example-before-and-after" title="Permanent link">&para;</a></h3>
 <p><strong>Without Cache</strong> (60-90 seconds):
