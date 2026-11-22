@@ -11,13 +11,17 @@ inputs:
     default: '3.12'
   cache:
     description: >
-      Cache type for pip dependencies (passed to actions/setup-python cache input).
-      Set to "pip" to enable caching with pip, or leave empty to disable caching.
-      Requires a pyproject.toml or requirements.txt file when enabled.
-      Examples: "pip", "pipenv", "poetry", "" (empty to disable).
-      Default is "" (no caching).
+      Dependency caching for pip. Accepts the same boolean-string shape as the uv
+      and pixi actions, plus setup-python cache types for advanced use:
+      "true" enables caching (uses setup-python's "pip" cache), "false" or ""
+      disables it, and "pip" / "pipenv" / "poetry" are passed straight through to
+      actions/setup-python. Caching needs a pyproject.toml or requirements.txt to
+      hash; if caching is requested but neither file exists it is auto-disabled with
+      a warning and the run still succeeds.
+      Examples: "true", "false", "pip", "pipenv", "poetry".
+      Default is "true" (caching enabled).
     required: false
-    default: ''
+    default: 'true'
   install-groups:
     description: >
       Dependency groups (PEP 735) and/or optional dependencies (extras) to install.
@@ -41,26 +45,41 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Validate cache requirements
-      if: inputs.cache != ''
+    - name: Resolve cache setting
+      id: resolve-cache
       shell: bash
       env:
         CACHE: ${{ inputs.cache }}
       run: |
-        echo "::group::Validating cache requirements"
-        if [ ! -f pyproject.toml ] && [ ! -f requirements.txt ]; then
-          echo "::error::Cache is enabled (cache='${CACHE}') but no pyproject.toml or requirements.txt found."
-          echo "::error::Either create a pyproject.toml/requirements.txt file or set cache: '' to disable caching."
-          exit 1
+        echo "::group::Resolving cache setting"
+        # Map the boolean-string shape onto a setup-python cache type: "true" means
+        # pip caching, "false"/"" means off, anything else (pip/pipenv/poetry) is
+        # passed through to actions/setup-python unchanged.
+        case "$CACHE" in
+          true) resolved='pip' ;;
+          false|'') resolved='' ;;
+          *) resolved="$CACHE" ;;
+        esac
+        # Caching needs a file to hash. pip (unlike uv/pixi) can run without one, so
+        # auto-disable with a warning instead of failing the job.
+        if [ -n "$resolved" ] && [ ! -f pyproject.toml ] && [ ! -f requirements.txt ]; then
+          echo "No pyproject.toml or requirements.txt to hash (cache input was '${CACHE}')."
+          echo "::warning::Caching requested but no dependency file found; caching disabled for this run."
+          resolved=''
         fi
-        echo "Cache validation passed - found dependency file"
+        if [ -n "$resolved" ]; then
+          echo "Caching enabled (setup-python cache='${resolved}')."
+        else
+          echo "Caching disabled."
+        fi
+        echo "cache=${resolved}" >> "$GITHUB_OUTPUT"
         echo "::endgroup::"
 
     - name: Set up Python
       uses: actions/setup-python@v7
       with:
         python-version: ${{ inputs.python-version }}
-        cache: ${{ inputs.cache }}
+        cache: ${{ steps.resolve-cache.outputs.cache }}
         architecture: ${{ inputs.architecture }}
 
     - name: Upgrade pip
