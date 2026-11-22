@@ -30,7 +30,7 @@ This action deploys MkDocs documentation with automatic version management based
 | `package-manager-version` | Version of the `uv`/`pixi` package manager (forwarded to its `version` input); ignored for `pip`. | No | `latest` |
 | `python-version` | Python version to install | No | `3.12` |
 | `install-groups` | Dependency groups to install | No | `groups: docs` |
-| `deploy-token` | GitHub token for deployment | Yes | - |
+| `deploy-token` | Token that authenticates the gh-pages push; needs `contents: write` on the target repo | Yes | - |
 | `release-tag` | Release tag version (for release trigger) | No | - |
 | `mike-alias` | Mike alias for releases | No | `latest` |
 | `notebooks-path` | Root directory of Jupyter notebooks to execute and cache. Empty = skip. | No | `` (skip) |

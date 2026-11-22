@@ -28,7 +28,7 @@
 | `package-manager-version` | Version of the uv/pixi package manager to install (forwarded to its `version` input); ignored for pip. | No | `latest` |
 | `python-version` | Python version to install | No | `3.12` |
 | `install-groups` | Dependency groups to install | No | `groups: docs` |
-| `deploy-token` | GitHub token for deployment | Yes | - |
+| `deploy-token` | Token that authenticates the gh-pages push; needs `contents: write` on the target repo | Yes | - |
 | `release-tag` | Release tag version (for release trigger) | No | - |
 | `mike-alias` | Mike alias for releases (e.g., latest) | No | `latest` |
 | `notebooks-path` | Root directory of Jupyter notebooks to execute and cache before the mkdocs build. Requires `jupyter`, `nbconvert`, `ipykernel`, `mkdocs-jupyter` in `install-groups`, and a src-layout project (`src/**/*.py`, `pyproject.toml` at root). Empty = skip. See [mkdocs-deploy guide](../mkdocs-deploy.md#notebook-execution). | No | `''` (skip) |
