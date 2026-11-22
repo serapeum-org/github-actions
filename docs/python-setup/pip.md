@@ -17,7 +17,7 @@ Composite GitHub Action for setting up Python environments with pip package mana
 
 ## Overview
 
-This action wraps `actions/setup-python@v6` with additional functionality for managing pip-based Python projects. It provides:
+This action wraps `actions/setup-python@v7` with additional functionality for managing pip-based Python projects. It provides:
 
 - Automatic Python installation and configuration
 - Optional dependency caching for faster CI runs
