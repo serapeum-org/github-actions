@@ -120,6 +120,23 @@ inputs:
     required: false
     default: 'false'
 
+  skip-tag:
+    description: |
+      Skip creating the git tag for this bump.
+      - 'false' (default): unchanged behaviour — cz bump creates the version-bump commit AND the tag,
+        the refreshed lockfile is folded into it, tags are pushed, and the GitHub Release is created.
+      - 'true': bump the version files + changelog and commit them here, but create NO tag.
+        Implies NO GitHub Release (softprops/action-gh-release would otherwise create the tag itself
+        from tag_name). For the tag-after-merge release model, where the tag is created after the
+        release PR merges.
+    required: false
+    default: 'false'
+
+outputs:
+  version:
+    description: The version computed by commitizen (equals the tag name under the repo's tag_format).
+    value: ${{ steps.bump_version.outputs.NEW_VERSION }}
+
 runs:
   using: 'composite'
   steps:
@@ -306,6 +323,7 @@ runs:
         CONFIG_FILE: ${{ inputs.config-file }}
         INCREMENT: ${{ inputs.increment }}
         PRERELEASE_TYPE: ${{ inputs.prerelease-type }}
+        SKIP_TAG: ${{ inputs.skip-tag }}
       run: |
         echo "::group::Preparing commitizen command"
 
@@ -424,6 +442,15 @@ runs:
           echo "::endgroup::"
         fi
 
+        # Under skip-tag, run the bump with --files-only so commitizen writes the
+        # version files + changelog but creates NO commit and NO tag; the dedicated
+        # "Commit version bump without a tag" step makes the single commit instead.
+        # The recovery path below already uses --files-only, so it is unchanged.
+        FILES_ONLY_ARGS=()
+        if [ "$SKIP_TAG" = "true" ]; then
+          FILES_ONLY_ARGS=(--files-only)
+        fi
+
         echo "::group::Bumping version and generating changelog"
         echo "Running cz bump (handles both version and changelog)..."
 
@@ -431,10 +458,10 @@ runs:
         # If it fails, we'll recover by generating full changelog and retrying
         set +e  # Don't exit on error
         if [ "$PRERELEASE_TYPE" != "none" ]; then
-          "${CZ_CMD[@]}" bump --yes --increment "$INCREMENT" --prerelease "$PRERELEASE_TYPE"
+          "${CZ_CMD[@]}" bump --yes --increment "$INCREMENT" --prerelease "$PRERELEASE_TYPE" "${FILES_ONLY_ARGS[@]}"
           BUMP_EXIT_CODE=$?
         else
-          "${CZ_CMD[@]}" bump --yes --increment "$INCREMENT"
+          "${CZ_CMD[@]}" bump --yes --increment "$INCREMENT" "${FILES_ONLY_ARGS[@]}"
           BUMP_EXIT_CODE=$?
         fi
         set -e  # Re-enable exit on error
@@ -488,10 +515,21 @@ runs:
         # Using it here ensures the release step references the tag commitizen created.
         NEW_VERSION=$NEXT_VERSION
         echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
+        echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+        # Under skip-tag the no-tag commit step needs the bare bumped version
+        # (e.g. "0.2.0", not the tag_format-prefixed NEW_VERSION like "pkg-0.2.0")
+        # for its commit subject, matching what `cz bump` itself writes (issue #51).
+        # Capture it only in that mode so the default path runs no extra command.
+        if [ "$SKIP_TAG" = "true" ]; then
+          BUMPED_VERSION=$("${CZ_CMD[@]}" version --project)
+          echo "BUMPED_VERSION=$BUMPED_VERSION" >> $GITHUB_OUTPUT
+        fi
         echo "CHANGELOG_FILE=$CHANGELOG_FILE" >> $GITHUB_OUTPUT
         echo "WORK_DIR=$WORK_DIR" >> $GITHUB_OUTPUT
 
-        if git rev-parse "$NEW_VERSION" >/dev/null 2>&1; then
+        if [ "$SKIP_TAG" = "true" ]; then
+          echo "skip-tag enabled: no tag is created in this step (tag-after-merge model)"
+        elif git rev-parse "$NEW_VERSION" >/dev/null 2>&1; then
           echo "✓ Tag verified in git: $NEW_VERSION"
         else
           echo "::warning::Tag not found in git: $NEW_VERSION"
@@ -508,8 +546,57 @@ runs:
         echo "=========================="
         echo "::endgroup::"
 
+    - name: Commit version bump without a tag
+      if: ${{ inputs.skip-tag == 'true' }}
+      shell: bash
+      env:
+        PACKAGE_MANAGER: ${{ inputs.package-manager }}
+        CURRENT_VERSION: ${{ steps.bump_version.outputs.CURRENT_VERSION }}
+        BUMPED_VERSION: ${{ steps.bump_version.outputs.BUMPED_VERSION }}
+      run: |
+        echo "::group::Committing version bump (skip-tag: no tag)"
+
+        # cz bump --files-only wrote the version files + changelog but made no
+        # commit and no tag. Create the single commit here, folding in the
+        # refreshed lockfile (if this package manager has one) so the release
+        # lands as one commit with no tag — the tag is created after the PR merges.
+        # Workspaces keep the lockfile at the repo root even when WORK_DIR is a
+        # sub-package, so operate at the repo root.
+        REPO_ROOT=$(git rev-parse --show-toplevel)
+        cd "$REPO_ROOT"
+
+        # Refresh the lockfile first, if this package manager has one.
+        case "$PACKAGE_MANAGER" in
+          uv)   LOCK_FILE="uv.lock"   ; LOCK_CMD="uv lock"   ;;
+          pixi) LOCK_FILE="pixi.lock" ; LOCK_CMD="pixi lock" ;;
+          *)    LOCK_FILE=""          ; LOCK_CMD=""          ;;
+        esac
+        if [ -n "$LOCK_CMD" ] && [ -f "$LOCK_FILE" ]; then
+          echo "Refreshing $LOCK_FILE via '$LOCK_CMD'..."
+          if ! $LOCK_CMD; then
+            echo "::error::'$LOCK_CMD' failed; refusing to push a release with a stale $LOCK_FILE"
+            exit 1
+          fi
+        fi
+
+        # Stage exactly the release content: tracked version files + changelog
+        # (git add -u, never -A, so stray untracked files in the consumer's tree
+        # cannot ride the squash-merged release commit into main), plus the
+        # refreshed lockfile if this package manager has one.
+        git add -u
+        if [ -n "$LOCK_FILE" ] && [ -f "$LOCK_FILE" ]; then
+          git add -- "$LOCK_FILE"
+        fi
+        if git diff --cached --quiet; then
+          echo "::error::Nothing staged to commit for the version bump"
+          exit 1
+        fi
+        git commit -m "bump: version $CURRENT_VERSION → $BUMPED_VERSION" --no-verify
+        echo "✓ Version bump committed without a tag: $CURRENT_VERSION → $BUMPED_VERSION"
+        echo "::endgroup::"
+
     - name: Fold refreshed lockfile into the version-bump commit
-      if: ${{ inputs.package-manager == 'uv' || inputs.package-manager == 'pixi' }}
+      if: ${{ (inputs.package-manager == 'uv' || inputs.package-manager == 'pixi') && inputs.skip-tag != 'true' }}
       shell: bash
       env:
         PACKAGE_MANAGER: ${{ inputs.package-manager }}
@@ -583,6 +670,7 @@ runs:
       shell: bash
       env:
         NEW_VERSION: ${{ steps.bump_version.outputs.NEW_VERSION }}
+        SKIP_TAG: ${{ inputs.skip-tag }}
       run: |
         echo "::group::Pushing changes and tags to repository"
 
@@ -592,6 +680,15 @@ runs:
           exit 1
         fi
         echo "✓ Changes pushed successfully"
+
+        if [ "$SKIP_TAG" = "true" ]; then
+          echo ""
+          echo "=== Git Push Summary ==="
+          echo "✓ Version bump committed and pushed (no tag — tag-after-merge model)"
+          echo "======================="
+          echo "::endgroup::"
+          exit 0
+        fi
 
         echo ""
         echo "Pushing tags to repository..."
@@ -610,6 +707,7 @@ runs:
         echo "::endgroup::"
 
     - name: Create GitHub Release
+      if: ${{ inputs.skip-tag != 'true' }}
       shell: bash
       env:
         NEW_VERSION: ${{ steps.bump_version.outputs.NEW_VERSION }}
@@ -636,6 +734,7 @@ runs:
 
     - name: Extract release notes from changelog
       id: release_notes
+      if: ${{ inputs.skip-tag != 'true' }}
       shell: bash
       env:
         NEW_VERSION: ${{ steps.bump_version.outputs.NEW_VERSION }}
@@ -674,7 +773,7 @@ runs:
         echo "::endgroup::"
 
     - name: Publish GitHub Release
-      if: ${{ inputs.skip-github-release != 'true' }}
+      if: ${{ inputs.skip-github-release != 'true' && inputs.skip-tag != 'true' }}
       uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
       with:
         token: ${{ inputs.github-token }}
@@ -693,9 +792,18 @@ runs:
         NEW_VERSION: ${{ steps.bump_version.outputs.NEW_VERSION }}
         SERVER_URL: ${{ github.server_url }}
         REPOSITORY: ${{ github.repository }}
+        SKIP_TAG: ${{ inputs.skip-tag }}
       run: |
         echo "::group::Release Summary"
         echo ""
+        if [ "$SKIP_TAG" = "true" ]; then
+          echo "Version bump committed and pushed; no tag or GitHub Release created."
+          echo "Tag + GitHub Release are created after the release PR merges (tag-after-merge model)."
+          echo "  Version: $NEW_VERSION"
+          echo "  Increment: $INCREMENT"
+          echo "::endgroup::"
+          exit 0
+        fi
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         echo "        GitHub Release Created"
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

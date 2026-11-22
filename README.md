@@ -62,7 +62,7 @@ assumption, concrete `pyproject.toml` snippet).
 
 | Action | Usage | Guide | Examples |
 |---|---|---|---|
-| **GitHub Release** | `serapeum-org/github-actions/actions/release/github@github-release/v1.5.1` | [guide](docs/release/github/README.md) | [examples](docs/release/github/EXAMPLES.md) |
+| **GitHub Release** | `serapeum-org/github-actions/actions/release/github@github-release/v1.6.0` | [guide](docs/release/github/README.md) | [examples](docs/release/github/EXAMPLES.md) |
 | **PyPI Release** | `serapeum-org/github-actions/actions/release/pypi@pypi-release/v1.0.4` | [guide](docs/release/pypi/README.md) | [examples](docs/release/pypi/EXAMPLES.md) |
 
 The `release/github` action automates version bumping via
@@ -132,7 +132,7 @@ pip/v1.1.2              # Python setup with pip
 uv/v1.2.2               # Python setup with uv
 pixi/v1.2.2             # Python setup with pixi
 mkdocs/v1.3.2           # MkDocs deploy
-github-release/v1.5.1   # GitHub release via Commitizen
+github-release/v1.6.0   # GitHub release via Commitizen
 pypi-release/v1.0.4     # PyPI release
 ```
 
@@ -158,7 +158,7 @@ you cut a new tag.
 | `actions/python-setup/uv`   | `uv/v1.2.2`             | `6c0a569b67c149c4648c75495544732cba2d0eca` |
 | `actions/python-setup/pixi` | `pixi/v1.2.2`           | `6c0a569b67c149c4648c75495544732cba2d0eca` |
 | `actions/mkdocs-deploy`     | `mkdocs/v1.3.2`         | `961524686fb512c05ca8e4c7bfe81ba68eef4dda` |
-| `actions/release/github`    | `github-release/v1.5.1` | `961524686fb512c05ca8e4c7bfe81ba68eef4dda` |
+| `actions/release/github`    | `github-release/v1.6.0` | `e65132ca10fc27245cfd787c2148ddac3b44e668` |
 | `actions/release/pypi`      | `pypi-release/v1.0.4`   | `961524686fb512c05ca8e4c7bfe81ba68eef4dda` |
 
 To verify locally: `git rev-parse <tag>^{commit}` (the `^{commit}` is
