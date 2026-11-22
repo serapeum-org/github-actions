@@ -63,7 +63,7 @@ assumption, concrete `pyproject.toml` snippet).
 | Action | Usage | Guide | Examples |
 |---|---|---|---|
 | **GitHub Release** | `serapeum-org/github-actions/actions/release/github@github-release/v1.6.0` | [guide](docs/release/github/README.md) | [examples](docs/release/github/EXAMPLES.md) |
-| **PyPI Release** | `serapeum-org/github-actions/actions/release/pypi@pypi-release/v1.0.4` | [guide](docs/release/pypi/README.md) | [examples](docs/release/pypi/EXAMPLES.md) |
+| **PyPI Release** | `serapeum-org/github-actions/actions/release/pypi@pypi-release/v1.1.0` | [guide](docs/release/pypi/README.md) | [examples](docs/release/pypi/EXAMPLES.md) |
 
 The `release/github` action automates version bumping via
 [Commitizen](https://commitizen-tools.github.io/commitizen/), writes the
@@ -133,7 +133,7 @@ uv/v1.2.2               # Python setup with uv
 pixi/v1.2.2             # Python setup with pixi
 mkdocs/v1.3.2           # MkDocs deploy
 github-release/v1.6.0   # GitHub release via Commitizen
-pypi-release/v1.0.4     # PyPI release
+pypi-release/v1.1.0     # PyPI release
 ```
 
 Pin to an exact version, or to its commit SHA for supply-chain hardening.
@@ -159,7 +159,7 @@ you cut a new tag.
 | `actions/python-setup/pixi` | `pixi/v1.2.2`           | `6c0a569b67c149c4648c75495544732cba2d0eca` |
 | `actions/mkdocs-deploy`     | `mkdocs/v1.3.2`         | `961524686fb512c05ca8e4c7bfe81ba68eef4dda` |
 | `actions/release/github`    | `github-release/v1.6.0` | `e65132ca10fc27245cfd787c2148ddac3b44e668` |
-| `actions/release/pypi`      | `pypi-release/v1.0.4`   | `961524686fb512c05ca8e4c7bfe81ba68eef4dda` |
+| `actions/release/pypi`      | `pypi-release/v1.1.0`   | `ef83a5f05b2d450406dc1da3c91dfa5e3f7701da` |
 
 To verify locally: `git rev-parse <tag>^{commit}` (the `^{commit}` is
 required — `git rev-parse <tag>` returns the annotated-tag object SHA, not

@@ -168,7 +168,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1
+      - uses: serapeum-org/github-actions/actions/release/pypi@pypi-release/v1.1.0
         with:
           pypi-username: '__token__'
           pypi-password: ${{ secrets.PYPI_TOKEN }}
