@@ -106,7 +106,11 @@ runs:
         echo "::group::PyPI Release Configuration"
         echo "=== PyPI Release Action Configuration ==="
         echo "✓ Package manager: $PACKAGE_MANAGER"
-        echo "✓ Package manager version: $PACKAGE_MANAGER_VERSION"
+        if [ "$PACKAGE_MANAGER" = "pip" ]; then
+          echo "✓ Package manager version: $PACKAGE_MANAGER_VERSION (ignored for pip)"
+        else
+          echo "✓ Package manager version: $PACKAGE_MANAGER_VERSION"
+        fi
         echo "✓ Python version: $PYTHON_VERSION"
         if [ -n "$INSTALL_GROUPS" ]; then
           echo "✓ Install groups: $INSTALL_GROUPS"
