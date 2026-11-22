@@ -50,9 +50,12 @@ inputs:
     default: 'groups: docs'
   deploy-token:
     description: >
-      GitHub token for deployment to GitHub Pages.
-      Typically use a personal access token or GITHUB_TOKEN with pages permissions.
-      Example: secrets.ACTIONS_DEPLOY_TOKEN.
+      Token used to authenticate the gh-pages push. It is installed as the git
+      credential for the GitHub host (overriding the one actions/checkout
+      persisted), so it must have "contents: write" on the repository the docs
+      are published to. Typically secrets.GITHUB_TOKEN with
+      "permissions: contents: write"; use a personal access token to publish to
+      a different repository.
     required: true
   release-tag:
     description: >
@@ -197,6 +200,16 @@ runs:
         git config --global user.email "${GIT_ACTOR}@users.noreply.github.com"
         echo "::endgroup::"
 
+    - name: Configure docs push credentials
+      shell: bash
+      env:
+        ACTIONS_DEPLOY_TOKEN: ${{ inputs.deploy-token }}
+      run: |
+        echo "::group::Configuring gh-pages push credentials"
+        SCRIPT="${{ github.action_path }}/scripts/configure_push_auth.sh"
+        bash "$SCRIPT"
+        echo "::endgroup::"
+
     - name: Set release tag environment variable
       if: ${{ inputs.trigger == 'release' }}
       shell: bash
@@ -223,7 +236,6 @@ runs:
       if: ${{ inputs.trigger == 'pull_request' }}
       shell: bash
       env:
-        ACTIONS_DEPLOY_TOKEN: ${{ inputs.deploy-token }}
         PACKAGE_MANAGER: ${{ inputs.package-manager }}
       run: |
         echo "::group::Deploying pull request documentation"
@@ -235,7 +247,6 @@ runs:
       if: ${{ inputs.trigger == 'main' }}
       shell: bash
       env:
-        ACTIONS_DEPLOY_TOKEN: ${{ inputs.deploy-token }}
         PACKAGE_MANAGER: ${{ inputs.package-manager }}
       run: |
         echo "::group::Deploying main branch documentation"
@@ -248,7 +259,6 @@ runs:
       if: ${{ inputs.trigger == 'release' }}
       shell: bash
       env:
-        ACTIONS_DEPLOY_TOKEN: ${{ inputs.deploy-token }}
         PACKAGE_MANAGER: ${{ inputs.package-manager }}
         MIKE_ALIAS: ${{ inputs.mike-alias }}
       run: |
