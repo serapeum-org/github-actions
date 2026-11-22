@@ -407,6 +407,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # These are deliberately OLD pins (below the current upstream 'latest') so
+        # the version assertion is meaningful. They must stay downloadable from
+        # astral-sh/uv and prefix-dev/pixi; if either is ever yanked the install
+        # step fails for an upstream reason — bump to another old-but-present tag.
         include:
           - package-manager: uv
             pinned-version: '0.12.0'
