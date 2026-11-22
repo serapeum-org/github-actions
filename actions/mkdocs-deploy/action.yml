@@ -48,12 +48,6 @@ inputs:
       Default is "groups: docs".
     required: false
     default: 'groups: docs'
-  deploy-token:
-    description: >
-      GitHub token for deployment to GitHub Pages.
-      Typically use a personal access token or GITHUB_TOKEN with pages permissions.
-      Example: secrets.ACTIONS_DEPLOY_TOKEN.
-    required: true
   release-tag:
     description: >
       Release tag version (used only with trigger "release"). When empty,
@@ -223,7 +217,6 @@ runs:
       if: ${{ inputs.trigger == 'pull_request' }}
       shell: bash
       env:
-        ACTIONS_DEPLOY_TOKEN: ${{ inputs.deploy-token }}
         PACKAGE_MANAGER: ${{ inputs.package-manager }}
       run: |
         echo "::group::Deploying pull request documentation"
@@ -235,7 +228,6 @@ runs:
       if: ${{ inputs.trigger == 'main' }}
       shell: bash
       env:
-        ACTIONS_DEPLOY_TOKEN: ${{ inputs.deploy-token }}
         PACKAGE_MANAGER: ${{ inputs.package-manager }}
       run: |
         echo "::group::Deploying main branch documentation"
@@ -248,7 +240,6 @@ runs:
       if: ${{ inputs.trigger == 'release' }}
       shell: bash
       env:
-        ACTIONS_DEPLOY_TOKEN: ${{ inputs.deploy-token }}
         PACKAGE_MANAGER: ${{ inputs.package-manager }}
         MIKE_ALIAS: ${{ inputs.mike-alias }}
       run: |

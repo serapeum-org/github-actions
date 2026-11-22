@@ -98,7 +98,6 @@ Deploy docs (with notebook execution) on every PR, main push, and release:
 - uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1.3.2
   with:
     trigger: ${{ github.event_name }}
-    deploy-token: ${{ secrets.GITHUB_TOKEN }}
     notebooks-path: 'docs/notebook'
 ```
 

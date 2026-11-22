@@ -112,7 +112,6 @@ jobs:
       - uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1
         with:
           trigger: ${{ github.event_name }}
-          deploy-token: ${{ secrets.GITHUB_TOKEN }}
           package-manager: 'uv'
           install-groups: 'groups: docs'
 ```
