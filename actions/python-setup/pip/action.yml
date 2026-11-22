@@ -52,20 +52,43 @@ runs:
         CACHE: ${{ inputs.cache }}
       run: |
         echo "::group::Resolving cache setting"
-        # Map the boolean-string shape onto a setup-python cache type: "true" means
-        # pip caching, "false"/"" means off, anything else (pip/pipenv/poetry) is
-        # passed through to actions/setup-python unchanged.
-        case "$CACHE" in
-          true) resolved='pip' ;;
+        # Normalize: lowercase and strip whitespace so "True"/" true "/"TRUE" behave
+        # like "true" (portable; avoids bash-4-only ${VAR,,}).
+        cache_in="$(printf '%s' "$CACHE" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')"
+        # Map the boolean-string shape onto a setup-python cache type. "true" means
+        # pip caching; "false"/"" means off; "pip"/"pipenv"/"poetry" pass through.
+        case "$cache_in" in
+          true|pip) resolved='pip' ;;
+          pipenv) resolved='pipenv' ;;
+          poetry) resolved='poetry' ;;
           false|'') resolved='' ;;
-          *) resolved="$CACHE" ;;
+          *)
+            echo "::error::Invalid cache value '${CACHE}'. Use 'true', 'false', 'pip', 'pipenv', or 'poetry'."
+            exit 1
+            ;;
         esac
-        # Caching needs a file to hash. pip (unlike uv/pixi) can run without one, so
-        # auto-disable with a warning instead of failing the job.
-        if [ -n "$resolved" ] && [ ! -f pyproject.toml ] && [ ! -f requirements.txt ]; then
-          echo "No pyproject.toml or requirements.txt to hash (cache input was '${CACHE}')."
-          echo "::warning::Caching requested but no dependency file found; caching disabled for this run."
-          resolved=''
+        # setup-python hashes a different dependency file per cache type, globbed at
+        # any depth (**/). Mirror that so caching is auto-disabled only when it would
+        # genuinely find nothing to hash; pip, unlike uv/pixi, can run with no file.
+        case "$resolved" in
+          pip) dep_globs='pyproject.toml requirements.txt' ;;
+          pipenv) dep_globs='Pipfile.lock' ;;
+          poetry) dep_globs='poetry.lock' ;;
+          *) dep_globs='' ;;
+        esac
+        if [ -n "$dep_globs" ]; then
+          found=''
+          for g in $dep_globs; do
+            if [ -n "$(find . -path ./.git -prune -o -type f -name "$g" -print 2>/dev/null | head -n1)" ]; then
+              found='yes'
+              break
+            fi
+          done
+          if [ -z "$found" ]; then
+            echo "No dependency file (${dep_globs// /, }) found to hash (cache input was '${CACHE}')."
+            echo "::warning::Caching requested but no dependency file found; caching disabled for this run."
+            resolved=''
+          fi
         fi
         if [ -n "$resolved" ]; then
           echo "Caching enabled (setup-python cache='${resolved}')."
