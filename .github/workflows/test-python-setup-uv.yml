@@ -1,10 +1,20 @@
 name: Test python-setup/uv
 
+# Exercises the python-setup/uv composite action: default (core-only) setup,
+# dependency groups and extras, and lock-file verification. Runs on
+# feature-branch pushes that touch the action or this file; called by ci.yml on
+# every merge to main.
+
 on:
+  workflow_call:
   push:
+    branches-ignore: [main]
     paths:
       - 'actions/python-setup/uv/**'
       - '.github/workflows/test-python-setup-uv.yml'
+
+permissions:
+  contents: read
 
 jobs:
   test-uv-basic:

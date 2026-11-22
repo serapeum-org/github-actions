@@ -1,0 +1,41 @@
+name: Validate workflows
+
+# Contract test for the workflow suite. Runs scripts/validate_workflows.py,
+# which parses every workflow under .github/workflows and asserts the invariants
+# the CI fan-out relies on: reusable-workflow wiring, the no-double-run guard on
+# main, least-privilege permissions, scoped secrets, and the gh-pages
+# concurrency guard. This is the repo's "unit test" for its own CI plumbing.
+#
+# Triggers:
+#   push (any branch except main) when a workflow or the validator changes;
+#   workflow_call so the main orchestrator (ci.yml) runs it on every merge;
+#   workflow_dispatch for manual runs.
+
+on:
+  workflow_call:
+  push:
+    branches-ignore: [main]
+    paths:
+      - '.github/workflows/**'
+      - 'scripts/validate_workflows.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate workflow contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+
+      - name: Install PyYAML
+        run: pip install pyyaml
+
+      - name: Run the workflow contract test
+        run: python scripts/validate_workflows.py

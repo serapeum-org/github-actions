@@ -1,11 +1,21 @@
 name: Test python-setup/pixi
 
+# Exercises the python-setup/pixi composite action: default setup, dependency
+# groups and extras, and lock-file handling. Runs on feature-branch pushes that
+# touch the action, its fixtures, or this file; called by ci.yml on every merge
+# to main.
+
 on:
+  workflow_call:
   push:
+    branches-ignore: [main]
     paths:
       - 'actions/python-setup/pixi/**'
       - 'tests/data/pixi/**'
       - '.github/workflows/test-python-setup-pixi.yml'
+
+permissions:
+  contents: read
 
 jobs:
   test-pixi-basic:

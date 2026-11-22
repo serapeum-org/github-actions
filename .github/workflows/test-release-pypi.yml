@@ -1,7 +1,20 @@
 name: Test release/pypi
 
+# Exercises the release/pypi composite action across pip/uv/pixi: build and
+# publish wiring, custom repository URL, and lock handling. Build/verify jobs run
+# with skip-publish: 'true'; the full publish-to-TestPyPI jobs run only on main
+# (or manual dispatch) and upload a unique 0.0.dev<run-number> so versions never
+# collide. Runs on feature-branch pushes that touch the action, its fixtures, or
+# this file; called by ci.yml on every merge to main (which is when publishing
+# happens). See the SECRETS note below for the required PYPI_TEST_PUBLISH token.
+
 on:
+  workflow_call:
+    secrets:
+      PYPI_TEST_PUBLISH:
+        required: false
   push:
+    branches-ignore: [main]
     paths:
       - 'actions/release/pypi/**'
       - 'tests/data/release-pypi/**'

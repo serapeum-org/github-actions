@@ -1,11 +1,21 @@
 name: Test python-setup/pip
 
+# Exercises the python-setup/pip composite action: default setup, dependency
+# groups and extras, lock-file verification, and failure modes. Runs on
+# feature-branch pushes that touch the action, its fixtures, or this file;
+# called by ci.yml on every merge to main.
+
 on:
+  workflow_call:
   push:
+    branches-ignore: [main]
     paths:
       - 'actions/python-setup/pip/**'
       - 'tests/data/pip/**'
       - '.github/workflows/test-python-setup-pip.yml'
+
+permissions:
+  contents: read
 
 jobs:
   test-pip-basic:

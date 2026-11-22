@@ -1,0 +1,48 @@
+name: CI (main)
+
+# Runs the full suite on every push to main (i.e. every merge), regardless of
+# which files changed. Each job calls one of the existing workflows as a
+# reusable workflow. Those workflows keep their own path-filtered push triggers
+# for feature branches (branches-ignore: [main]), so main is driven only from
+# here and nothing double-runs.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Least privilege: the orchestrator itself needs only read. The one job that
+# pushes (deploy-docs) is granted contents: write on the job below.
+permissions:
+  contents: read
+
+jobs:
+  validate-workflows:
+    uses: ./.github/workflows/validate-workflows.yml
+
+  python-setup-pip:
+    uses: ./.github/workflows/test-python-setup-pip.yml
+
+  python-setup-pixi:
+    uses: ./.github/workflows/test-python-setup-pixi.yml
+
+  python-setup-uv:
+    uses: ./.github/workflows/test-python-setup-uv.yml
+
+  mkdocs-deploy:
+    uses: ./.github/workflows/test-mkdocs-deploy.yml
+
+  release-github:
+    uses: ./.github/workflows/test-release-github.yml
+
+  # Only this workflow needs a user-defined secret; it is passed explicitly
+  # rather than inheriting every repository secret.
+  release-pypi:
+    uses: ./.github/workflows/test-release-pypi.yml
+    secrets:
+      PYPI_TEST_PUBLISH: ${{ secrets.PYPI_TEST_PUBLISH }}
+
+  deploy-docs:
+    permissions:
+      contents: write
+    uses: ./.github/workflows/deploy-docs.yml

@@ -1,7 +1,14 @@
 name: Test mkdocs-deploy
 
+# Exercises the mkdocs-deploy composite action across pip/uv/pixi and its
+# pull_request / main / release trigger modes, against a local fake remote so no
+# real deploy escapes. Runs on feature-branch pushes that touch the action, its
+# fixtures, or this file; called by ci.yml on every merge to main.
+
 on:
+  workflow_call:
   push:
+    branches-ignore: [main]
     paths:
       - 'actions/mkdocs-deploy/**'
       - 'tests/data/mkdocs-deploy/**'

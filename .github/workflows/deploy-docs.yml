@@ -1,17 +1,23 @@
 name: Deploy Documentation
 
+# Builds the MkDocs site, generates the action reference pages, and publishes to
+# the gh-pages branch with mike (version "main", aliased "latest", set default).
+# Called by ci.yml on every merge to main; also runnable manually. It performs a
+# real `mike deploy --push`, so it carries a concurrency guard (below) to keep
+# two merges from racing on the gh-pages push.
+
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'docs/**'
-      - 'mkdocs.yml'
-      - 'actions/**/action.yml'
-      - 'scripts/generate_action_docs.py'
+  workflow_call:
   workflow_dispatch:
 
 permissions:
   contents: write
+
+# Serialize the gh-pages push: two merges landing close together would
+# otherwise run `mike deploy --push` in parallel and collide (non-fast-forward).
+concurrency:
+  group: gh-pages-deploy
+  cancel-in-progress: false
 
 jobs:
   docs:
