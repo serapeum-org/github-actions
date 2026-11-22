@@ -176,7 +176,7 @@ jobs:
         with:
           cache: 'true'
 
-      - name: Verify caching ran and Python works
+      - name: Verify cache 'true' accepted and install succeeded (smoke)
         shell: bash
         run: |
           python --version
@@ -204,6 +204,80 @@ jobs:
           python --version
           pip list
           echo "[OK] cache: 'false' accepted and caching disabled"
+
+  test-pip-cache-poetry-autoskip:
+    name: Test pip action - cache 'poetry' auto-skips without poetry.lock
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Copy a pyproject (poetry needs poetry.lock, which is absent)
+        run: cp tests/data/pip/test-pip-cache/pyproject.toml .
+
+      - name: Request poetry caching with no poetry.lock (must auto-skip, not fail)
+        id: poetry-autoskip
+        continue-on-error: true
+        uses: ./actions/python-setup/pip
+        with:
+          cache: 'poetry'
+
+      - name: Verify the action auto-skipped and succeeded
+        shell: bash
+        run: |
+          if [ "${{ steps.poetry-autoskip.outcome }}" != "success" ]; then
+            echo "::error::Expected cache: 'poetry' with no poetry.lock to auto-skip and succeed, not hard-fail"
+            exit 1
+          fi
+          python --version
+          echo "[OK] cache: 'poetry' auto-skipped (no poetry.lock) and the run succeeded"
+
+  test-pip-cache-pipenv-autoskip:
+    name: Test pip action - cache 'pipenv' auto-skips without Pipfile.lock
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Request pipenv caching with no Pipfile.lock (must auto-skip, not fail)
+        id: pipenv-autoskip
+        continue-on-error: true
+        uses: ./actions/python-setup/pip
+        with:
+          cache: 'pipenv'
+
+      - name: Verify the action auto-skipped and succeeded
+        shell: bash
+        run: |
+          if [ "${{ steps.pipenv-autoskip.outcome }}" != "success" ]; then
+            echo "::error::Expected cache: 'pipenv' with no Pipfile.lock to auto-skip and succeed"
+            exit 1
+          fi
+          python --version
+          echo "[OK] cache: 'pipenv' auto-skipped (no Pipfile.lock) and the run succeeded"
+
+  test-pip-cache-invalid-value:
+    name: Test pip action - invalid cache value is rejected
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Pass an unsupported cache value (should fail fast)
+        id: invalid-cache
+        continue-on-error: true
+        uses: ./actions/python-setup/pip
+        with:
+          cache: 'nonsense'
+
+      - name: Verify the action rejected the invalid value
+        shell: bash
+        run: |
+          if [ "${{ steps.invalid-cache.outcome }}" != "failure" ]; then
+            echo "::error::Expected the action to reject an unsupported cache value"
+            exit 1
+          fi
+          echo "[OK] Invalid cache value rejected as expected"
 
   test-pip-cache-with-requirements:
     name: Test pip action - Cache with requirements.txt
