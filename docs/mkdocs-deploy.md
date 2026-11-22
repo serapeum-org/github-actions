@@ -23,6 +23,13 @@ This action deploys MkDocs documentation with automatic version management based
 > The action pushes to `gh-pages` with the credentials `actions/checkout` persists, so the calling workflow needs
 > `permissions: contents: write` and the default `persist-credentials: true` on checkout. There is no token input.
 
+### Upgrading from the `mkdocs/v1` major
+
+The `deploy-token` input has been **removed** — it was never read (the push always used the checkout credential
+above), so it was a no-op. When you move to the new major, delete the `deploy-token:` line from your `with:` block;
+no other change is needed, as long as the workflow already grants `contents: write` (it did, to let the old push
+succeed).
+
 ## Inputs
 
 | Input | Description | Required | Default |
