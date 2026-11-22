@@ -147,7 +147,7 @@ jobs:
       - name: Strip all dependency files so caching has nothing to hash
         shell: bash
         run: |
-          find . -path ./.git -prune -o -type f \
+          find . -type f \
             \( -name pyproject.toml -o -name requirements.txt -o -name Pipfile.lock -o -name poetry.lock \) \
             -print -delete
 
@@ -337,7 +337,7 @@ jobs:
       - name: Strip all dependency files so the default cache has nothing to hash
         shell: bash
         run: |
-          find . -path ./.git -prune -o -type f \
+          find . -type f \
             \( -name pyproject.toml -o -name requirements.txt -o -name Pipfile.lock -o -name poetry.lock \) \
             -print -delete
 
