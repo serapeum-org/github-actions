@@ -34,6 +34,9 @@ inputs:
       - pixi: a release tag like 'v0.65.0', or 'latest' for the newest release.
       Match the format to the selected package-manager (uv: bare number; pixi:
       leading 'v'); switching managers may require reformatting this value.
+      An explicit empty string is manager-dependent: uv treats '' as
+      "auto-resolve from pyproject/uv.toml", while pixi has no such mode so ''
+      is coalesced back to 'latest'.
       Ignored when package-manager is 'pip' (pip ships with Python).
       Default is 'latest'.
     required: false

@@ -65,7 +65,7 @@ jobs:
 | `pypi-password` | PyPI password or API token value | ✅ Yes | - |
 | `python-version` | Python version for building and publishing | No | `3.12` |
 | `package-manager` | Package manager: `pip`, `uv`, `pixi` | No | `uv` |
-| `package-manager-version` | Version of the `uv`/`pixi` package manager (forwarded to its `version` input); ignored for `pip`. | No | `latest` |
+| `package-manager-version` | Version of the `uv`/`pixi` package manager (forwarded to its `version` input); ignored for `pip`. An explicit `''` means auto-resolve for `uv` but `latest` for `pixi`. | No | `latest` |
 | `install-groups` | Dependency groups or environments to install (see below) | No | `''` |
 | `pypi-repository-url` | Custom index URL. Leave empty for official PyPI | No | `''` |
 | `verify-lock` | Verify lock file is up to date before installing (uv/pixi only) | No | `'true'` |
