@@ -395,6 +395,72 @@ jobs:
 
           echo "::endgroup::"
 
+  # Build-only — package-manager-version pinning (uv + pixi)
+  # Proves the package-manager-version input is forwarded to the underlying
+  # python-setup action's `version` input: pin a NON-default (older-than-latest)
+  # tool version and assert the action installs EXACTLY that version. Before the
+  # input existed the action always installed 'latest', so this job would report
+  # the latest version and fail — it is a real guard, not a smoke test.
+  test-build-package-manager-version:
+    name: Test build - pin ${{ matrix.package-manager }} ${{ matrix.pinned-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - package-manager: uv
+            pinned-version: '0.12.0'
+          - package-manager: pixi
+            pinned-version: 'v0.73.0'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Copy uv test fixture (includes committed uv.lock)
+        if: matrix.package-manager == 'uv'
+        run: cp -r tests/data/release-pypi/test-basic-uv/. .
+
+      - name: Copy pixi test fixture (includes committed pixi.lock)
+        if: matrix.package-manager == 'pixi'
+        run: cp -r tests/data/release-pypi/test-basic-pixi/. .
+
+      - name: Build with pinned ${{ matrix.package-manager }} ${{ matrix.pinned-version }}
+        uses: ./actions/release/pypi
+        with:
+          pypi-username: __token__
+          pypi-password: unused-in-build-only-test
+          package-manager: ${{ matrix.package-manager }}
+          package-manager-version: ${{ matrix.pinned-version }}
+          python-version: '3.12'
+          verify-lock: 'false'
+          skip-publish: 'true'
+
+      - name: Verify the pinned package-manager version is active
+        run: |
+          echo "::group::Verifying pinned ${{ matrix.package-manager }} version"
+          EXPECTED="${{ matrix.pinned-version }}"
+          # pixi release tags carry a leading 'v' (v0.73.0); `pixi --version`
+          # prints a bare number, so strip it before comparing.
+          EXPECTED_BARE="${EXPECTED#v}"
+          if [ "${{ matrix.package-manager }}" = "uv" ]; then
+            ACTUAL=$(uv --version | awk '{print $2}')
+          else
+            ACTUAL=$(pixi --version | awk '{print $2}')
+          fi
+          echo "Expected: $EXPECTED_BARE   Actual: $ACTUAL"
+          if [ "$ACTUAL" != "$EXPECTED_BARE" ]; then
+            echo "::error::package-manager-version not forwarded: expected $EXPECTED_BARE, got $ACTUAL"
+            exit 1
+          fi
+          echo "[OK] ${{ matrix.package-manager }} pinned to $ACTUAL via package-manager-version"
+          echo "::endgroup::"
+
+      - name: Verify dist artifacts were created
+        run: |
+          ls dist/*.whl dist/*.tar.gz
+          echo "[OK] Build artifacts present"
+
   # Full publish to TestPyPI — pip and uv
   # Requires repository secret: PYPI_TEST_PUBLISH (see top of file for scope notes).
   # Each run publishes 0.0.dev<run-number> so uploads never conflict.
