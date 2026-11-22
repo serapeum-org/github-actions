@@ -48,15 +48,6 @@ inputs:
       Default is "groups: docs".
     required: false
     default: 'groups: docs'
-  deploy-token:
-    description: >
-      Token used to authenticate the gh-pages push. It is installed as the git
-      credential for the GitHub host (overriding the one actions/checkout
-      persisted), so it must have "contents: write" on the repository the docs
-      are published to. Typically secrets.GITHUB_TOKEN with
-      "permissions: contents: write"; use a personal access token to publish to
-      a different repository.
-    required: true
   release-tag:
     description: >
       Release tag version (used only with trigger "release"). When empty,
@@ -198,16 +189,6 @@ runs:
         echo "::group::Configuring Git"
         git config --global user.name "$GIT_ACTOR"
         git config --global user.email "${GIT_ACTOR}@users.noreply.github.com"
-        echo "::endgroup::"
-
-    - name: Configure docs push credentials
-      shell: bash
-      env:
-        ACTIONS_DEPLOY_TOKEN: ${{ inputs.deploy-token }}
-      run: |
-        echo "::group::Configuring gh-pages push credentials"
-        SCRIPT="${{ github.action_path }}/scripts/configure_push_auth.sh"
-        bash "$SCRIPT"
         echo "::endgroup::"
 
     - name: Set release tag environment variable

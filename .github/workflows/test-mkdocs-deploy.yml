@@ -70,7 +70,6 @@ jobs:
           trigger: 'pull_request'
           package-manager: ${{ matrix.package-manager }}
           install-groups: ${{ steps.set-groups.outputs.groups }}
-          deploy-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Verify deployment command was attempted
         run: |
@@ -99,7 +98,6 @@ jobs:
         with:
           trigger: 'main'
           package-manager: 'uv'
-          deploy-token: ${{ secrets.GITHUB_TOKEN }}
 
   test-release-trigger:
     name: Test Release Trigger
@@ -162,7 +160,6 @@ jobs:
           install-groups: ${{ steps.set-groups.outputs.groups }}
           release-tag: ${{ matrix.release-tag }}
           mike-alias: ${{ matrix.mike-alias }}
-          deploy-token: ${{ secrets.GITHUB_TOKEN }}
 
   test-custom-configuration:
     name: Test Custom Configuration
@@ -209,7 +206,6 @@ jobs:
           package-manager: ${{ matrix.package-manager }}
           python-version: ${{ matrix.python-version }}
           install-groups: ${{ matrix.install-groups }}
-          deploy-token: ${{ secrets.GITHUB_TOKEN }}
 
   test-error-scenarios:
     name: Test Error Scenarios
@@ -229,7 +225,6 @@ jobs:
         with:
           trigger: 'pull_request'
           package-manager: 'uv'
-          deploy-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Verify deployment fails without mkdocs.yml
         if: steps.no-mkdocs-test.outcome != 'failure'
@@ -251,7 +246,6 @@ jobs:
           trigger: 'main'
           package-manager: 'uv'
           install-groups: 'dev'  # Wrong group, no mkdocs
-          deploy-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Verify deployment fails without mkdocs installed
         if: steps.no-deps-test.outcome != 'failure'
@@ -266,7 +260,6 @@ jobs:
         with:
           trigger: 'invalid'
           package-manager: 'uv'
-          deploy-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Verify invalid trigger handling
         run: |
@@ -299,7 +292,6 @@ jobs:
         with:
           trigger: 'pull_request'
           package-manager: 'pip'
-          deploy-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Verify git was configured
         run: |
@@ -336,14 +328,12 @@ jobs:
         with:
           trigger: 'pull_request'
           package-manager: 'pip'
-          deploy-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Test uv command execution
         uses: ./actions/mkdocs-deploy
         with:
           trigger: 'main'
           package-manager: 'uv'
-          deploy-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Test pixi command execution
         uses: ./actions/mkdocs-deploy
@@ -352,7 +342,6 @@ jobs:
           package-manager: 'pixi'
           install-groups: 'docs'
           release-tag: 'v1.0.0'
-          deploy-token: ${{ secrets.GITHUB_TOKEN }}
 
   test-release-tag-resolution:
     name: Test Release Tag Resolution
@@ -381,7 +370,6 @@ jobs:
           trigger: 'release'
           package-manager: 'uv'
           release-tag: 'v4.5.6'
-          deploy-token: ${{ secrets.GITHUB_TOKEN }}
 
       # Negative test: the SAME fixture and setup but with NO resolvable tag (no
       # release-tag input, and github.event.release.tag_name is empty because this
@@ -394,7 +382,6 @@ jobs:
         with:
           trigger: 'release'
           package-manager: 'uv'
-          deploy-token: ${{ secrets.GITHUB_TOKEN }}
 
       # Assert that the ONLY difference (presence of a resolvable tag) is what flips
       # the result: tagged succeeds, untagged fails. Because both runs share the same
@@ -461,7 +448,6 @@ jobs:
           trigger: 'pull_request'
           package-manager: ${{ matrix.package-manager }}
           install-groups: ${{ steps.set-groups.outputs.groups }}
-          deploy-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Verify default behavior
         run: |
@@ -497,7 +483,6 @@ jobs:
           trigger: 'pull_request'
           package-manager: 'pixi'
           install-groups: ${{ matrix.install-groups }}
-          deploy-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Verify environment succeeded
         run: |
@@ -531,7 +516,6 @@ jobs:
           trigger: 'pull_request'
           package-manager: ${{ matrix.package-manager }}
           python-version: ${{ matrix.python-version }}
-          deploy-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Verify Python version
         run: |
@@ -598,7 +582,6 @@ jobs:
           trigger: 'pull_request'
           package-manager: ${{ matrix.package-manager }}
           install-groups: ${{ steps.set-groups.outputs.groups }}
-          deploy-token: ${{ secrets.GITHUB_TOKEN }}
           notebooks-path: 'docs/notebook'
 
       - name: Assert notebook has outputs after action runs
@@ -654,7 +637,6 @@ jobs:
           trigger: 'pull_request'
           package-manager: 'uv'
           install-groups: 'groups: docs'
-          deploy-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Assert no .jupyter_cache was created
         run: |
@@ -711,7 +693,6 @@ jobs:
           trigger: 'pull_request'
           package-manager: 'uv'
           install-groups: 'groups: docs'
-          deploy-token: ${{ secrets.GITHUB_TOKEN }}
           notebooks-path: 'docs/notebook'
           # Mixes newline separation (between lines) with comma separation
           # (within the second line) to exercise both split paths.
@@ -789,7 +770,6 @@ jobs:
           trigger: 'pull_request'
           package-manager: 'uv'
           install-groups: 'groups: docs'
-          deploy-token: ${{ secrets.GITHUB_TOKEN }}
           notebooks-path: 'docs/notebook'
 
       - name: Assert the strict run aborted in the prepare step on the failing notebook
@@ -830,7 +810,6 @@ jobs:
           trigger: 'pull_request'
           package-manager: 'uv'
           install-groups: 'groups: docs'
-          deploy-token: ${{ secrets.GITHUB_TOKEN }}
           notebooks-path: 'docs/notebook'
           notebooks-continue-on-error: 'true'
 
@@ -898,7 +877,6 @@ jobs:
           trigger: 'pull_request'
           package-manager: ${{ matrix.package-manager }}
           install-groups: ${{ matrix.install-groups }}
-          deploy-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Verify format parsing
         run: |
@@ -956,7 +934,6 @@ jobs:
           package-manager: ${{ matrix.package-manager }}
           package-manager-version: ${{ matrix.package-manager == 'pixi' && 'v0.65.0' || 'latest' }}
           install-groups: ${{ steps.set-groups.outputs.groups }}
-          deploy-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Verify deployment completed
         run: |
@@ -1002,7 +979,6 @@ jobs:
           trigger: 'pull_request'
           package-manager: 'uv'
           install-groups: 'groups: docs'
-          deploy-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Assert the deploy recovered and preserved the concurrent push
         run: |
@@ -1154,47 +1130,3 @@ jobs:
           else echo "OK case6: is_push_race matched real git non-fast-forward output"; fi
 
           exit $fail
-
-  test-configure-push-auth-unit:
-    name: Test configure_push_auth.sh (deploy-token wiring)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-
-      - name: Exercise the gh-pages push-credential wiring
-        run: |
-          set -uo pipefail
-          SCRIPT="$PWD/actions/mkdocs-deploy/scripts/configure_push_auth.sh"
-          fail=0
-          hdr() { git -C "$1" config --local --get-all "http.https://github.com/.extraheader" 2>/dev/null; }
-          expected="AUTHORIZATION: basic $(printf 'x-access-token:DEPLOY_TOKEN' | base64 | tr -d '\n')"
-
-          # Case 1: https origin -> replaces the checkout credential with the deploy-token.
-          a="$(mktemp -d)"; git init -q "$a"; git -C "$a" remote add origin https://github.com/foo/bar.git
-          git -C "$a" config --local "http.https://github.com/.extraheader" \
-            "AUTHORIZATION: basic $(printf 'x-access-token:CHECKOUT' | base64 | tr -d '\n')"
-          ( cd "$a" && ACTIONS_DEPLOY_TOKEN=DEPLOY_TOKEN GITHUB_SERVER_URL=https://github.com bash "$SCRIPT" ) >/dev/null
-          if [ "$(hdr "$a")" = "$expected" ] && [ "$(hdr "$a" | wc -l)" -eq 1 ]; then
-            echo "OK case1: https origin -> single extraheader derived from deploy-token"
-          else echo "FAIL case1: got '$(hdr "$a")'"; fail=1; fi
-
-          # Case 2: file:// origin (test harness) -> no GitHub extraheader set, push stays unauthenticated.
-          b="$(mktemp -d)"; git init -q "$b"; git -C "$b" remote add origin file:///tmp/fake-remote.git
-          ( cd "$b" && ACTIONS_DEPLOY_TOKEN=DEPLOY_TOKEN GITHUB_SERVER_URL=https://github.com bash "$SCRIPT" ) >/dev/null
-          if [ -z "$(hdr "$b")" ]; then echo "OK case2: file:// origin untouched"; else echo "FAIL case2: got '$(hdr "$b")'"; fail=1; fi
-
-          # Case 3: ssh origin -> untouched (an https extraheader would not apply anyway).
-          c="$(mktemp -d)"; git init -q "$c"; git -C "$c" remote add origin git@github.com:foo/bar.git
-          ( cd "$c" && ACTIONS_DEPLOY_TOKEN=DEPLOY_TOKEN GITHUB_SERVER_URL=https://github.com bash "$SCRIPT" ) >/dev/null
-          if [ -z "$(hdr "$c")" ]; then echo "OK case3: ssh origin untouched"; else echo "FAIL case3: got '$(hdr "$c")'"; fail=1; fi
-
-          # Case 4: empty deploy-token -> no-op, exit 0, any existing credential preserved.
-          d="$(mktemp -d)"; git init -q "$d"; git -C "$d" remote add origin https://github.com/foo/bar.git
-          git -C "$d" config --local "http.https://github.com/.extraheader" "AUTHORIZATION: basic KEEP"
-          ( cd "$d" && ACTIONS_DEPLOY_TOKEN= GITHUB_SERVER_URL=https://github.com bash "$SCRIPT" ) >/dev/null
-          if [ "$(hdr "$d")" = "AUTHORIZATION: basic KEEP" ]; then
-            echo "OK case4: empty token leaves the existing credential untouched"
-          else echo "FAIL case4: got '$(hdr "$d")'"; fail=1; fi
-
-          exit $fail
-

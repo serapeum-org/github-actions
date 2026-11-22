@@ -18,8 +18,10 @@ This action deploys MkDocs documentation with automatic version management based
 - uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1
   with:
     trigger: ${{ github.event_name }}
-    deploy-token: ${{ secrets.GITHUB_TOKEN }}
 ```
+
+> The action pushes to `gh-pages` with the credentials `actions/checkout` persists, so the calling workflow needs
+> `permissions: contents: write` and the default `persist-credentials: true` on checkout. There is no token input.
 
 ## Inputs
 
@@ -30,7 +32,6 @@ This action deploys MkDocs documentation with automatic version management based
 | `package-manager-version` | Version of the `uv`/`pixi` package manager (forwarded to its `version` input); ignored for `pip`. | No | `latest` |
 | `python-version` | Python version to install | No | `3.12` |
 | `install-groups` | Dependency groups to install | No | `groups: docs` |
-| `deploy-token` | Token that authenticates the gh-pages push; needs `contents: write` on the target repo | Yes | - |
 | `release-tag` | Release tag version (for release trigger) | No | - |
 | `mike-alias` | Mike alias for releases | No | `latest` |
 | `notebooks-path` | Root directory of Jupyter notebooks to execute and cache. Empty = skip. | No | `` (skip) |
@@ -62,7 +63,6 @@ jobs:
       - uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1
         with:
           trigger: 'pull_request'
-          deploy-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ### Production Deployment
@@ -92,7 +92,6 @@ jobs:
       - uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1
         with:
           trigger: ${{ github.event_name == 'release' && 'release' || 'main' }}
-          deploy-token: ${{ secrets.GITHUB_TOKEN }}
           release-tag: ${{ github.event.release.tag_name }}
 ```
 
@@ -102,7 +101,6 @@ jobs:
 - uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1
   with:
     trigger: 'main'
-    deploy-token: ${{ secrets.GITHUB_TOKEN }}
     package-manager: 'pixi'
     install-groups: 'default'
 ```
@@ -117,7 +115,6 @@ so unchanged notebooks don't re-execute:
 - uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1
   with:
     trigger: ${{ github.event_name }}
-    deploy-token: ${{ secrets.GITHUB_TOKEN }}
     notebooks-path: 'docs/notebook'
 ```
 
@@ -186,7 +183,6 @@ whatever outputs they already carry. This mirrors pytest's `--ignore-glob`.
 - uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1
   with:
     trigger: ${{ github.event_name }}
-    deploy-token: ${{ secrets.GITHUB_TOKEN }}
     notebooks-path: docs/examples
     notebooks-exclude: |
       dask/*.ipynb
@@ -217,7 +213,6 @@ the next CI run; use it for genuinely flaky notebooks, and prefer
 - uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1
   with:
     trigger: ${{ github.event_name }}
-    deploy-token: ${{ secrets.GITHUB_TOKEN }}
     notebooks-path: docs/examples
     # Never-runs-in-CI notebooks are excluded outright...
     notebooks-exclude: |
@@ -279,7 +274,8 @@ one new `gh-pages` commit.
 
 - `mkdocs` and `mike` in your project dependencies
 - GitHub Pages enabled on the repository
-- `contents: write` permission in the workflow
+- `contents: write` permission in the workflow, and `actions/checkout` left with its default
+  `persist-credentials: true` — the `gh-pages` push reuses that credential
 - *(For notebook execution)* `jupyter`, `nbconvert`, `ipykernel`,
   `mkdocs-jupyter` in the dependency group passed via `install-groups`;
   src-layout project structure
