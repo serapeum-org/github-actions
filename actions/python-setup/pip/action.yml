@@ -11,13 +11,19 @@ inputs:
     default: '3.12'
   cache:
     description: >
-      Cache type for pip dependencies (passed to actions/setup-python cache input).
-      Set to "pip" to enable caching with pip, or leave empty to disable caching.
-      Requires a pyproject.toml or requirements.txt file when enabled.
-      Examples: "pip", "pipenv", "poetry", "" (empty to disable).
-      Default is "" (no caching).
+      Dependency caching for pip. Accepts a boolean-string ("true"/"false") like
+      the uv and pixi actions (parsed case- and space-insensitively here), plus
+      setup-python cache types for advanced use:
+      "true" enables caching (uses setup-python's "pip" cache), "false" or ""
+      disables it, and "pip" / "pipenv" / "poetry" are passed straight through to
+      actions/setup-python. Caching needs the dependency file setup-python hashes
+      for the chosen type (pip: pyproject.toml/requirements.txt, pipenv:
+      Pipfile.lock, poetry: poetry.lock); if it is absent the action auto-disables
+      caching with a warning and still succeeds.
+      Examples: "true", "false", "pip", "pipenv", "poetry".
+      Default is "true" (caching enabled).
     required: false
-    default: ''
+    default: 'true'
   install-groups:
     description: >
       Dependency groups (PEP 735) and/or optional dependencies (extras) to install.
@@ -37,30 +43,76 @@ inputs:
     required: false
     default: 'x64'
 
+outputs:
+  cache:
+    description: >
+      The setup-python cache type actually applied: "pip", "pipenv" or "poetry"
+      when caching is active, or empty when caching is disabled or was
+      auto-skipped (no dependency file to hash).
+    value: ${{ steps.resolve-cache.outputs.cache }}
 
 runs:
   using: 'composite'
   steps:
-    - name: Validate cache requirements
-      if: inputs.cache != ''
+    - name: Resolve cache setting
+      id: resolve-cache
       shell: bash
       env:
         CACHE: ${{ inputs.cache }}
       run: |
-        echo "::group::Validating cache requirements"
-        if [ ! -f pyproject.toml ] && [ ! -f requirements.txt ]; then
-          echo "::error::Cache is enabled (cache='${CACHE}') but no pyproject.toml or requirements.txt found."
-          echo "::error::Either create a pyproject.toml/requirements.txt file or set cache: '' to disable caching."
-          exit 1
+        echo "::group::Resolving cache setting"
+        # Normalize: lowercase and strip whitespace so "True"/" true "/"TRUE" behave
+        # like "true" (portable; avoids bash-4-only ${VAR,,}).
+        cache_in="$(printf '%s' "$CACHE" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')"
+        # Map the boolean-string shape onto a setup-python cache type. "true" means
+        # pip caching; "false"/"" means off; "pip"/"pipenv"/"poetry" pass through.
+        case "$cache_in" in
+          true|pip) resolved='pip' ;;
+          pipenv) resolved='pipenv' ;;
+          poetry) resolved='poetry' ;;
+          false|'') resolved='' ;;
+          *)
+            echo "::error::Invalid cache value '${CACHE}'. Use 'true', 'false', 'pip', 'pipenv', or 'poetry'."
+            echo "::endgroup::"
+            exit 1
+            ;;
+        esac
+        # setup-python hashes a different dependency file per cache type, globbed at
+        # any depth (**/). Mirror that so caching is auto-disabled only when it would
+        # genuinely find nothing to hash; pip, unlike uv/pixi, can run with no file.
+        case "$resolved" in
+          pip) dep_globs='pyproject.toml requirements.txt' ;;
+          pipenv) dep_globs='Pipfile.lock' ;;
+          poetry) dep_globs='poetry.lock' ;;
+          *) dep_globs='' ;;
+        esac
+        if [ -n "$dep_globs" ]; then
+          found=''
+          for g in $dep_globs; do
+            if [ -n "$(find . -path ./.git -prune -o -type f -name "$g" -print 2>/dev/null | head -n1)" ]; then
+              found='yes'
+              break
+            fi
+          done
+          if [ -z "$found" ]; then
+            echo "No dependency file (${dep_globs// /, }) found to hash (cache input was '${CACHE}')."
+            echo "::warning::Caching requested but no dependency file found; caching disabled for this run."
+            resolved=''
+          fi
         fi
-        echo "Cache validation passed - found dependency file"
+        if [ -n "$resolved" ]; then
+          echo "Caching enabled (setup-python cache='${resolved}')."
+        else
+          echo "Caching disabled."
+        fi
+        echo "cache=${resolved}" >> "$GITHUB_OUTPUT"
         echo "::endgroup::"
 
     - name: Set up Python
       uses: actions/setup-python@v7
       with:
         python-version: ${{ inputs.python-version }}
-        cache: ${{ inputs.cache }}
+        cache: ${{ steps.resolve-cache.outputs.cache }}
         architecture: ${{ inputs.architecture }}
 
     - name: Upgrade pip
