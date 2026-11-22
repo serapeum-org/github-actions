@@ -752,6 +752,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#migration-the-deploy-token-input-was-removed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration: the deploy-token input was removed
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#inputs" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1432,6 +1443,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#migration-the-deploy-token-input-was-removed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration: the deploy-token input was removed
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#inputs" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1642,8 +1664,17 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nt">trigger</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ github.event_name }}</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">deploy-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GITHUB_TOKEN }}</span>
 </code></pre></div>
+<blockquote>
+<p>The action pushes to <code>gh-pages</code> with the credentials <code>actions/checkout</code> persists, so the calling workflow needs
+<code>permissions: contents: write</code> and the default <code>persist-credentials: true</code> on checkout. There is no token input.</p>
+</blockquote>
+<h2 id="migration-the-deploy-token-input-was-removed">Migration: the <code>deploy-token</code> input was removed<a class="headerlink" href="#migration-the-deploy-token-input-was-removed" title="Permanent link">&para;</a></h2>
+<p>Earlier versions declared a required <code>deploy-token</code> input, but it was <strong>never read</strong> — the <code>gh-pages</code> push always
+authenticated with the checkout credential described above, so the token was a no-op. It is removed in the next
+major. Because it never did anything, omitting it is already safe on <code>mkdocs/v1</code> (which is why the examples here
+pass no token); if you still pass <code>deploy-token:</code>, just delete that line. No other change is needed, as long as the
+workflow grants <code>contents: write</code> — if your docs were deploying before, it already does.</p>
 <h2 id="inputs">Inputs<a class="headerlink" href="#inputs" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -1684,12 +1715,6 @@
 <td>Dependency groups to install</td>
 <td style="text-align: center;">No</td>
 <td><code>groups: docs</code></td>
-</tr>
-<tr>
-<td><code>deploy-token</code></td>
-<td>GitHub token for deployment</td>
-<td style="text-align: center;">Yes</td>
-<td>-</td>
 </tr>
 <tr>
 <td><code>release-tag</code></td>
@@ -1744,7 +1769,6 @@
 <a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1</span>
 <a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">          </span><span class="nt">trigger</span><span class="p">:</span><span class="w"> </span><span class="s">'pull_request'</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">          </span><span class="nt">deploy-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GITHUB_TOKEN }}</span>
 </code></pre></div>
 <h3 id="production-deployment">Production Deployment<a class="headerlink" href="#production-deployment" title="Permanent link">&para;</a></h3>
 <p>Deploy on push to main and on release:</p>
@@ -1770,16 +1794,14 @@
 <a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1</span>
 <a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="w">          </span><span class="nt">trigger</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ github.event_name == 'release' &amp;&amp; 'release' || 'main' }}</span>
-<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="w">          </span><span class="nt">deploy-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GITHUB_TOKEN }}</span>
-<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a><span class="w">          </span><span class="nt">release-tag</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ github.event.release.tag_name }}</span>
+<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="w">          </span><span class="nt">release-tag</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ github.event.release.tag_name }}</span>
 </code></pre></div>
 <h3 id="with-pixi">With pixi<a class="headerlink" href="#with-pixi" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1</span>
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="nt">trigger</span><span class="p">:</span><span class="w"> </span><span class="s">'main'</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="nt">deploy-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GITHUB_TOKEN }}</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">'pixi'</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="nt">install-groups</span><span class="p">:</span><span class="w"> </span><span class="s">'default'</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="nt">package-manager</span><span class="p">:</span><span class="w"> </span><span class="s">'pixi'</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="nt">install-groups</span><span class="p">:</span><span class="w"> </span><span class="s">'default'</span>
 </code></pre></div>
 <h3 id="with-notebook-execution">With notebook execution<a class="headerlink" href="#with-notebook-execution" title="Permanent link">&para;</a></h3>
 <p>Deploy docs that include executable Jupyter notebooks. The action runs
@@ -1788,8 +1810,7 @@ so unchanged notebooks don't re-execute:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1</span>
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="nt">trigger</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ github.event_name }}</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="nt">deploy-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GITHUB_TOKEN }}</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span><span class="nt">notebooks-path</span><span class="p">:</span><span class="w"> </span><span class="s">'docs/notebook'</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="nt">notebooks-path</span><span class="p">:</span><span class="w"> </span><span class="s">'docs/notebook'</span>
 </code></pre></div>
 <p>See <a href="#notebook-execution">Notebook execution</a> below for the consumer contract.</p>
 <h2 id="notebook-execution">Notebook execution<a class="headerlink" href="#notebook-execution" title="Permanent link">&para;</a></h2>
@@ -1848,13 +1869,12 @@ whatever outputs they already carry. This mirrors pytest's <code>--ignore-glob</
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1</span>
 <a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="nt">trigger</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ github.event_name }}</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span><span class="nt">deploy-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GITHUB_TOKEN }}</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">    </span><span class="nt">notebooks-path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docs/examples</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">    </span><span class="nt">notebooks-exclude</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">      </span><span class="no">dask/*.ipynb</span>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">      </span><span class="no">**/lazy-*-complete.ipynb</span>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">      </span><span class="no">**/stac-cloud-*.ipynb</span>
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">      </span><span class="no">zarr/*.ipynb</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span><span class="nt">notebooks-path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docs/examples</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">    </span><span class="nt">notebooks-exclude</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">      </span><span class="no">dask/*.ipynb</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">      </span><span class="no">**/lazy-*-complete.ipynb</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">      </span><span class="no">**/stac-cloud-*.ipynb</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">      </span><span class="no">zarr/*.ipynb</span>
 </code></pre></div>
 <p><strong>Pattern semantics</strong> (these mirror pytest's <code>--ignore-glob</code>, which uses
 <code>fnmatch</code>):</p>
@@ -1876,13 +1896,12 @@ the next CI run; use it for genuinely flaky notebooks, and prefer
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1</span>
 <a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
 <a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">    </span><span class="nt">trigger</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ github.event_name }}</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">    </span><span class="nt">deploy-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GITHUB_TOKEN }}</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">    </span><span class="nt">notebooks-path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docs/examples</span>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">    </span><span class="c1"># Never-runs-in-CI notebooks are excluded outright...</span>
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">    </span><span class="nt">notebooks-exclude</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">      </span><span class="no">**/stac-cloud-*.ipynb</span>
-<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">    </span><span class="c1"># ...while an occasional flaky failure only warns instead of failing.</span>
-<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="w">    </span><span class="nt">notebooks-continue-on-error</span><span class="p">:</span><span class="w"> </span><span class="s">'true'</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">    </span><span class="nt">notebooks-path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docs/examples</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">    </span><span class="c1"># Never-runs-in-CI notebooks are excluded outright...</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">    </span><span class="nt">notebooks-exclude</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">      </span><span class="no">**/stac-cloud-*.ipynb</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">    </span><span class="c1"># ...while an occasional flaky failure only warns instead of failing.</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">    </span><span class="nt">notebooks-continue-on-error</span><span class="p">:</span><span class="w"> </span><span class="s">'true'</span>
 </code></pre></div>
 <h3 id="cache-invalidation">Cache invalidation<a class="headerlink" href="#cache-invalidation" title="Permanent link">&para;</a></h3>
 <p>The cache key is:</p>
@@ -1930,7 +1949,8 @@ racing, while the retry above also covers out-of-band pushes it can't see.</p>
 <ul>
 <li><code>mkdocs</code> and <code>mike</code> in your project dependencies</li>
 <li>GitHub Pages enabled on the repository</li>
-<li><code>contents: write</code> permission in the workflow</li>
+<li><code>contents: write</code> permission in the workflow, and <code>actions/checkout</code> left with its default
+  <code>persist-credentials: true</code> — the <code>gh-pages</code> push reuses that credential</li>
 <li><em>(For notebook execution)</em> <code>jupyter</code>, <code>nbconvert</code>, <code>ipykernel</code>,
   <code>mkdocs-jupyter</code> in the dependency group passed via <code>install-groups</code>;
   src-layout project structure</li>
