@@ -458,8 +458,27 @@ jobs:
 
       - name: Verify dist artifacts were created
         run: |
-          ls dist/*.whl dist/*.tar.gz
-          echo "[OK] Build artifacts present"
+          echo "::group::Verifying build artifacts"
+          if [ ! -d dist ]; then
+            echo "::error::dist/ directory does not exist"
+            exit 1
+          fi
+
+          WHL=$(ls dist/*.whl 2>/dev/null | head -1)
+          TAR=$(ls dist/*.tar.gz 2>/dev/null | head -1)
+
+          if [ -z "$WHL" ]; then
+            echo "::error::No .whl file found in dist/"
+            exit 1
+          fi
+          if [ -z "$TAR" ]; then
+            echo "::error::No .tar.gz file found in dist/"
+            exit 1
+          fi
+
+          echo "✓ Wheel:  $WHL"
+          echo "✓ Sdist:  $TAR"
+          echo "::endgroup::"
 
   # Full publish to TestPyPI — pip and uv
   # Requires repository secret: PYPI_TEST_PUBLISH (see top of file for scope notes).
