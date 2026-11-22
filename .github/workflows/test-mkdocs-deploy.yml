@@ -1155,3 +1155,46 @@ jobs:
 
           exit $fail
 
+  test-configure-push-auth-unit:
+    name: Test configure_push_auth.sh (deploy-token wiring)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Exercise the gh-pages push-credential wiring
+        run: |
+          set -uo pipefail
+          SCRIPT="$PWD/actions/mkdocs-deploy/scripts/configure_push_auth.sh"
+          fail=0
+          hdr() { git -C "$1" config --local --get-all "http.https://github.com/.extraheader" 2>/dev/null; }
+          expected="AUTHORIZATION: basic $(printf 'x-access-token:DEPLOY_TOKEN' | base64 | tr -d '\n')"
+
+          # Case 1: https origin -> replaces the checkout credential with the deploy-token.
+          a="$(mktemp -d)"; git init -q "$a"; git -C "$a" remote add origin https://github.com/foo/bar.git
+          git -C "$a" config --local "http.https://github.com/.extraheader" \
+            "AUTHORIZATION: basic $(printf 'x-access-token:CHECKOUT' | base64 | tr -d '\n')"
+          ( cd "$a" && ACTIONS_DEPLOY_TOKEN=DEPLOY_TOKEN GITHUB_SERVER_URL=https://github.com bash "$SCRIPT" ) >/dev/null
+          if [ "$(hdr "$a")" = "$expected" ] && [ "$(hdr "$a" | wc -l)" -eq 1 ]; then
+            echo "OK case1: https origin -> single extraheader derived from deploy-token"
+          else echo "FAIL case1: got '$(hdr "$a")'"; fail=1; fi
+
+          # Case 2: file:// origin (test harness) -> no GitHub extraheader set, push stays unauthenticated.
+          b="$(mktemp -d)"; git init -q "$b"; git -C "$b" remote add origin file:///tmp/fake-remote.git
+          ( cd "$b" && ACTIONS_DEPLOY_TOKEN=DEPLOY_TOKEN GITHUB_SERVER_URL=https://github.com bash "$SCRIPT" ) >/dev/null
+          if [ -z "$(hdr "$b")" ]; then echo "OK case2: file:// origin untouched"; else echo "FAIL case2: got '$(hdr "$b")'"; fail=1; fi
+
+          # Case 3: ssh origin -> untouched (an https extraheader would not apply anyway).
+          c="$(mktemp -d)"; git init -q "$c"; git -C "$c" remote add origin git@github.com:foo/bar.git
+          ( cd "$c" && ACTIONS_DEPLOY_TOKEN=DEPLOY_TOKEN GITHUB_SERVER_URL=https://github.com bash "$SCRIPT" ) >/dev/null
+          if [ -z "$(hdr "$c")" ]; then echo "OK case3: ssh origin untouched"; else echo "FAIL case3: got '$(hdr "$c")'"; fail=1; fi
+
+          # Case 4: empty deploy-token -> no-op, exit 0, any existing credential preserved.
+          d="$(mktemp -d)"; git init -q "$d"; git -C "$d" remote add origin https://github.com/foo/bar.git
+          git -C "$d" config --local "http.https://github.com/.extraheader" "AUTHORIZATION: basic KEEP"
+          ( cd "$d" && ACTIONS_DEPLOY_TOKEN= GITHUB_SERVER_URL=https://github.com bash "$SCRIPT" ) >/dev/null
+          if [ "$(hdr "$d")" = "AUTHORIZATION: basic KEEP" ]; then
+            echo "OK case4: empty token leaves the existing credential untouched"
+          else echo "FAIL case4: got '$(hdr "$d")'"; fail=1; fi
+
+          exit $fail
+
