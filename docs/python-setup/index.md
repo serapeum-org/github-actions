@@ -11,7 +11,7 @@ Three composite actions for setting up Python environments in GitHub Actions, ea
 | Optional dependencies (extras) | Yes | Yes | N/A |
 | Lock file verification | No | Yes | Yes |
 | Virtual environment activation | N/A | Yes | Yes |
-| Caching | Via setup-python | Built-in (uv) | Optional |
+| Caching | On by default (setup-python) | On by default (built-in) | On by default |
 | Conda packages | No | No | Yes |
 | Cross-platform | Yes | Yes | Yes |
 
