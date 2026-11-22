@@ -82,8 +82,8 @@ Specifies which Python version to install. Supports:
 - Version ranges: `'3.x'`, `'>=3.11'`
 
 #### `cache`
-Controls dependency caching via `actions/setup-python@v7`. Accepts the same boolean-string shape as the uv and
-pixi actions, plus setup-python cache types for advanced use:
+Controls dependency caching via `actions/setup-python@v7`. Accepts a boolean-string (`'true'`/`'false'`) like the
+uv and pixi actions (parsed case- and space-insensitively here), plus setup-python cache types for advanced use:
 - `'true'` (default): Enable caching (uses setup-python's `'pip'` cache).
 - `'false'` or `''`: Disable caching.
 - `'pip'`: Cache pip dependencies from `pyproject.toml` or `requirements.txt`
@@ -92,7 +92,8 @@ pixi actions, plus setup-python cache types for advanced use:
 
 **Auto-skip**: caching needs the dependency file that `actions/setup-python` hashes for the chosen cache type
 (`pip` → `pyproject.toml`/`requirements.txt`, `pipenv` → `Pipfile.lock`, `poetry` → `poetry.lock`), searched at
-any depth. If caching is requested but that file does not exist, the action auto-disables caching with a
+any depth — the same `**/` search `actions/setup-python` uses, so a matching file anywhere in the tree (including
+vendored directories) keeps caching on. If no such file exists, the action auto-disables caching with a
 `::warning::` and the run still succeeds (pip, unlike uv/pixi, can run with no lockfile).
 
 #### `architecture`

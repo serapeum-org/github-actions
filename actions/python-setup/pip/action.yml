@@ -11,8 +11,9 @@ inputs:
     default: '3.12'
   cache:
     description: >
-      Dependency caching for pip. Accepts the same boolean-string shape as the uv
-      and pixi actions, plus setup-python cache types for advanced use:
+      Dependency caching for pip. Accepts a boolean-string ("true"/"false") like
+      the uv and pixi actions (parsed case- and space-insensitively here), plus
+      setup-python cache types for advanced use:
       "true" enables caching (uses setup-python's "pip" cache), "false" or ""
       disables it, and "pip" / "pipenv" / "poetry" are passed straight through to
       actions/setup-python. Caching needs the dependency file setup-python hashes
