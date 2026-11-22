@@ -84,8 +84,10 @@ jobs:
             exit 1
           fi
 
-          WHL=$(ls dist/*.whl 2>/dev/null | head -1)
-          TAR=$(ls dist/*.tar.gz 2>/dev/null | head -1)
+          # `|| true` keeps the capture from aborting the step under `set -eo pipefail`
+          # when the glob matches nothing, so the actionable guards below are reachable.
+          WHL=$(ls dist/*.whl 2>/dev/null | head -1 || true)
+          TAR=$(ls dist/*.tar.gz 2>/dev/null | head -1 || true)
 
           if [ -z "$WHL" ]; then
             echo "::error::No .whl file found in dist/"
@@ -468,8 +470,10 @@ jobs:
             exit 1
           fi
 
-          WHL=$(ls dist/*.whl 2>/dev/null | head -1)
-          TAR=$(ls dist/*.tar.gz 2>/dev/null | head -1)
+          # `|| true` keeps the capture from aborting the step under `set -eo pipefail`
+          # when the glob matches nothing, so the actionable guards below are reachable.
+          WHL=$(ls dist/*.whl 2>/dev/null | head -1 || true)
+          TAR=$(ls dist/*.tar.gz 2>/dev/null | head -1 || true)
 
           if [ -z "$WHL" ]; then
             echo "::error::No .whl file found in dist/"
