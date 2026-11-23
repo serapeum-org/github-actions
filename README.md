@@ -26,15 +26,15 @@ and configure caching. All three share the same `install-groups` input shape
 
 | Action | Usage | Guide | Reference |
 |---|---|---|---|
-| **pip** | `serapeum-org/github-actions/actions/python-setup/pip@pip/v1.1.2` | [guide](docs/python-setup/pip.md) | [reference](docs/reference/python-setup-pip.md) |
+| **pip** | `serapeum-org/github-actions/actions/python-setup/pip@pip/v1.2.0` | [guide](docs/python-setup/pip.md) | [reference](docs/reference/python-setup-pip.md) |
 | **uv** | `serapeum-org/github-actions/actions/python-setup/uv@uv/v1.2.2` | [guide](docs/python-setup/uv.md) | [reference](docs/reference/python-setup-uv.md) |
-| **pixi** | `serapeum-org/github-actions/actions/python-setup/pixi@pixi/v1.2.2` | [guide](docs/python-setup/pixi.md) | [reference](docs/reference/python-setup-pixi.md) |
+| **pixi** | `serapeum-org/github-actions/actions/python-setup/pixi@pixi/v1.3.0` | [guide](docs/python-setup/pixi.md) | [reference](docs/reference/python-setup-pixi.md) |
 
 ### Documentation
 
 | Action | Usage | Guide | Reference |
 |---|---|---|---|
-| **mkdocs-deploy** | `serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1.3.2` | [guide](docs/mkdocs-deploy.md) | [reference](docs/reference/mkdocs-deploy.md) |
+| **mkdocs-deploy** | `serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v2.0.0` | [guide](docs/mkdocs-deploy.md) | [reference](docs/reference/mkdocs-deploy.md) |
 
 `mkdocs-deploy` builds and publishes a versioned MkDocs site to GitHub Pages
 via [mike](https://github.com/jimporter/mike). Version deployed is selected
@@ -95,7 +95,7 @@ jobs:
 Deploy docs (with notebook execution) on every PR, main push, and release:
 
 ```yaml
-- uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v1.3.2
+- uses: serapeum-org/github-actions/actions/mkdocs-deploy@mkdocs/v2.0.0
   with:
     trigger: ${{ github.event_name }}
     notebooks-path: 'docs/notebook'
@@ -127,10 +127,10 @@ environments: 'default py312'
 Each action is versioned independently with namespaced tags:
 
 ```
-pip/v1.1.2              # Python setup with pip
+pip/v1.2.0              # Python setup with pip
 uv/v1.2.2               # Python setup with uv
-pixi/v1.2.2             # Python setup with pixi
-mkdocs/v1.3.2           # MkDocs deploy
+pixi/v1.3.0             # Python setup with pixi
+mkdocs/v2.0.0           # MkDocs deploy
 github-release/v1.6.0   # GitHub release via Commitizen
 pypi-release/v1.1.0     # PyPI release
 ```
@@ -153,10 +153,10 @@ you cut a new tag.
 
 | Action                      | Latest version          | Commit SHA                                 |
 |-----------------------------|-------------------------|--------------------------------------------|
-| `actions/python-setup/pip`  | `pip/v1.1.2`            | `6c0a569b67c149c4648c75495544732cba2d0eca` |
+| `actions/python-setup/pip`  | `pip/v1.2.0`            | `71653ea9fc52dff9166b270614a41d7e42b3453a` |
 | `actions/python-setup/uv`   | `uv/v1.2.2`             | `6c0a569b67c149c4648c75495544732cba2d0eca` |
-| `actions/python-setup/pixi` | `pixi/v1.2.2`           | `6c0a569b67c149c4648c75495544732cba2d0eca` |
-| `actions/mkdocs-deploy`     | `mkdocs/v1.3.2`         | `961524686fb512c05ca8e4c7bfe81ba68eef4dda` |
+| `actions/python-setup/pixi` | `pixi/v1.3.0`           | `71653ea9fc52dff9166b270614a41d7e42b3453a` |
+| `actions/mkdocs-deploy`     | `mkdocs/v2.0.0`         | `71653ea9fc52dff9166b270614a41d7e42b3453a` |
 | `actions/release/github`    | `github-release/v1.6.0` | `e65132ca10fc27245cfd787c2148ddac3b44e668` |
 | `actions/release/pypi`      | `pypi-release/v1.1.0`   | `ef83a5f05b2d450406dc1da3c91dfa5e3f7701da` |
 
