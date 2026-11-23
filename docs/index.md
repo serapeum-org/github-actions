@@ -82,18 +82,20 @@ graph TB
 
 ## Versioning
 
-Actions use **namespaced tags** for independent releases:
+Actions use **namespaced, immutable tags** for independent releases — one tag per
+release, never moved:
 
 ```
-pip/v1.0.0    pip/v1
-uv/v1.2.0     uv/v1
-pixi/v1.0.0   pixi/v1
+pip/v1.2.0
+uv/v1.2.2
+pixi/v1.3.0
 ```
 
-Pin to a major version for automatic bug fixes:
+Pin an exact version (ideally the commit SHA with the tag in a trailing comment)
+for reproducibility and supply-chain safety — not a rolling major tag:
 
 ```yaml
-uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1
+uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1.2.2
 ```
 
 See the [Versioning Guide](VERSIONING.md) for details.
