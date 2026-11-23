@@ -20,7 +20,7 @@ Reusable GitHub Actions for Python CI/CD workflows. Cross-platform, multi-packag
     ```yaml
     steps:
       - uses: actions/checkout@v5
-      - uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1
+      - uses: serapeum-org/github-actions/actions/python-setup/uv@uv/v1.2.2
         with:
           install-groups: 'groups: dev test'
     ```
@@ -30,7 +30,7 @@ Reusable GitHub Actions for Python CI/CD workflows. Cross-platform, multi-packag
     ```yaml
     steps:
       - uses: actions/checkout@v5
-      - uses: serapeum-org/github-actions/actions/python-setup/pip@pip/v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pip@pip/v1.2.0
         with:
           cache: 'pip'
           install-groups: 'extras: dev test'
@@ -41,7 +41,7 @@ Reusable GitHub Actions for Python CI/CD workflows. Cross-platform, multi-packag
     ```yaml
     steps:
       - uses: actions/checkout@v5
-      - uses: serapeum-org/github-actions/actions/python-setup/pixi@pixi/v1
+      - uses: serapeum-org/github-actions/actions/python-setup/pixi@pixi/v1.3.0
         with:
           environments: 'default'
     ```
